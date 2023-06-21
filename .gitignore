@@ -396,3 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# 本機忽略的檔案
+/Src/GptKM/Backend/ESO.db
+/Src/GptKM/Backend/ESO.db-shm
+/Src/GptKM/Backend/ESO.db-wal
