@@ -1,0 +1,44 @@
+﻿using Azure.AI.OpenAI;
+using Azure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using GptLibrary.Models;
+using GptLibrary.Gpt;
+
+namespace GptLibrary.Gpts
+{
+    public class AdaEmbeddingVector
+    {
+        public async Task<float[]> GetEmbeddingAsync(string doc)
+        {
+            List<float> embeddings = new List<float>();
+            #region 使用 Azure.AI.OpenAI 套件來 OpenAIClient 物件
+            var apiKey = Environment.GetEnvironmentVariable("OpenAIKey");
+            string endpoint = "https://openailabtw.openai.azure.com/";
+            var client = new OpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
+            #endregion
+
+            string deploymentName = "text-embedding-ada-002";
+
+            EmbeddingsOptions embeddingsOptions = new EmbeddingsOptions(doc);
+            try
+            {
+                Response<Embeddings> response = await client.GetEmbeddingsAsync(deploymentName, embeddingsOptions);
+
+                if (response != null)
+                {
+                    var itemData = response.Value.Data.FirstOrDefault();
+                    embeddings = itemData.Embedding.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return embeddings.ToArray();
+        }
+    }
+}

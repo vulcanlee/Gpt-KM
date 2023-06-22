@@ -1,0 +1,40 @@
+﻿using HtmlAgilityPack;
+
+namespace GptLibrary.Converts
+{
+    public class HtmlToText
+    {
+        public string ToText(string filename)
+        {
+            string htmlContent = File.ReadAllText(filename);
+
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(htmlContent);
+
+            // 刪除所有 script 和 style 節點
+            RemoveNodeByTag(htmlDoc, "script");
+            RemoveNodeByTag(htmlDoc, "style");
+
+            // 取得網頁的純文本內容
+            string plainText = htmlDoc.DocumentNode.InnerText;
+
+            // 刪除多餘的空格和換行符
+            plainText = System.Text.RegularExpressions.Regex.Replace(plainText, @"\s+", " ").Trim();
+
+            return plainText;
+        }
+
+        void RemoveNodeByTag(HtmlDocument htmlDoc, string tagName)
+        {
+            var nodes = htmlDoc.DocumentNode.SelectNodes($"//{tagName}");
+
+            if (nodes != null)
+            {
+                foreach (var node in nodes)
+                {
+                    node.Remove();
+                }
+            }
+        }
+    }
+}

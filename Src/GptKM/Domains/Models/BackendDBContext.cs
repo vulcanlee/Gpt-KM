@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using EntityModel.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -17,6 +18,10 @@ namespace Domains.Models
             : base(options)
         {
         }
+
+        public virtual DbSet<ExpertDirectory> ExpertDirectory { get; set; }
+        public virtual DbSet<ExpertFile> ExpertFile { get; set; }
+        public virtual DbSet<ExpertFileChunk> ExpertFileChunk { get; set; }
 
         public virtual DbSet<OrderMaster> OrderMaster { get; set; }
         public virtual DbSet<OrderItem> OrderItem { get; set; }
