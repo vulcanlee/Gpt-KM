@@ -26,6 +26,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.HttpOverrides;
 using GptLibrary.Helpers;
+using GptLibrary.Services;
 
 var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 try
@@ -236,6 +237,7 @@ try
 
     #region GPT Service
     builder.Services.AddTransient<DirectorySourceHelper>();
+    builder.Services.AddTransient<ConvertFileExtensionMatch>();
     #endregion
     #endregion
 

@@ -55,8 +55,8 @@ namespace GptLibrary.Helpers
         {
             ExpertDirectory expertDirectory = new ExpertDirectory()
             {
-                Name = expertContent.TargetDirectory,
-                Path = expertContent.TargetDirectory,
+                Name = expertContent.SourceDirectory,
+                Path = expertContent.SourceDirectory,
                 ConvertPath = expertContent.ConvertDirectory,
             };
 

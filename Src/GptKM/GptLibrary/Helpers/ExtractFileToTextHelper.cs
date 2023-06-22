@@ -68,7 +68,7 @@ namespace GptLibrary.Helpers
 
         void CountFileExtensions(ExpertConfiguration expertConfiguration, ExpertContent expertContent)
         {
-            string directoryPath = expertConfiguration.TargetDirectory;
+            string directoryPath = expertConfiguration.SourceDirectory;
             void ProcessDirectory(DirectoryInfo directoryInfo)
             {
                 // Process all files in the current directory

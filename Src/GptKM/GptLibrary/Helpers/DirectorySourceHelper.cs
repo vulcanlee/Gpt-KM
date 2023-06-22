@@ -2,6 +2,7 @@
 using GptLibrary.Gpt;
 using GptLibrary.Gpts;
 using GptLibrary.Models;
+using GptLibrary.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +13,18 @@ namespace GptLibrary.Helpers
 {
     public class DirectorySourceHelper
     {
+        private readonly ConvertFileExtensionMatch convertFileExtensionMatch;
+
+        public DirectorySourceHelper(ConvertFileExtensionMatch convertFileExtensionMatch)
+        {
+            this.convertFileExtensionMatch = convertFileExtensionMatch;
+        }
         public ExpertContent Scan(ExpertConfiguration expertConfiguration)
         {
             ExpertContent expertContent = new ExpertContent();
-            expertContent.TargetDirectory = expertConfiguration.TargetDirectory;
+            expertContent.SourceDirectory = expertConfiguration.SourceDirectory;
             expertContent.ConvertDirectory = expertConfiguration.ConvertDirectory;
-            CountFileExtensions(expertConfiguration, expertContent);
+            CountFileExtensions(expertContent);
             GetExtensionSummary(expertContent);
 
             return expertContent;
@@ -55,7 +62,7 @@ namespace GptLibrary.Helpers
 
         public void PrepareConvertDirectory(ExpertConfiguration expertConfiguration, ExpertContent expertContent)
         {
-            string baseTargetDirectory = expertConfiguration.TargetDirectory;
+            string baseTargetDirectory = expertConfiguration.SourceDirectory;
             string baseConvertDirectory = expertConfiguration.ConvertDirectory;
             var allDirectories = expertContent.ExpertFiles.Select(x => x.DirectoryName).Distinct();
             foreach (var directory in allDirectories)
@@ -181,33 +188,37 @@ namespace GptLibrary.Helpers
             return convertFiles;
         }
 
-        void CountFileExtensions(ExpertConfiguration expertConfiguration, ExpertContent expertContent)
+        /// <summary>
+        /// 分析指定目錄下，所有檔案的副檔名符合可以進行文字轉換的清單
+        /// </summary>
+        /// <param name="expertConfiguration"></param>
+        /// <param name="expertContent"></param>
+        void CountFileExtensions(ExpertContent expertContent)
         {
-            string directoryPath = expertConfiguration.TargetDirectory;
+            string sourceDirectoryPath = expertContent.SourceDirectory;
             void ProcessDirectory(DirectoryInfo directoryInfo)
             {
                 // Process all files in the current directory
                 foreach (var fileInfo in directoryInfo.GetFiles())
                 {
-                    ExpertRawFile expertFile = new ExpertRawFile()
+                    if (convertFileExtensionMatch.IsMatch(fileInfo.Name))
                     {
-                        Extension = fileInfo.Extension.ToLower(),
-                        FileInfo = new ExpertFileInfo().FromFileInfo(fileInfo),
-                        FullName = fileInfo.FullName,
-                        FileName = fileInfo.Name,
-                        Size = fileInfo.Length,
-                        DirectoryName = $@"{fileInfo.DirectoryName}\",
-                    };
-                    expertContent.ExpertFiles.Add(expertFile);
-                    string extension = fileInfo.Extension.ToLower();
+                        ExpertRawFile expertFile = new ExpertRawFile()
+                        {
+                            Extension = fileInfo.Extension.ToLower(),
+                            FileInfo = new ExpertFileInfo().FromFileInfo(fileInfo),
+                            FullName = fileInfo.FullName,
+                            FileName = fileInfo.Name,
+                            Size = fileInfo.Length,
+                            DirectoryName = $@"{fileInfo.DirectoryName}\",
+                        };
+                        expertContent.ExpertFiles.Add(expertFile);
+                        string extension = fileInfo.Extension.ToLower();
 
-                    if (extension == ".app")
-                    {
-                        int foo = 1;
-                    }
-                    if (expertContent.Extensions.Contains(extension) == false)
-                    {
-                        expertContent.Extensions.Add(extension);
+                        if (expertContent.Extensions.Contains(extension) == false)
+                        {
+                            expertContent.Extensions.Add(extension);
+                        }
                     }
                 }
 
@@ -218,7 +229,7 @@ namespace GptLibrary.Helpers
                 }
             }
 
-            ProcessDirectory(new DirectoryInfo(directoryPath));
+            ProcessDirectory(new DirectoryInfo(sourceDirectoryPath));
             return;
         }
 
