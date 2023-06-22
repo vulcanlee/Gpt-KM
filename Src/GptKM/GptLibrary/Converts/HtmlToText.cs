@@ -2,7 +2,7 @@
 
 namespace GptLibrary.Converts
 {
-    public class HtmlToText
+    public class HtmlToText : IFileToText
     {
         public string ToText(string filename)
         {

@@ -5,7 +5,7 @@ using iText.Kernel.Pdf;
 
 namespace GptLibrary.Converts
 {
-    public class PdfToText
+    public class PdfToText : IFileToText
     {
         public string ToText(string filename)
         {

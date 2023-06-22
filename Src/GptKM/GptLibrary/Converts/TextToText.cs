@@ -3,7 +3,7 @@ using NPOI.XWPF.Extractor;
 
 namespace GptLibrary.Converts
 {
-    public class TextToText
+    public class TextToText : IFileToText
     {
         public string ToText(string filename)
         {

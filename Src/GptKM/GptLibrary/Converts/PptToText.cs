@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GptLibrary.Converts
 {
-    public class PptToText
+    public class PptToText : IFileToText
     {
         public string ToText(string filePath)
         {
