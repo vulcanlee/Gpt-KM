@@ -35,6 +35,7 @@
 		<ProjectReference Include="..\CommonDomain\CommonDomain.csproj" />
 		<ProjectReference Include="..\Domains\Domains.csproj" />
 		<ProjectReference Include="..\DTOs\DTOs.csproj" />
+		<ProjectReference Include="..\GptLibrary\GptLibrary.csproj" />
 		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
 	</ItemGroup>
 

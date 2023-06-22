@@ -25,6 +25,7 @@ using System.Text;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.HttpOverrides;
+using GptLibrary.Helpers;
 
 var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 try
@@ -231,6 +232,10 @@ try
     #region 相關選項模式
     builder.Services.Configure<BackendCustomNLog>(builder.Configuration
         .GetSection(nameof(BackendCustomNLog)));
+    #endregion
+
+    #region GPT Service
+    builder.Services.AddTransient<DirectorySourceHelper>();
     #endregion
     #endregion
 
