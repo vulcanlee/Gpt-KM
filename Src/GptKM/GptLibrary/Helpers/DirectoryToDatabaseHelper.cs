@@ -13,15 +13,21 @@ namespace GptLibrary.Helpers
 {
     public class DirectoryToDatabaseHelper
     {
-        public async Task SaveAsync(BackendDBContext context, ExpertContent expertContent)
+        private readonly BackendDBContext context;
+
+        public DirectoryToDatabaseHelper(BackendDBContext context)
+        {
+            this.context = context;
+        }
+        public async Task SaveAsync(ExpertContent expertContent)
         {
             //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            ExpertDirectory expertDirectoryEntity = await CheckDirectoryEntityAsync(context, expertContent);
-            await CheckFileEntityAsync(context, expertContent, expertDirectoryEntity);
+            ExpertDirectory expertDirectoryEntity = await CheckDirectoryEntityAsync(expertContent);
+            await CheckFileEntityAsync(expertContent, expertDirectoryEntity);
         }
 
-        private async Task CheckFileEntityAsync(BackendDBContext context, ExpertContent expertContent,
+        private async Task CheckFileEntityAsync(ExpertContent expertContent,
             ExpertDirectory expertDirectory)
         {
             List<ExpertFile> expertFiles = new();
@@ -45,7 +51,7 @@ namespace GptLibrary.Helpers
             await context.BulkInsertAsync(expertFiles);
         }
 
-        private async Task<ExpertDirectory> CheckDirectoryEntityAsync(BackendDBContext context, ExpertContent expertContent)
+        private async Task<ExpertDirectory> CheckDirectoryEntityAsync(ExpertContent expertContent)
         {
             ExpertDirectory expertDirectory = new ExpertDirectory()
             {

@@ -23,7 +23,13 @@ namespace ExpertLinkLibrary.Helpers
     }
     public class TestEmbeddingSearchHelper
     {
-        public async Task TestEmbeddingSearch(BackendDBContext context)
+        private readonly BackendDBContext context;
+
+        public TestEmbeddingSearchHelper(BackendDBContext context)
+        {
+            this.context = context;
+        }
+        public async Task TestEmbeddingSearch()
         {
             List<EmbeddingItem> allDocumentsEmbedding = new();
             var allFiles = await context.ExpertFile

@@ -15,8 +15,13 @@ namespace GptLibrary.Helpers
 {
     public class EmbeddingChunkHelper
     {
-        public async Task ToEmbeddingAsync(ContentTypeEnum contentTypeEnum, 
-            BackendDBContext context, string directoryName)
+        private readonly BackendDBContext context;
+
+        public EmbeddingChunkHelper(BackendDBContext context)
+        {
+            this.context = context;
+        }
+        public async Task ToEmbeddingAsync(ContentTypeEnum contentTypeEnum, string directoryName)
         {
             ExtractFileToTextHelper extractFileToTextHelper = new ExtractFileToTextHelper();
             ExpertDirectory expertDirectory = await context.ExpertDirectory.FirstOrDefaultAsync(x => x.Path == directoryName);
