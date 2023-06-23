@@ -12,7 +12,7 @@ namespace GptLibrary.Gpts
 {
     public class DavinciPromptCompletion
     {
-        public async Task<string> GptSummaryAsync(ConvertFile convertFile, string prefix = "請將底下內容整理出摘要內容，並使用zh-tw生成內容")
+        public async Task<string> GptSummaryAsync(ConvertFileModel convertFile, string prefix = "請將底下內容整理出摘要內容，並使用zh-tw生成內容")
         {
             string content = convertFile.SourceText;
             int maxCotentLength = 0;

@@ -1,9 +1,9 @@
 ﻿namespace GptLibrary.Services;
 
-public class ConvertFileExtensionMatch
+public class ConvertFileExtensionMatchService
 {
     List<string> canConvertFileExtensions;
-    public ConvertFileExtensionMatch()
+    public ConvertFileExtensionMatchService()
     {
         canConvertFileExtensions = new List<string>()
         {

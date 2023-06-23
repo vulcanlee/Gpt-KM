@@ -13,10 +13,10 @@ namespace GptLibrary.Helpers
 {
     public class DirectorySourceHelper
     {
-        private readonly ConvertFileExtensionMatch convertFileExtensionMatch;
+        private readonly ConvertFileExtensionMatchService convertFileExtensionMatch;
         private readonly ConverterToTextFactory converterToTextFactory;
 
-        public DirectorySourceHelper(ConvertFileExtensionMatch convertFileExtensionMatch,
+        public DirectorySourceHelper(ConvertFileExtensionMatchService convertFileExtensionMatch,
             ConverterToTextFactory converterToTextFactory)
         {
             this.convertFileExtensionMatch = convertFileExtensionMatch;
@@ -97,7 +97,7 @@ namespace GptLibrary.Helpers
         /// </summary>
         /// <param name="convertFiles"></param>
         /// <returns></returns>
-        public async Task PrintConverResultAsync(List<ConvertFile> convertFiles)
+        public async Task PrintConverResultAsync(List<ConvertFileModel> convertFiles)
         {
             DavinciPromptCompletion davinciPromptCompletion = new DavinciPromptCompletion();
 
@@ -129,10 +129,10 @@ namespace GptLibrary.Helpers
         /// <param name="contentTypeEnum"></param>
         /// <param name="expertContent"></param>
         /// <returns></returns>
-        public List<ConvertFile> GenerateText(ContentTypeEnum contentTypeEnum,
+        public List<ConvertFileModel> GenerateText(ContentTypeEnum contentTypeEnum,
             ExpertContent expertContent)
         {
-            List<ConvertFile> convertFiles = new List<ConvertFile>();
+            List<ConvertFileModel> convertFiles = new List<ConvertFileModel>();
             var allFiles = GetExamFiles(contentTypeEnum, expertContent);
             IFileToText fileToText = converterToTextFactory.Create(contentTypeEnum);
             Tokenizer tokenizer = new Tokenizer();
@@ -142,7 +142,7 @@ namespace GptLibrary.Helpers
             {
                 #region 將檔案內容，轉換成為文字
                 string sourceText = fileToText.ToText(file.FullName);
-                ConvertFile convertFile = new ConvertFile()
+                ConvertFileModel convertFile = new ConvertFileModel()
                 {
                     FileName = file.FileName,
                     Extension = file.Extension,

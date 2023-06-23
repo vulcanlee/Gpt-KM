@@ -24,6 +24,8 @@
                 default: return new List<string>();
             }
         }
+
+        #region 取得所有檔案類型的副檔名
         static List<string> GetMarkdown()
         {
             return new List<string>()
@@ -73,9 +75,25 @@
                 ".html",
             };
         }
-        public class ContentTypeItem
+        #endregion
+
+        /// <summary>
+        /// 取得指定副檔名所屬的檔案列舉值
+        /// </summary>
+        /// <param name="extension"></param>
+        /// <returns></returns>
+        public static ContentTypeEnum GetContentTypeEnum(string extension)
         {
-            public string Extension { get; set; } = string.Empty;
+            var allContentTypeEnum = Enum.GetValues(typeof(ContentTypeEnum)).Cast<ContentTypeEnum>();
+            foreach (var value in allContentTypeEnum)
+            {
+                var extensions = GetContentType(value);
+                if (extensions.Contains(extension))
+                {
+                    return value;
+                }
+            }
+            return ContentTypeEnum.UNKNOWN;
         }
     }
 }

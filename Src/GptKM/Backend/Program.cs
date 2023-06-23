@@ -238,10 +238,12 @@ try
 
     #region GPT Service
     builder.Services.AddTransient<DirectorySourceHelper>();
-    builder.Services.AddTransient<ConvertFileExtensionMatch>();
     builder.Services.AddTransient<ConverterToTextFactory>();
-    builder.Services.AddTransient<SyncDirectory>();
-    builder.Services.AddTransient<SyncDatabase>();
+    builder.Services.AddTransient<ConvertFileExtensionMatchService>();
+    builder.Services.AddTransient<SyncDirectoryService>();
+    builder.Services.AddTransient<SyncDatabaseService>();
+    builder.Services.AddTransient<ConvertToTextService>();
+    builder.Services.AddTransient<BuildFilenameService>();
     #endregion
     #endregion
 

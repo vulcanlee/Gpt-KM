@@ -9,11 +9,11 @@ namespace GptLibrary.Services;
 /// <summary>
 /// 將實體檔案系統資訊，同步到資料庫中
 /// </summary>
-public class SyncDatabase
+public class SyncDatabaseService
 {
     private readonly BackendDBContext context;
 
-    public SyncDatabase(BackendDBContext context)
+    public SyncDatabaseService(BackendDBContext context)
     {
         this.context = context;
     }

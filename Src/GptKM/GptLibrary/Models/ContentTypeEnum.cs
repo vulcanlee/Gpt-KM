@@ -9,5 +9,6 @@
         HTML,
         TEXT,
         MARKDOWN,
+        UNKNOWN,
     }
 }

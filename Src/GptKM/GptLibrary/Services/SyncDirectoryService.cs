@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace GptLibrary.Services
 {
-    public class SyncDirectory
+    public class SyncDirectoryService
     {
-        private readonly ConvertFileExtensionMatch convertFileExtensionMatch;
+        private readonly ConvertFileExtensionMatchService convertFileExtensionMatch;
 
-        public SyncDirectory(ConvertFileExtensionMatch convertFileExtensionMatch)
+        public SyncDirectoryService(ConvertFileExtensionMatchService convertFileExtensionMatch)
         {
             this.convertFileExtensionMatch = convertFileExtensionMatch;
         }
