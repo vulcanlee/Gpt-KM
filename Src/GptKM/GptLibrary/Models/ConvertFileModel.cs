@@ -18,7 +18,7 @@ namespace GptLibrary.Models
         /// <summary>
         /// 將一個檔案切割成為不同 Chunk 的相關資訊
         /// </summary>
-        List<ConvertFileItemModel> ConvertFileItems = new List<ConvertFileItemModel>();
+        public List<ConvertFileItemModel> ConvertFileItems = new List<ConvertFileItemModel>();
         public Decimal EmbeddingCost { get; set; }
         public Decimal SummaryCost { get; set; }
 

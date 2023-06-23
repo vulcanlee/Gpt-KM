@@ -244,6 +244,7 @@ try
     builder.Services.AddTransient<SyncDatabaseService>();
     builder.Services.AddTransient<ConvertToTextService>();
     builder.Services.AddTransient<BuildFilenameService>();
+    builder.Services.AddTransient<ConvertFileModelService>();
     #endregion
     #endregion
 
