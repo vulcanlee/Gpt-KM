@@ -1,4 +1,5 @@
-﻿using GptLibrary.Converts;
+﻿using EntityModel.Entities;
+using GptLibrary.Converts;
 using GptLibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -20,14 +21,15 @@ namespace GptLibrary.Services
         /// <summary>
         /// 開始掃描指定目錄內的所有檔案
         /// </summary>
-        /// <param name="expertConfiguration"></param>
+        /// <param name="expertConfiguration">資料庫內的檔案路徑的定義物件</param>
         /// <returns></returns>
-        public ExpertContent ScanSourceDirectory(string sourceDirectory, string convertDirectory)
+        public ExpertContent ScanSourceDirectory(ExpertDirectory expertDirectory)
         {
             ExpertContent expertContent = new ExpertContent();
-            expertContent.SourceDirectory = sourceDirectory;
-            expertContent.ConvertDirectory = convertDirectory;
+            expertContent.SourceDirectory = expertDirectory.SourcePath;
+            expertContent.ConvertDirectory = expertDirectory.ConvertPath;
             CountFileExtensions(expertContent);
+            PrepareConvertDirectory(expertContent);
 
             return expertContent;
         }
@@ -35,12 +37,11 @@ namespace GptLibrary.Services
         /// <summary>
         /// 準備要轉換後檔案需要用到的目錄
         /// </summary>
-        /// <param name="expertConfiguration"></param>
         /// <param name="expertContent"></param>
-        public void PrepareConvertDirectory(ExpertConfiguration expertConfiguration, ExpertContent expertContent)
+        public void PrepareConvertDirectory(ExpertContent expertContent)
         {
-            string baseTargetDirectory = expertConfiguration.SourceDirectory;
-            string baseConvertDirectory = expertConfiguration.ConvertDirectory;
+            string baseTargetDirectory = expertContent.SourceDirectory;
+            string baseConvertDirectory = expertContent.ConvertDirectory;
             var allDirectories = expertContent.ExpertFiles
                 .Select(x => x.DirectoryName).Distinct();
             foreach (var directory in allDirectories)

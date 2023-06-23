@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonDomain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,5 +39,17 @@ public class ExpertFile
     public long Size { get; set; } = 0L;
     public bool ProcessChunk { get; set; } =false;
     public int ChunkSize { get; set; } = 0;
-
+    public ExpertFileStatusEnum ProcessingStatus { get; set; }
+    /// <summary>
+    /// 建立時間
+    /// </summary>
+    public DateTime CreateAt { get; set; } = DateTime.Now;
+    /// <summary>
+    /// 更新時間
+    /// </summary>
+    public DateTime UpdateAt { get; set; } = DateTime.Now;
+    /// <summary>
+    /// 最後同步時間
+    /// </summary>
+    public DateTime SyncAt { get; set; } = DateTime.Now;
 }
