@@ -9,7 +9,8 @@
         /// 檔案索引,代表第幾個 Chunk 項目
         /// </summary>
         public int Index { get; set; }
-        public string FileName { get; set; } = string.Empty;
+        public string EmbeddingTextFileName { get; set; } = string.Empty;
+        public string EmbeddingJsonFileName { get; set; } = string.Empty;
         public string SourceText { get; set; } = string.Empty;
         public long SourceTextSize { get; set; } = 0L;
         public long ConvertTextSize { get; set; } = 0L;

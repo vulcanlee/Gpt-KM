@@ -55,7 +55,7 @@ namespace GptLibrary.Models
 
                     cacheSourceText = cacheSourceText.Substring(cutLength);
 
-                    convertFile.FileName = buildFilenameService.BuildEmbeddingText(expertFile.FullName,embeddingIndex++);
+                    convertFile.EmbeddingTextFileName = buildFilenameService.BuildEmbeddingText(expertFile.FullName,embeddingIndex++);
                     convertFile.Index = embeddingIndex;
                     convertFile.SourceText = cutText;
                     convertFile.SourceTextSize = cutText.Length;
@@ -66,7 +66,8 @@ namespace GptLibrary.Models
                 }
                 else
                 {
-                    convertFile.FileName = buildFilenameService.BuildEmbeddingText(expertFile.FullName, embeddingIndex);
+                    convertFile.EmbeddingTextFileName = buildFilenameService.BuildEmbeddingText(expertFile.FullName, embeddingIndex);
+                    convertFile.EmbeddingJsonFileName = buildFilenameService.BuildEmbeddingJson(expertFile.FullName, embeddingIndex);
                     convertFile.Index = embeddingIndex;
                     convertFile.SourceText = cacheSourceText;
                     convertFile.SourceTextSize = cacheSourceText.Length;
