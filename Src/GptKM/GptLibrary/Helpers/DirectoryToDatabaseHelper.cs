@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace GptLibrary.Helpers
 {
+    /// <summary>
+    /// 將實體檔案系統資訊，同步到資料庫中
+    /// </summary>
     public class DirectoryToDatabaseHelper
     {
         private readonly BackendDBContext context;
@@ -19,10 +22,14 @@ namespace GptLibrary.Helpers
         {
             this.context = context;
         }
+
+        /// <summary>
+        /// 將檔案資訊儲存到資料庫
+        /// </summary>
+        /// <param name="expertContent"></param>
+        /// <returns></returns>
         public async Task SaveAsync(ExpertContent expertContent)
         {
-            //context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
             ExpertDirectory expertDirectoryEntity = await CheckDirectoryEntityAsync(expertContent);
             await CheckFileEntityAsync(expertContent, expertDirectoryEntity);
         }
@@ -56,11 +63,13 @@ namespace GptLibrary.Helpers
             ExpertDirectory expertDirectory = new ExpertDirectory()
             {
                 Name = expertContent.SourceDirectory,
-                Path = expertContent.SourceDirectory,
+                SourcePath = expertContent.SourceDirectory,
                 ConvertPath = expertContent.ConvertDirectory,
             };
 
-            var findDirectory = context.ExpertDirectory.FirstOrDefault(x => x.Path == expertDirectory.Path);
+            var findDirectory = context.ExpertDirectory
+                .FirstOrDefault(x => x.SourcePath == expertDirectory.SourcePath);
+        
             if (findDirectory == null)
             {
                 await context.ExpertDirectory.AddAsync(expertDirectory);
@@ -68,6 +77,7 @@ namespace GptLibrary.Helpers
             }
             else
                 expertDirectory = findDirectory;
+
             return expertDirectory;
         }
     }

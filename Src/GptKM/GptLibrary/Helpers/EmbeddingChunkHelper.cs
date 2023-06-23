@@ -24,7 +24,7 @@ namespace GptLibrary.Helpers
         public async Task ToEmbeddingAsync(ContentTypeEnum contentTypeEnum, string directoryName)
         {
             ExtractFileToTextHelper extractFileToTextHelper = new ExtractFileToTextHelper();
-            ExpertDirectory expertDirectory = await context.ExpertDirectory.FirstOrDefaultAsync(x => x.Path == directoryName);
+            ExpertDirectory expertDirectory = await context.ExpertDirectory.FirstOrDefaultAsync(x => x.SourcePath == directoryName);
             if (expertDirectory != null)
             {
                 List<ExpertFile> expertFiles = await context.ExpertFile.Where(x => x.ExpertDirectoryId == expertDirectory.Id &&

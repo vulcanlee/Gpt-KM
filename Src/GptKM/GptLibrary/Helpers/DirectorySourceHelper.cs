@@ -136,12 +136,10 @@ namespace GptLibrary.Helpers
             var allFiles = GetExamFiles(contentTypeEnum, expertContent);
             IFileToText fileToText = converterToTextFactory.Create(contentTypeEnum);
             Tokenizer tokenizer = new Tokenizer();
-            int count = 0;
+           
+            #region 列舉出所有的符合檔案
             foreach (var file in allFiles)
             {
-                Console.Write($"{count} ");
-                count++;
-
                 #region 將檔案內容，轉換成為文字
                 string sourceText = fileToText.ToText(file.FullName);
                 ConvertFile convertFile = new ConvertFile()
@@ -160,7 +158,7 @@ namespace GptLibrary.Helpers
                 convertFiles.Add(convertFile);
                 #endregion
             }
-            Console.WriteLine();
+            #endregion
             return convertFiles;
         }
 
