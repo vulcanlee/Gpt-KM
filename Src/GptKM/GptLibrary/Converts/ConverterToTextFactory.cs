@@ -1,40 +1,49 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using GptLibrary.Models;
 using System.Text;
 
 namespace GptLibrary.Converts
 {
-    public class ConverterToTextFactory 
+    /// <summary>
+    /// 建立可用於轉換檔案成為文字內容的物件之工廠方法
+    /// </summary>
+    public class ConverterToTextFactory
     {
-        public IFileToText Create(string fileType)
+        /// <summary>
+        /// 產生生成文字內容的物件
+        /// </summary>
+        /// <param name="contentType"></param>
+        /// <returns></returns>
+        public IFileToText Create(ContentTypeEnum contentType)
         {
             IFileToText result = null;
 
-            if (fileType.EndsWith(".xlsx"))
+            if (contentType == ContentTypeEnum.EXCEL)
             {
                 result = new ExcelToText();
             }
-            else if (fileType.EndsWith(".docx"))
+            else if (contentType == ContentTypeEnum.WORD)
             {
                 result = new WordToText();
             }
-            else if (fileType.EndsWith(".pptx"))
+            else if (contentType == ContentTypeEnum.POWERPOINT)
             {
                 result = new PptToText();
             }
-            else if (fileType.EndsWith(".pdf"))
+            else if (contentType == ContentTypeEnum.PDF)
             {
                 result = new PdfToText();
             }
-            else if (fileType.EndsWith(".html"))
+            else if (contentType == ContentTypeEnum.HTML)
             {
                 result = new HtmlToText();
             }
-            else if (fileType.EndsWith(".txt"))
+            else if (contentType == ContentTypeEnum.TEXT)
             {
                 result = new TextToText();
             }
-            else if (fileType.EndsWith(".md"))
+            else if (contentType == ContentTypeEnum.MARKDOWN)
             {
                 result = new MarkdownToText();
             }

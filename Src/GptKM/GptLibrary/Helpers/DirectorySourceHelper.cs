@@ -14,10 +14,13 @@ namespace GptLibrary.Helpers
     public class DirectorySourceHelper
     {
         private readonly ConvertFileExtensionMatch convertFileExtensionMatch;
+        private readonly ConverterToTextFactory converterToTextFactory;
 
-        public DirectorySourceHelper(ConvertFileExtensionMatch convertFileExtensionMatch)
+        public DirectorySourceHelper(ConvertFileExtensionMatch convertFileExtensionMatch,
+            ConverterToTextFactory converterToTextFactory)
         {
             this.convertFileExtensionMatch = convertFileExtensionMatch;
+            this.converterToTextFactory = converterToTextFactory;
         }
         public ExpertContent Scan(ExpertConfiguration expertConfiguration)
         {
@@ -25,17 +28,25 @@ namespace GptLibrary.Helpers
             expertContent.SourceDirectory = expertConfiguration.SourceDirectory;
             expertContent.ConvertDirectory = expertConfiguration.ConvertDirectory;
             CountFileExtensions(expertContent);
-            GetExtensionSummary(expertContent);
 
             return expertContent;
         }
 
-        public void Save(string filename, ExpertContent expertContent)
+        /// <summary>
+        /// 將搜尋到的可轉換成為文字的所有檔案定義資訊，寫入到 JSON 檔案內
+        /// </summary>
+        /// <param name="filename">定義檔案名稱</param>
+        /// <param name="expertContent">搜尋到的所有檔案資訊</param>
+        public async Task SaveAsync(string filename, ExpertContent expertContent)
         {
             var content = Newtonsoft.Json.JsonConvert.SerializeObject(expertContent);
-            System.IO.File.WriteAllText(filename, content);
+            await System.IO.File.WriteAllTextAsync(filename, content);
         }
 
+        /// <summary>
+        /// 將搜尋到的可轉換成為文字的所有檔案定義資訊，列印出來
+        /// </summary>
+        /// <param name="expertContent">搜尋到的所有檔案資訊</param>
         public void Print(ExpertContent expertContent)
         {
             var sum = expertContent.ExpertFiles.Sum(x => x.Size);
@@ -60,11 +71,17 @@ namespace GptLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// 準備要轉換後檔案需要用到的目錄
+        /// </summary>
+        /// <param name="expertConfiguration"></param>
+        /// <param name="expertContent"></param>
         public void PrepareConvertDirectory(ExpertConfiguration expertConfiguration, ExpertContent expertContent)
         {
             string baseTargetDirectory = expertConfiguration.SourceDirectory;
             string baseConvertDirectory = expertConfiguration.ConvertDirectory;
-            var allDirectories = expertContent.ExpertFiles.Select(x => x.DirectoryName).Distinct();
+            var allDirectories = expertContent.ExpertFiles
+                .Select(x => x.DirectoryName).Distinct();
             foreach (var directory in allDirectories)
             {
                 string convertDirectory = directory.Replace(baseTargetDirectory, baseConvertDirectory);
@@ -75,18 +92,17 @@ namespace GptLibrary.Helpers
             }
         }
 
+        /// <summary>
+        /// 使用 Davinci GPT 模型，將檔案轉換成為所有文字內容，生成出摘要
+        /// </summary>
+        /// <param name="convertFiles"></param>
+        /// <returns></returns>
         public async Task PrintConverResultAsync(List<ConvertFile> convertFiles)
         {
             DavinciPromptCompletion davinciPromptCompletion = new DavinciPromptCompletion();
 
             foreach (var file in convertFiles)
             {
-                //if (file.FullName.Contains("【TOP】【程式更新歷程】【成大】【FALCONRIS】相關程式修改歷程"))
-                //{
-                //    int foo = 1;
-                //}
-                //else
-                //    continue;
                 Console.WriteLine($"{file.FullName}");
                 Console.WriteLine($"Files Size:{file.FileSize / 1024.0 / 1024.0}MB");
                 Console.WriteLine($"Text Size:{file.SourceTextSize} , Token:{file.TokenSize}, Embedding:{file.EmbeddingCost}");
@@ -107,95 +123,77 @@ namespace GptLibrary.Helpers
             Console.WriteLine($"Text Size:{totalSize}MB , Token:{totalTokenSize}, Embedding:${totalEmbeddingCost} / NT${totalEmbeddingCostTW}");
         }
 
+        /// <summary>
+        /// 進行所有檔案的轉成文字化動作
+        /// </summary>
+        /// <param name="contentTypeEnum"></param>
+        /// <param name="expertContent"></param>
+        /// <returns></returns>
         public List<ConvertFile> GenerateText(ContentTypeEnum contentTypeEnum,
-            ExpertConfiguration expertConfiguration, ExpertContent expertContent)
+            ExpertContent expertContent)
         {
             List<ConvertFile> convertFiles = new List<ConvertFile>();
-            var allFiles = GetExamFiles(contentTypeEnum, expertConfiguration, expertContent);
-            PdfToText pdfToText = new PdfToText();
-            HtmlToText htmlToText = new HtmlToText();
+            var allFiles = GetExamFiles(contentTypeEnum, expertContent);
+            IFileToText fileToText = converterToTextFactory.Create(contentTypeEnum);
             Tokenizer tokenizer = new Tokenizer();
             int count = 0;
             foreach (var file in allFiles)
             {
                 Console.Write($"{count} ");
-                //if (count > 10)
-                //    break;
                 count++;
-                if (contentTypeEnum == ContentTypeEnum.PDF)
-                {
-                    #region PDF 2 Text
-                    if (!(file.Extension.ToLower() == ".pdf"))
-                        continue;
-                    //var sourceText = pdfToText.ToText(file.FullName);
-                    string sourceText = "";
-                    ConvertFile convertFile = new ConvertFile()
-                    {
-                        FileName = file.FileName,
-                        Extension = file.Extension,
-                        DirectoryName = file.DirectoryName,
-                        FullName = file.FullName,
-                    };
-                    convertFile.FileName = file.FullName;
-                    convertFile.FileSize = file.Size;
-                    convertFile.SourceText = sourceText;
-                    convertFile.SourceTextSize = sourceText.Length;
-                    convertFile.TokenSize = tokenizer.CountToken(sourceText);
-                    convertFile.SplitContext();
-                    convertFiles.Add(convertFile);
-                    #endregion
-                }
-                else if (contentTypeEnum == ContentTypeEnum.HTML)
-                {
-                    #region HTML 2 Text
-                    if (!(file.Extension.ToLower() == ".htm" || file.Extension.ToLower() == ".html"))
-                        continue;
-                    var sourceText = htmlToText.ToText(file.FullName);
 
-                    ConvertFile convertFile = new ConvertFile()
-                    {
-                        FileName = file.FileName,
-                        Extension = file.Extension,
-                        DirectoryName = file.DirectoryName,
-                        FullName = file.FullName,
-                    };
-                    convertFile.FileName = file.FullName;
-                    convertFile.FileSize = file.Size;
-                    convertFile.SourceText = sourceText;
-                    convertFile.SourceTextSize = sourceText.Length;
-                    convertFile.TokenSize = tokenizer.CountToken(sourceText);
-                    convertFile.SplitContext();
-                    convertFiles.Add(convertFile);
-                    #endregion
-                }
+                #region 將檔案內容，轉換成為文字
+                string sourceText = fileToText.ToText(file.FullName);
+                ConvertFile convertFile = new ConvertFile()
+                {
+                    FileName = file.FileName,
+                    Extension = file.Extension,
+                    DirectoryName = file.DirectoryName,
+                    FullName = file.FullName,
+                };
+                convertFile.FileName = file.FullName;
+                convertFile.FileSize = file.Size;
+                convertFile.SourceText = sourceText;
+                convertFile.SourceTextSize = sourceText.Length;
+                convertFile.TokenSize = tokenizer.CountToken(sourceText);
+                convertFile.SplitContext();
+                convertFiles.Add(convertFile);
+                #endregion
             }
             Console.WriteLine();
             return convertFiles;
         }
 
+        /// <summary>
+        /// 找出所指定類型的所有相關檔案清單
+        /// </summary>
+        /// <param name="contentTypeEnum">指定類型</param>
+        /// <param name="expertContent">已經找出來在實體目錄下的所有檔案清單</param>
+        /// <returns></returns>
         List<ExpertRawFile> GetExamFiles(ContentTypeEnum contentTypeEnum,
-            ExpertConfiguration expertConfiguration, ExpertContent expertContent)
+            ExpertContent expertContent)
         {
             List<ExpertRawFile> convertFiles = new List<ExpertRawFile>();
             var contentTypes = ContentType.GetContentType(contentTypeEnum);
-            var expertFiles = expertContent.ExpertFiles.Where(x => contentTypes.Contains(x.Extension));
+            var expertFiles = expertContent.ExpertFiles
+                .Where(x => contentTypes.Contains(x.Extension));
 
             foreach (var extension in expertFiles)
             {
                 convertFiles.Add(extension);
             }
-            var foo = convertFiles.Count();
             return convertFiles;
         }
 
         /// <summary>
         /// 分析指定目錄下，所有檔案的副檔名符合可以進行文字轉換的清單
         /// </summary>
-        /// <param name="expertConfiguration"></param>
         /// <param name="expertContent"></param>
         void CountFileExtensions(ExpertContent expertContent)
         {
             string sourceDirectoryPath = expertContent.SourceDirectory;
+
+            #region Inline Method : Process the list of files found in the directory
             void ProcessDirectory(DirectoryInfo directoryInfo)
             {
                 // Process all files in the current directory
@@ -213,41 +211,21 @@ namespace GptLibrary.Helpers
                             DirectoryName = $@"{fileInfo.DirectoryName}\",
                         };
                         expertContent.ExpertFiles.Add(expertFile);
-                        string extension = fileInfo.Extension.ToLower();
-
-                        if (expertContent.Extensions.Contains(extension) == false)
-                        {
-                            expertContent.Extensions.Add(extension);
-                        }
                     }
                 }
 
-                // Recursively process all subdirectories
+                #region Recursively process all subdirectories
                 foreach (var subDirectoryInfo in directoryInfo.GetDirectories())
                 {
                     ProcessDirectory(subDirectoryInfo);
                 }
+                #endregion
             }
+            #endregion
 
+            // 開始探索這個目錄，找出所有可以轉換成為文字的類型檔案
             ProcessDirectory(new DirectoryInfo(sourceDirectoryPath));
             return;
-        }
-
-        void GetExtensionSummary(ExpertContent expertContent)
-        {
-
-            foreach (var item in expertContent.Extensions)
-            {
-                ExtensionSummary extensionSummary = new()
-                {
-                    Extension = item,
-                };
-                var foo1 = expertContent.ExpertFiles.Where(x => x.FileInfo.Extension == item);
-                extensionSummary.Count = expertContent.ExpertFiles.Where(x => x.FileInfo.Extension.ToLower() == item.ToLower()).Count();
-                // 計算出所有 Extension == item 的檔案大小總計
-                extensionSummary.Size = expertContent.ExpertFiles.Where(x => x.FileInfo.Extension.ToLower() == item.ToLower()).Sum(x => x.FileInfo.Length);
-                expertContent.ExtensionSummaries.Add(extensionSummary);
-            }
         }
     }
 }
