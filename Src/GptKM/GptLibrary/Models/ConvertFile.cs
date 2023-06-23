@@ -17,6 +17,9 @@ namespace GptLibrary.Models
         public Decimal EmbeddingCost { get; set; }
         public Decimal SummaryCost { get; set; }
 
+        /// <summary>
+        /// 將文字內容切割成為許多 Chunk
+        /// </summary>
         public void SplitContext()
         {
             EmbeddingCost = AzureOpenAIServicePricing.CalculateEmbeddingCost(TokenSize);

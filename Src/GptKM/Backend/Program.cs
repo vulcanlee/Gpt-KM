@@ -240,6 +240,8 @@ try
     builder.Services.AddTransient<DirectorySourceHelper>();
     builder.Services.AddTransient<ConvertFileExtensionMatch>();
     builder.Services.AddTransient<ConverterToTextFactory>();
+    builder.Services.AddTransient<SyncDirectory>();
+    builder.Services.AddTransient<SyncDatabase>();
     #endregion
     #endregion
 

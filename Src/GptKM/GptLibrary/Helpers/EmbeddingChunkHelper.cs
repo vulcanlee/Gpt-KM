@@ -24,11 +24,13 @@ namespace GptLibrary.Helpers
         public async Task ToEmbeddingAsync(ContentTypeEnum contentTypeEnum, string directoryName)
         {
             ExtractFileToTextHelper extractFileToTextHelper = new ExtractFileToTextHelper();
-            ExpertDirectory expertDirectory = await context.ExpertDirectory.FirstOrDefaultAsync(x => x.SourcePath == directoryName);
+            ExpertDirectory expertDirectory = await context.ExpertDirectory
+                .FirstOrDefaultAsync(x => x.SourcePath == directoryName);
             if (expertDirectory != null)
             {
-                List<ExpertFile> expertFiles = await context.ExpertFile.Where(x => x.ExpertDirectoryId == expertDirectory.Id &&
-                x.ProcessChunk == false)
+                List<ExpertFile> expertFiles = await context.ExpertFile
+                    .Where(x => x.ExpertDirectoryId == expertDirectory.Id &&
+                    x.ProcessChunk == false)
                     .ToListAsync();
                 var convertPath = expertDirectory.ConvertPath;
 
@@ -43,7 +45,8 @@ namespace GptLibrary.Helpers
                     switch (contentTypeEnum)
                     {
                         case ContentTypeEnum.PDF:
-                            fileContent = await extractFileToTextHelper.ConvertToTextAsync(Models.ContentTypeEnum.PDF,
+                            fileContent = await extractFileToTextHelper
+                                .ConvertToTextAsync(Models.ContentTypeEnum.PDF,
                                 Path.Combine(directoryName, expertFile.FileName),
                                 Path.Combine(convertPath, $"{expertFile.FileName}.ConvertedText"));
                             break;
@@ -54,7 +57,8 @@ namespace GptLibrary.Helpers
                         case ContentTypeEnum.POWERPOINT:
                             break;
                         case ContentTypeEnum.HTML:
-                            fileContent = await extractFileToTextHelper.ConvertToTextAsync(Models.ContentTypeEnum.HTML,
+                            fileContent = await extractFileToTextHelper
+                                .ConvertToTextAsync(Models.ContentTypeEnum.HTML,
                                 Path.Combine(directoryName, expertFile.FileName),
                                 Path.Combine(convertPath, $"{expertFile.FileName}.ConvertedText"));
                             break;

@@ -1,7 +1,7 @@
 ﻿namespace GptLibrary.Models
 {
     /// <summary>
-    /// 要進行轉換文字處理的檔案定義類別
+    /// 要進行轉換文字處理的檔案定義類別，將會有指定目錄的掃描結果
     /// </summary>
     public class ExpertContent
     {
