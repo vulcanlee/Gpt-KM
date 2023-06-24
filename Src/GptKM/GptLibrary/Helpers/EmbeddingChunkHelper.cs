@@ -16,10 +16,12 @@ namespace GptLibrary.Helpers
     public class EmbeddingChunkHelper
     {
         private readonly BackendDBContext context;
+        private readonly AdaEmbeddingVector adaEmbeddingVector;
 
-        public EmbeddingChunkHelper(BackendDBContext context)
+        public EmbeddingChunkHelper(BackendDBContext context, AdaEmbeddingVector adaEmbeddingVector)
         {
             this.context = context;
+            this.adaEmbeddingVector = adaEmbeddingVector;
         }
         public async Task ToEmbeddingAsync(ContentTypeEnum contentTypeEnum, string directoryName)
         {
@@ -35,7 +37,6 @@ namespace GptLibrary.Helpers
                 var convertPath = expertDirectory.ConvertPath;
 
                 Tokenizer tokenizer = new Tokenizer();
-                AdaEmbeddingVector adaEmbeddingVector = new AdaEmbeddingVector();
                 int convertIndex = 1;
                 int count = 1;
                 foreach (var expertFile in expertFiles)

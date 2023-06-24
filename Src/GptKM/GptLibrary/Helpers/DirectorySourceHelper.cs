@@ -3,11 +3,6 @@ using GptLibrary.Gpt;
 using GptLibrary.Gpts;
 using GptLibrary.Models;
 using GptLibrary.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GptLibrary.Helpers
 {
@@ -15,12 +10,14 @@ namespace GptLibrary.Helpers
     {
         private readonly ConvertFileExtensionMatchService convertFileExtensionMatch;
         private readonly ConverterToTextFactory converterToTextFactory;
+        private readonly DavinciPromptCompletion davinciPromptCompletion;
 
         public DirectorySourceHelper(ConvertFileExtensionMatchService convertFileExtensionMatch,
-            ConverterToTextFactory converterToTextFactory)
+            ConverterToTextFactory converterToTextFactory, DavinciPromptCompletion davinciPromptCompletion)
         {
             this.convertFileExtensionMatch = convertFileExtensionMatch;
             this.converterToTextFactory = converterToTextFactory;
+            this.davinciPromptCompletion = davinciPromptCompletion;
         }
         public ExpertContent Scan(ExpertConfiguration expertConfiguration)
         {
@@ -99,8 +96,6 @@ namespace GptLibrary.Helpers
         /// <returns></returns>
         public async Task PrintConverResultAsync(List<ConvertFileModel> convertFiles)
         {
-            DavinciPromptCompletion davinciPromptCompletion = new DavinciPromptCompletion();
-
             foreach (var file in convertFiles)
             {
                 Console.WriteLine($"{file.FullName}");
@@ -154,7 +149,7 @@ namespace GptLibrary.Helpers
                 convertFile.SourceText = sourceText;
                 convertFile.SourceTextSize = sourceText.Length;
                 convertFile.TokenSize = tokenizer.CountToken(sourceText);
-                convertFile.SplitContext();
+                //convertFile.SplitContext();
                 convertFiles.Add(convertFile);
                 #endregion
             }

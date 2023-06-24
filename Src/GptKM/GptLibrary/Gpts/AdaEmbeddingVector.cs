@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GptLibrary.Models;
 using GptLibrary.Gpt;
+using CommonDomain.DataModels;
 
 namespace GptLibrary.Gpts
 {
@@ -15,9 +16,11 @@ namespace GptLibrary.Gpts
     /// </summary>
     public class AdaEmbeddingVector
     {
-        public AdaEmbeddingVector()
+        private readonly OpenAIConfiguration openAIConfiguration;
+
+        public AdaEmbeddingVector(OpenAIConfiguration openAIConfiguration)
         {
-            
+            this.openAIConfiguration = openAIConfiguration;
         }
         /// <summary>
         /// 取得指定的文字內容的 Embedding
@@ -28,12 +31,13 @@ namespace GptLibrary.Gpts
         {
             List<float> embeddings = new List<float>();
             #region 使用 Azure.AI.OpenAI 套件來 OpenAIClient 物件
-            var apiKey = Environment.GetEnvironmentVariable("OpenAIKey");
+            // Todo : 這裡要修改使用 appsetting 方式來取得
+            var apiKey = openAIConfiguration.AzureOpenAIKey;
             string endpoint = "https://openailabtw.openai.azure.com/";
             var client = new OpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
             #endregion
 
-            string deploymentName = "text-embedding-ada-002";
+            string deploymentName = openAIConfiguration.TextEmbeddingAdaModelName;
 
             EmbeddingsOptions embeddingsOptions = new EmbeddingsOptions(doc);
             try

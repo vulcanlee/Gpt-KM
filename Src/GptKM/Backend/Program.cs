@@ -235,9 +235,12 @@ try
     #region 相關選項模式
     builder.Services.Configure<BackendCustomNLog>(builder.Configuration
         .GetSection(nameof(BackendCustomNLog)));
+    builder.Services.Configure<OpenAIConfiguration>(builder.Configuration
+        .GetSection(nameof(OpenAIConfiguration)));
     #endregion
 
     #region GPT Service
+    builder.Services.AddSingleton<OpenAIConfiguration>();
     builder.Services.AddTransient<DirectorySourceHelper>();
     builder.Services.AddTransient<ConverterToTextFactory>();
     builder.Services.AddTransient<ConvertFileExtensionMatchService>();
@@ -248,16 +251,29 @@ try
     builder.Services.AddTransient<ConvertFileModelService>();
     builder.Services.AddTransient<ConvertToEmbeddingService>();
     builder.Services.AddTransient<AdaEmbeddingVector>();
+    builder.Services.AddTransient<DavinciPromptCompletion>();
     #endregion
     #endregion
 
     var app = builder.Build();
 
     #region .NET 5 的 Configure
+   
+    #region 進行 OpenAIConfiguration 初始化
+    IOptions<OpenAIConfiguration> openAIConfigurationOption = app.Services.GetRequiredService<IOptions<OpenAIConfiguration>>();
+    OpenAIConfiguration openAIConfigurationValue = openAIConfigurationOption.Value;
+    OpenAIConfiguration openAIConfiguration = app.Services.GetRequiredService<OpenAIConfiguration>();
+    openAIConfiguration.AzureOpenAIKey = openAIConfigurationValue.AzureOpenAIKey;
+    openAIConfiguration.AzureOpenAIEndpoint = openAIConfigurationValue.AzureOpenAIEndpoint;
+    openAIConfiguration.TextDavinciModelName = openAIConfigurationValue.TextDavinciModelName;
+    openAIConfiguration.TextEmbeddingAdaModelName = openAIConfigurationValue.TextEmbeddingAdaModelName;
+    #endregion
+
     #region 當呼叫 API ( /api/someController ) 且該服務端點不存在的時候，將會替換網頁為 404 的 APIResult 訊息
     app.UseApiNotFoundPageToAPIResult();
     #endregion
     IOptions<BackendCustomNLog> optionsCustomNLog = app.Services.GetRequiredService<IOptions<BackendCustomNLog>>();
+   
     #region 宣告 NLog 要使用到的變數內容
     LogManager.Configuration.Variables["LogRootPath"] =
         optionsCustomNLog.Value.LogRootPath;

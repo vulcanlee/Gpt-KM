@@ -23,7 +23,14 @@ namespace ExpertLinkLibrary.Helpers
     }
     public class TestEmbeddingSearchHelper
     {
+        public TestEmbeddingSearchHelper(AdaEmbeddingVector adaEmbeddingVector, DavinciPromptCompletion davinciPromptCompletion)
+        {
+            this.adaEmbeddingVector = adaEmbeddingVector;
+            this.davinciPromptCompletion = davinciPromptCompletion;
+        }
         private readonly BackendDBContext context;
+        private readonly AdaEmbeddingVector adaEmbeddingVector;
+        private readonly DavinciPromptCompletion davinciPromptCompletion;
 
         public TestEmbeddingSearchHelper(BackendDBContext context)
         {
@@ -68,7 +75,6 @@ namespace ExpertLinkLibrary.Helpers
             }
             #endregion
 
-            AdaEmbeddingVector adaEmbeddingVector = new AdaEmbeddingVector();
             while (true)
             {
                 await Console.Out.WriteLineAsync();
@@ -115,7 +121,6 @@ namespace ExpertLinkLibrary.Helpers
                             await Console.Out.WriteLineAsync();
                             await Console.Out.WriteLineAsync();
                             await Console.Out.WriteLineAsync("請稍後，送至 GPT 做出這段文字的摘要中");
-                            DavinciPromptCompletion davinciPromptCompletion = new DavinciPromptCompletion();
                             var answer = await davinciPromptCompletion.GptSummaryAsync(chunkMessage+"\n\n摘要內容:");
                             await Console.Out.WriteLineAsync();
                             await Console.Out.WriteLineAsync(answer);
@@ -128,7 +133,6 @@ namespace ExpertLinkLibrary.Helpers
                             await Console.Out.WriteLineAsync();
                             await Console.Out.WriteLineAsync();
                             await Console.Out.WriteLineAsync("請稍後，送至 GPT 分析中");
-                            DavinciPromptCompletion davinciPromptCompletion = new DavinciPromptCompletion();
                             var answer = await davinciPromptCompletion.GptSummaryAsync(chunkMessage, $"請使用底下提示文字，回答這個問題:\"{question}\"");
                             await Console.Out.WriteLineAsync();
                             await Console.Out.WriteLineAsync(answer);

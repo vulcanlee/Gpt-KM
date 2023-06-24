@@ -7,11 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using GptLibrary.Models;
 using GptLibrary.Gpt;
+using CommonDomain.DataModels;
 
 namespace GptLibrary.Gpts
 {
     public class DavinciPromptCompletion
     {
+        private readonly OpenAIConfiguration openAIConfiguration;
+
+        public DavinciPromptCompletion(OpenAIConfiguration openAIConfiguration)
+        {
+            this.openAIConfiguration = openAIConfiguration;
+        }
         public async Task<string> GptSummaryAsync(ConvertFileModel convertFile, string prefix = "請將底下內容整理出摘要內容，並使用zh-tw生成內容")
         {
             string content = convertFile.SourceText;
@@ -39,8 +46,8 @@ namespace GptLibrary.Gpts
         public async Task<string> GptSummaryAsync(string content, string prefix = "做出底下摘要內容,控制摘要在300字內")
         {
             #region 使用 Azure.AI.OpenAI 套件來 OpenAIClient 物件
-            var apiKey = Environment.GetEnvironmentVariable("OpenAIKey");
-            string endpoint = "https://openailabtw.openai.azure.com/";
+            var apiKey = openAIConfiguration.AzureOpenAIKey;
+            string endpoint = openAIConfiguration.AzureOpenAIEndpoint;
             var client = new OpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
             #endregion
 
@@ -57,7 +64,7 @@ namespace GptLibrary.Gpts
                 Temperature = 0.3f,
             };
 
-            string deploymentName = "text-davinci-003";
+            string deploymentName = openAIConfiguration.TextDavinciModelName;
 
             Response<Completions> completionsResponse = await client
                 .GetCompletionsAsync(deploymentName, completionsOptions);
