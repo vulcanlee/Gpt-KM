@@ -10,8 +10,20 @@ using GptLibrary.Gpt;
 
 namespace GptLibrary.Gpts
 {
+    /// <summary>
+    /// 使用 OpenAI Ada Embedding 服務
+    /// </summary>
     public class AdaEmbeddingVector
     {
+        public AdaEmbeddingVector()
+        {
+            
+        }
+        /// <summary>
+        /// 取得指定的文字內容的 Embedding
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
         public async Task<float[]> GetEmbeddingAsync(string doc)
         {
             List<float> embeddings = new List<float>();

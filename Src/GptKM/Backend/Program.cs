@@ -28,6 +28,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using GptLibrary.Helpers;
 using GptLibrary.Services;
 using GptLibrary.Converts;
+using GptLibrary.Gpts;
 
 var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 try
@@ -245,6 +246,8 @@ try
     builder.Services.AddTransient<ConvertToTextService>();
     builder.Services.AddTransient<BuildFilenameService>();
     builder.Services.AddTransient<ConvertFileModelService>();
+    builder.Services.AddTransient<ConvertToEmbeddingService>();
+    builder.Services.AddTransient<AdaEmbeddingVector>();
     #endregion
     #endregion
 
