@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace GptLibrary.Services;
 
+/// <summary>
+/// 將文字內容與切割後的文字Chunk，寫入到檔案內
+/// </summary>
 public class ConvertFileModelService
 {
     /// <summary>

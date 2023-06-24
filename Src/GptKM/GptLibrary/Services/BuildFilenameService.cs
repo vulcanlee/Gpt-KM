@@ -2,6 +2,9 @@
 
 namespace GptLibrary.Services;
 
+/// <summary>
+/// 提供各種轉換 Embedding 會用到的檔案名稱
+/// </summary>
 public class BuildFilenameService
 {
     public string BuildConvertedText(string fileName)
