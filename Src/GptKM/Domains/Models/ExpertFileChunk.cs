@@ -15,7 +15,7 @@ public class ExpertFileChunk
     public int Id { get; set; }
     public int ExpertFileId { get; set; }
     public ExpertFile ExpertFile { get; set; }
-    public int MyProperty { get; set; }
+    public int ConvertIndex { get; set; }
     /// <summary>
     /// 存在的目錄之絕對路徑名稱
     /// </summary>

@@ -41,7 +41,6 @@ namespace GptLibrary.Helpers
                 int count = 1;
                 foreach (var expertFile in expertFiles)
                 {
-                    convertIndex = 1;
                     string fileContent = string.Empty;
                     switch (contentTypeEnum)
                     {
@@ -113,6 +112,7 @@ namespace GptLibrary.Helpers
                                 DirectoryName = expertFile.DirectoryName,
                                 FullName = chunkFileName,
                                 FileName = Path.GetFileName(chunkFileName),
+                                ConvertIndex = convertIndex,
                             };
                             context.ExpertFileChunk.Add(expertFileChunk);
                             await context.SaveChangesAsync();

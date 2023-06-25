@@ -253,6 +253,8 @@ try
     builder.Services.AddTransient<AdaEmbeddingVector>();
     builder.Services.AddTransient<DavinciPromptCompletion>();
     builder.Services.AddTransient<GptExpertDirectoryService>();
+    builder.Services.AddTransient<GptExpertFileService>();
+    builder.Services.AddTransient<GptExpertFileChunkService>();
     #endregion
     #endregion
 
