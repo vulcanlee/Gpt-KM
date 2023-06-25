@@ -25,7 +25,6 @@ using System.Text;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.HttpOverrides;
-using GptLibrary.Helpers;
 using GptLibrary.Services;
 using GptLibrary.Converts;
 using GptLibrary.Gpts;
@@ -241,7 +240,6 @@ try
 
     #region GPT Service
     builder.Services.AddSingleton<OpenAIConfiguration>();
-    builder.Services.AddTransient<DirectorySourceHelper>();
     builder.Services.AddTransient<ConverterToTextFactory>();
     builder.Services.AddTransient<ConvertFileExtensionMatchService>();
     builder.Services.AddTransient<SyncDirectoryService>();
