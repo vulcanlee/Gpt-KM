@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTOs", "DTOs\DTOs.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{361AE495-16BA-4B7D-B45A-5BADA17311C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GptLibrary", "GptLibrary\GptLibrary.csproj", "{8C2173C7-376B-4FE1-A25D-CEE7AEA824D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GptLibrary", "GptLibrary\GptLibrary.csproj", "{8C2173C7-376B-4FE1-A25D-CEE7AEA824D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

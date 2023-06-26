@@ -1,0 +1,42 @@
+﻿@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Buttons
+@using GptLibrary.Services
+@using EntityModel.Entities
+
+@inject GptExpertDirectoryService GptExpertDirectoryService
+
+<h3>檢測 GPT 功能</h3>
+
+<div class="footer-button">
+    <SfButton CssClass="e-primary save-btn" @onclick="CheckDirectory">檢查對應目錄</SfButton>
+</div>
+
+@code {
+    async Task CheckDirectory()
+    {
+        ExpertDirectory expertDirectory = null;
+        var expertDirectoryResult = await GptExpertDirectoryService.GetAsync("本機測試用");
+        if (expertDirectoryResult.Status)
+        {
+            expertDirectory = expertDirectoryResult.Payload;
+        }
+        else
+        {
+            expertDirectory = new ExpertDirectory()
+                {
+                    Name = "本機測試用",
+                    SourcePath = @"C:\Home\Source",
+                    ConvertPath = @"C:\Home\Convert",
+                };
+            var createResult = await GptExpertDirectoryService.CreateAsync(expertDirectory);
+            if (createResult.Status)
+            {
+                expertDirectory = createResult.Payload;
+            }
+            else
+            {
+                throw new Exception(createResult.Message);
+            }
+        }
+    }
+}
