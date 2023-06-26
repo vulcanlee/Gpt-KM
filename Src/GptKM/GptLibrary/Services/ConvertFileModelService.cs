@@ -15,7 +15,7 @@ public class ConvertFileModelService
     /// <param name="expertFile"></param>
     /// <param name="convertFile"></param>
     /// <returns></returns>
-    public async Task ExportConvertText(ExpertFile expertFile, ConvertFileModel convertFile)
+    public async Task ExportConvertTextAsync(ExpertFile expertFile, ConvertFileModel convertFile)
     {
         string filename = convertFile.FileName;
         filename = filename.Replace(expertFile.ExpertDirectory.SourcePath, expertFile.ExpertDirectory.ConvertPath);
@@ -29,7 +29,7 @@ public class ConvertFileModelService
     /// <param name="convertFile"></param>
     /// <param name="index"></param>
     /// <returns></returns>
-    public async Task ExportEmbeddingText(ExpertFile expertFile, ConvertFileModel convertFile, int index)
+    public async Task ExportEmbeddingTextAsync(ExpertFile expertFile, ConvertFileModel convertFile, int index)
     {
         ConvertFileSplitItemModel convertFileItemModel = convertFile.ConvertFileSplitItems.FirstOrDefault(x => x.Index == index)!;
         string filename = convertFileItemModel.EmbeddingTextFileName;
@@ -44,7 +44,7 @@ public class ConvertFileModelService
     /// <param name="convertFile"></param>
     /// <param name="index"></param>
     /// <returns></returns>
-    public async Task ExportEmbeddingJson(ExpertFile expertFile, ConvertFileModel convertFile, int index)
+    public async Task ExportEmbeddingJsonAsync(ExpertFile expertFile, ConvertFileModel convertFile, int index)
     {
         ConvertFileSplitItemModel convertFileItemModel = convertFile.ConvertFileSplitItems.FirstOrDefault(x => x.Index == index)!;
         string filename = convertFileItemModel.EmbeddingJsonFileName;

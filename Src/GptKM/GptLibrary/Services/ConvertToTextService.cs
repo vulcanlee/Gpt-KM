@@ -13,13 +13,16 @@ public class ConvertToTextService
     private readonly ConvertFileExtensionMatchService convertFileExtensionMatch;
     private readonly ConverterToTextFactory converterToTextFactory;
     private readonly BuildFilenameService buildFilenameService;
+    private readonly ConvertFileModelService convertFileModelService;
 
     public ConvertToTextService(ConvertFileExtensionMatchService convertFileExtensionMatch,
-        ConverterToTextFactory converterToTextFactory, BuildFilenameService buildFilenameService)
+        ConverterToTextFactory converterToTextFactory, BuildFilenameService buildFilenameService,
+        ConvertFileModelService convertFileModelService)
     {
         this.convertFileExtensionMatch = convertFileExtensionMatch;
         this.converterToTextFactory = converterToTextFactory;
         this.buildFilenameService = buildFilenameService;
+        this.convertFileModelService = convertFileModelService;
     }
 
     /// <summary>
@@ -44,7 +47,8 @@ public class ConvertToTextService
         convertFile.SourceText = sourceText;
         convertFile.SourceTextSize = sourceText.Length;
         convertFile.TokenSize = tokenizer.CountToken(sourceText);
-        convertFile.SplitContext(expertFile,buildFilenameService);
+        await convertFileModelService.ExportConvertTextAsync(expertFile, convertFile);
+        convertFile.SplitContext(expertFile, buildFilenameService);
         #endregion
 
         return convertFiles;
