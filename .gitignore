@@ -401,3 +401,6 @@ FodyWeavers.xsd
 /Src/GptKM/Backend/ESO.db
 /Src/GptKM/Backend/ESO.db-shm
 /Src/GptKM/Backend/ESO.db-wal
+/Src/GptKM/Backend/BackendDB.db
+/Src/GptKM/Backend/BackendDB.db-shm
+/Src/GptKM/Backend/BackendDB.db-wal
