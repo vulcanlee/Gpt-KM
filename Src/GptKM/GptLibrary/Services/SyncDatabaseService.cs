@@ -11,11 +11,14 @@ namespace GptLibrary.Services;
 /// </summary>
 public class SyncDatabaseService
 {
-    private readonly BackendDBContext context;
+    private readonly GptExpertFileService gptExpertFileService;
+    private readonly GptExpertDirectoryService gptExpertDirectoryService;
 
-    public SyncDatabaseService(BackendDBContext context)
+    public SyncDatabaseService(GptExpertFileService gptExpertFileService,
+        GptExpertDirectoryService gptExpertDirectoryService)
     {
-        this.context = context;
+        this.gptExpertFileService = gptExpertFileService;
+        this.gptExpertDirectoryService = gptExpertDirectoryService;
     }
 
     /// <summary>
@@ -42,12 +45,14 @@ public class SyncDatabaseService
         List<ExpertFile> expertSyncFiles = new();
         foreach (var itemFile in expertContent.ExpertFiles)
         {
-            var expertDirectory = context.ExpertDirectory
-                .FirstOrDefault(x => x.SourcePath == expertContent.SourceDirectory);
+            var expertDirectoryResult = await gptExpertDirectoryService
+                .GetAsync(expertContent.SourceDirectory);
+            if (expertDirectoryResult.Status == false) continue;
+            var expertDirectory = expertDirectoryResult.Payload;
             if (expertDirectory != null)
             {
-                var checkFile = await context.ExpertFile.FirstOrDefaultAsync(x => x.FullName == itemFile.FullName);
-                if (checkFile == null)
+                var checkFileResult = await gptExpertFileService.GetAsync(itemFile.FullName);
+                if (checkFileResult.Status == false)
                 {
                     ExpertFile expertFile = new ExpertFile()
                     {
@@ -69,13 +74,21 @@ public class SyncDatabaseService
                 else
                 {
                     // 檔案已存在，更新同步時間資訊(用來判斷哪些檔案紀錄在資料庫內已經過時了)
+                    var checkFile = checkFileResult.Payload;
                     checkFile.SyncAt = DateTime.Now;
                     expertSyncFiles.Add(checkFile);
                 }
             }
         }
-        await context.BulkInsertAsync(expertFiles);
-        await context.BulkUpdateAsync(expertSyncFiles);
+
+        await gptExpertFileService.CreateAsync(expertFiles);
+        await gptExpertFileService.UpdateAsync(expertSyncFiles);
+
+        #region 將 Chunk 區塊內容寫入到資料內
+        foreach (var item in expertFiles)
+        {
+        }
+        #endregion
         return expertFiles;
     }
 }

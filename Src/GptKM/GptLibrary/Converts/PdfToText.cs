@@ -7,7 +7,7 @@ namespace GptLibrary.Converts
 {
     public class PdfToText : IFileToText
     {
-        public Task<string> ToText(string filename)
+        public Task<string> ToTextAsync(string filename)
         {
             var task = Task.Run(() =>
             {

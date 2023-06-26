@@ -5,7 +5,7 @@ namespace GptLibrary.Converts
 {
     public class WordToText : IFileToText
     {
-        public Task<string> ToText(string filename)
+        public Task<string> ToTextAsync(string filename)
         {
             var task = Task.Run(() =>
             {

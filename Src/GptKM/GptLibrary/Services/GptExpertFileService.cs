@@ -45,6 +45,20 @@ public class GptExpertFileService
         }
     }
 
+    public async Task<ServiceResult<ExpertFile>> GetAsync(string filename)
+    {
+        var expertFile = await context.ExpertFile
+            .FirstOrDefaultAsync(x => x.FullName == filename);
+        if (expertFile == null)
+        {
+            return new ServiceResult<ExpertFile>($"ExpertFile filename : [{filename}] not found.");
+        }
+        else
+        {
+            return new ServiceResult<ExpertFile>(expertFile);
+        }
+    }
+
     public async Task<ServiceResult<ExpertFile>> CreateAsync(ExpertFile ExpertFile)
     {
         var ExpertFileExist = await context.ExpertFile
@@ -59,6 +73,12 @@ public class GptExpertFileService
         return new ServiceResult<ExpertFile>(ExpertFile);
     }
 
+    public async Task<ServiceResult<List<ExpertFile>>> CreateAsync(List<ExpertFile> expertFiles)
+    {
+        await context.BulkInsertAsync(expertFiles);
+        return new ServiceResult<List<ExpertFile>>(expertFiles);
+    }
+
     public async Task<ServiceResult<ExpertFile>> UpdateAsync(ExpertFile ExpertFile)
     {
         var ExpertFileExist = await context.ExpertFile
@@ -71,6 +91,12 @@ public class GptExpertFileService
         context.Entry(ExpertFileExist).CurrentValues.SetValues(ExpertFile);
         await context.SaveChangesAsync();
         return new ServiceResult<ExpertFile>(ExpertFile);
+    }
+
+    public async Task<ServiceResult<List<ExpertFile>>> UpdateAsync(List<ExpertFile> expertFiles)
+    {
+        await context.BulkUpdateAsync(expertFiles);
+        return new ServiceResult<List<ExpertFile>>(expertFiles);
     }
 
     public async Task<ServiceResult<ExpertFile>> DeleteAsync(int id)

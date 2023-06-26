@@ -4,7 +4,7 @@ namespace GptLibrary.Converts
 {
     public class HtmlToText : IFileToText
     {
-        public Task<string> ToText(string filename)
+        public Task<string> ToTextAsync(string filename)
         {
             var task = Task.Run(() =>
             {

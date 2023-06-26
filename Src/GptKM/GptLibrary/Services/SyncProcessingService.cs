@@ -46,11 +46,16 @@ public class SyncProcessingService
         if (expertFilesNeedConvert == null) return;
         foreach (var item in expertFilesNeedConvert)
         {
-            await convertToTextService.Convert(item);
+            ConvertFileModel convertFileModels =
+                await convertToTextService.ConvertAsync(item);
             #region 將文字內容與切割後的文字Chunk，寫入到檔案內
-            //convertToEmbeddingService.Convert(item);
-        #endregion
-     }
+            foreach (var itemChunk in convertFileModels.ConvertFileSplitItems)
+            {
+                await convertToEmbeddingService
+                    .ConvertAsync(item, convertFileModels, itemChunk.Index);
+            }
+            #endregion
+        }
         #endregion
 
 

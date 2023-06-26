@@ -6,7 +6,7 @@ namespace GptLibrary.Converts
 {
     public class ExcelToText : IFileToText
     {
-        public Task<string> ToText(string filePath)
+        public Task<string> ToTextAsync(string filePath)
         {
             var task = Task.Run(() =>
             {

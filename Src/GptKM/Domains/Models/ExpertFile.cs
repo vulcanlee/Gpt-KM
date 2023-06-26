@@ -1,4 +1,5 @@
 ﻿using CommonDomain.Enums;
+using Domains.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,4 +53,6 @@ public class ExpertFile
     /// 最後同步時間
     /// </summary>
     public DateTime SyncAt { get; set; } = DateTime.Now;
+
+    public virtual ICollection<ExpertFileChunk> ExpertFileChunk { get; set; }
 }

@@ -26,16 +26,16 @@ public class ConvertToTextService
     /// 將指定的檔案名稱，把該檔案的文字內容轉換成為文字檔案
     /// </summary>
     /// <param name="expertFile"></param>
-    public async Task Convert(ExpertFile expertFile)
+    public async Task<ConvertFileModel> ConvertAsync(ExpertFile expertFile)
     {
-        List<ConvertFileModel> convertFiles = new List<ConvertFileModel>();
+        ConvertFileModel convertFiles = new();
         var extinsion = System.IO.Path.GetExtension(expertFile.FullName);
         var contentTypeEnum = ContentType.GetContentTypeEnum(extinsion);
         IFileToText fileToText = converterToTextFactory.Create(contentTypeEnum);
         Tokenizer tokenizer = new Tokenizer();
 
         #region 將檔案內容，轉換成為文字
-        string sourceText = await fileToText.ToText(expertFile.FullName);
+        string sourceText = await fileToText.ToTextAsync(expertFile.FullName);
         ConvertFileModel convertFile = new ConvertFileModel()
         {
         };
@@ -45,7 +45,8 @@ public class ConvertToTextService
         convertFile.SourceTextSize = sourceText.Length;
         convertFile.TokenSize = tokenizer.CountToken(sourceText);
         convertFile.SplitContext(expertFile,buildFilenameService);
-        convertFiles.Add(convertFile);
         #endregion
+
+        return convertFiles;
     }
 }

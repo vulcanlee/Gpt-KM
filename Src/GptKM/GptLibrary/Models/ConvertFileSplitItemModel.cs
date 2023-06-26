@@ -3,7 +3,7 @@
     /// <summary>
     /// 切割後的 Chunk 檔案資訊
     /// </summary>
-    public class ConvertFileItemModel
+    public class ConvertFileSplitItemModel
     {
         /// <summary>
         /// 檔案索引,代表第幾個 Chunk 項目

@@ -36,4 +36,6 @@ public class ExpertDirectory
     /// 更新時間
     /// </summary>
     public DateTime? UpdateAt { get; set; } = DateTime.Now;
+
+    public virtual ICollection<ExpertFile> ExpertFile { get; set; }
 }

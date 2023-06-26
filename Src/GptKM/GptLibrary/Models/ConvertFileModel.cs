@@ -18,7 +18,7 @@ namespace GptLibrary.Models
         /// <summary>
         /// 將一個檔案切割成為不同 Chunk 的相關資訊
         /// </summary>
-        public List<ConvertFileItemModel> ConvertFileItems = new List<ConvertFileItemModel>();
+        public List<ConvertFileSplitItemModel> ConvertFileSplitItems = new List<ConvertFileSplitItemModel>();
         public Decimal EmbeddingCost { get; set; }
         public Decimal SummaryCost { get; set; }
 
@@ -42,7 +42,7 @@ namespace GptLibrary.Models
 
             while (true)
             {
-                ConvertFileItemModel convertFile = new ConvertFileItemModel();
+                ConvertFileSplitItemModel convertFileSplit = new ConvertFileSplitItemModel();
                 int estimateTokens = tokenizer.CountToken(cacheSourceText);
                 if (estimateTokens > AzureOpenAIServicePricing.EmbeddingModelTextEmbeddingAda002MaxRequestTokens)
                 {
@@ -55,25 +55,25 @@ namespace GptLibrary.Models
 
                     cacheSourceText = cacheSourceText.Substring(cutLength);
 
-                    convertFile.EmbeddingTextFileName = buildFilenameService.BuildEmbeddingText(expertFile.FullName,embeddingIndex++);
-                    convertFile.Index = embeddingIndex;
-                    convertFile.SourceText = cutText;
-                    convertFile.SourceTextSize = cutText.Length;
-                    convertFile.TokenSize = tokenizer.CountToken(cutText);
-                    convertFile.EmbeddingCost = AzureOpenAIServicePricing.CalculateEmbeddingCost(convertFile.TokenSize);
-                    ConvertFileItems.Add(convertFile);
+                    convertFileSplit.EmbeddingTextFileName = buildFilenameService.BuildEmbeddingText(expertFile.FullName,embeddingIndex++);
+                    convertFileSplit.Index = embeddingIndex;
+                    convertFileSplit.SourceText = cutText;
+                    convertFileSplit.SourceTextSize = cutText.Length;
+                    convertFileSplit.TokenSize = tokenizer.CountToken(cutText);
+                    convertFileSplit.EmbeddingCost = AzureOpenAIServicePricing.CalculateEmbeddingCost(convertFileSplit.TokenSize);
+                    ConvertFileSplitItems.Add(convertFileSplit);
                     #endregion
                 }
                 else
                 {
-                    convertFile.EmbeddingTextFileName = buildFilenameService.BuildEmbeddingText(expertFile.FullName, embeddingIndex);
-                    convertFile.EmbeddingJsonFileName = buildFilenameService.BuildEmbeddingJson(expertFile.FullName, embeddingIndex);
-                    convertFile.Index = embeddingIndex;
-                    convertFile.SourceText = cacheSourceText;
-                    convertFile.SourceTextSize = cacheSourceText.Length;
-                    convertFile.TokenSize = estimateTokens;
-                    convertFile.EmbeddingCost = AzureOpenAIServicePricing.CalculateEmbeddingCost(convertFile.TokenSize);
-                    ConvertFileItems.Add(convertFile);
+                    convertFileSplit.EmbeddingTextFileName = buildFilenameService.BuildEmbeddingText(expertFile.FullName, embeddingIndex);
+                    convertFileSplit.EmbeddingJsonFileName = buildFilenameService.BuildEmbeddingJson(expertFile.FullName, embeddingIndex);
+                    convertFileSplit.Index = embeddingIndex;
+                    convertFileSplit.SourceText = cacheSourceText;
+                    convertFileSplit.SourceTextSize = cacheSourceText.Length;
+                    convertFileSplit.TokenSize = estimateTokens;
+                    convertFileSplit.EmbeddingCost = AzureOpenAIServicePricing.CalculateEmbeddingCost(convertFileSplit.TokenSize);
+                    ConvertFileSplitItems.Add(convertFileSplit);
                     break;
                 }
             }
