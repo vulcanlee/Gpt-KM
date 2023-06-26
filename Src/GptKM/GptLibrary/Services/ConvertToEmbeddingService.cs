@@ -13,10 +13,13 @@ namespace GptLibrary.Services;
 public class ConvertToEmbeddingService
 {
     private readonly AdaEmbeddingVector adaEmbeddingVector;
+    private readonly GptExpertFileService gptExpertFileService;
 
-    public ConvertToEmbeddingService(AdaEmbeddingVector adaEmbeddingVector)
+    public ConvertToEmbeddingService(AdaEmbeddingVector adaEmbeddingVector,
+        GptExpertFileService gptExpertFileService)
     {
         this.adaEmbeddingVector = adaEmbeddingVector;
+        this.gptExpertFileService = gptExpertFileService;
     }
 
     /// <summary>
@@ -31,5 +34,13 @@ public class ConvertToEmbeddingService
         float[] embeddings = await adaEmbeddingVector.GetEmbeddingAsync(content);
         ConvertFileSplitItemModel convertFileItemModel = convertFile.ConvertFileSplitItems.FirstOrDefault(x => x.Index == index)!;
         convertFileItemModel.Embedding = embeddings.ToList();
+
+        var expertFileResult = await gptExpertFileService.GetAsync(expertFile.Id);
+        if(expertFileResult.Status == true)
+        {
+            var expertFileItem = expertFileResult.Payload!;
+            expertFileItem.ProcessingStatus = CommonDomain.Enums.ExpertFileStatusEnum.ToEmbedding;
+            await gptExpertFileService.UpdateAsync(expertFileItem);
+        }
     }
 }

@@ -58,7 +58,6 @@ public class SyncProcessingService
         }
         #endregion
 
-
         #region 將 Chunk 文字內容轉換成為 Embedding 向量
         #endregion
     }
