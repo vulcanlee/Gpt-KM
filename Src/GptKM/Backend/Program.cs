@@ -243,7 +243,7 @@ try
     builder.Services.AddTransient<ConverterToTextFactory>();
     builder.Services.AddTransient<ConvertFileExtensionMatchService>();
     builder.Services.AddTransient<SyncDirectoryService>();
-    builder.Services.AddTransient<SyncDatabaseService>();
+    builder.Services.AddTransient<SyncFilesToDatabaseService>();
     builder.Services.AddTransient<ConvertToTextService>();
     builder.Services.AddTransient<BuildFilenameService>();
     builder.Services.AddTransient<ConvertFileModelService>();

@@ -9,12 +9,12 @@ namespace GptLibrary.Services;
 /// <summary>
 /// 將實體檔案系統資訊，同步到資料庫中
 /// </summary>
-public class SyncDatabaseService
+public class SyncFilesToDatabaseService
 {
     private readonly GptExpertFileService gptExpertFileService;
     private readonly GptExpertDirectoryService gptExpertDirectoryService;
 
-    public SyncDatabaseService(GptExpertFileService gptExpertFileService,
+    public SyncFilesToDatabaseService(GptExpertFileService gptExpertFileService,
         GptExpertDirectoryService gptExpertDirectoryService)
     {
         this.gptExpertFileService = gptExpertFileService;

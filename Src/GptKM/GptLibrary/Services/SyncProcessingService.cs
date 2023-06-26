@@ -9,17 +9,17 @@ namespace GptLibrary.Services;
 public class SyncProcessingService
 {
     private readonly SyncDirectoryService syncDirectoryService;
-    private readonly SyncDatabaseService syncDatabaseService;
+    private readonly SyncFilesToDatabaseService syncFilesToDatabase;
     private readonly ConvertToTextService convertToTextService;
     private readonly ConvertToEmbeddingService convertToEmbeddingService;
 
     public SyncProcessingService(SyncDirectoryService syncDirectoryService,
-        SyncDatabaseService syncDatabaseService,
+        SyncFilesToDatabaseService syncDatabaseService,
         ConvertToTextService convertToTextService,
         ConvertToEmbeddingService convertToEmbeddingService)
     {
         this.syncDirectoryService = syncDirectoryService;
-        this.syncDatabaseService = syncDatabaseService;
+        this.syncFilesToDatabase = syncDatabaseService;
         this.convertToTextService = convertToTextService;
         this.convertToEmbeddingService = convertToEmbeddingService;
     }
@@ -39,7 +39,7 @@ public class SyncProcessingService
 
         #region 將實體檔案系統資訊，同步到資料庫中
         if (expertContent == null) return;
-        var expertFilesNeedConvert = await syncDatabaseService.SaveAsync(expertContent);
+        var expertFilesNeedConvert = await syncFilesToDatabase.SaveAsync(expertContent);
         #endregion
 
         #region 將檔案內容轉換成為文字檔案
@@ -48,6 +48,7 @@ public class SyncProcessingService
         {
             ConvertFileModel convertFileModels =
                 await convertToTextService.ConvertAsync(item);
+
             #region 將文字內容與切割後的文字Chunk，寫入到檔案內
             foreach (var itemChunk in convertFileModels.ConvertFileSplitItems)
             {
