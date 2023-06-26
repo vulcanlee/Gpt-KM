@@ -4,6 +4,7 @@
 @using EntityModel.Entities
 
 @inject GptExpertDirectoryService GptExpertDirectoryService
+@inject SyncProcessingService SyncProcessingService
 
 <h3>檢測 GPT 功能</h3>
 
@@ -15,6 +16,8 @@
     async Task CheckDirectory()
     {
         ExpertDirectory expertDirectory = null;
+
+        #region 取得專家目錄
         var expertDirectoryResult = await GptExpertDirectoryService.GetAsync("本機測試用");
         if (expertDirectoryResult.Status)
         {
@@ -38,5 +41,11 @@
                 throw new Exception(createResult.Message);
             }
         }
+        #endregion
+
+        #region 檢查專家目錄
+        await SyncProcessingService.BeginSyncDirectoryAsync(expertDirectory);
+        #endregion
+
     }
 }

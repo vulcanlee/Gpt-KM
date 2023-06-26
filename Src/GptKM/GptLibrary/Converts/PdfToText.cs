@@ -7,32 +7,36 @@ namespace GptLibrary.Converts
 {
     public class PdfToText : IFileToText
     {
-        public string ToText(string filename)
+        public Task<string> ToText(string filename)
         {
-            StringBuilder result = new StringBuilder();
-
-            using (PdfReader pdfReader = new PdfReader(filename))
+            var task = Task.Run(() =>
             {
-                using (PdfDocument pdfDoc = new PdfDocument(pdfReader))
-                {
-                    int numberOfPages = pdfDoc.GetNumberOfPages();
+                StringBuilder result = new StringBuilder();
 
-                    for (int i = 1; i <= numberOfPages; i++)
+                using (PdfReader pdfReader = new PdfReader(filename))
+                {
+                    using (PdfDocument pdfDoc = new PdfDocument(pdfReader))
                     {
-                        try
+                        int numberOfPages = pdfDoc.GetNumberOfPages();
+
+                        for (int i = 1; i <= numberOfPages; i++)
                         {
-                            ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-                            string pageContent = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i), strategy);
-                            result.AppendLine(pageContent);
-                        }
-                        catch (Exception)
-                        {
+                            try
+                            {
+                                ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                                string pageContent = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i), strategy);
+                                result.AppendLine(pageContent);
+                            }
+                            catch (Exception)
+                            {
+                            }
                         }
                     }
                 }
-            }
 
-            return result.ToString();
+                return result.ToString();
+            });
+            return task;
         }
     }
 }

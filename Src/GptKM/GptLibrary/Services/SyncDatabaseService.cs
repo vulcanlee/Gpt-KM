@@ -23,9 +23,10 @@ public class SyncDatabaseService
     /// </summary>
     /// <param name="expertContent"></param>
     /// <returns></returns>
-    public async Task SaveAsync(ExpertContent expertContent)
+    public async Task<List<ExpertFile>> SaveAsync(ExpertContent expertContent)
     {
-        await ProcessSyncData(expertContent);
+        var expertFilesNeedConvert = await ProcessSyncData(expertContent);
+        return expertFilesNeedConvert;
     }
 
     /// <summary>
@@ -34,9 +35,9 @@ public class SyncDatabaseService
     /// <param name="expertContent"></param>
     /// <param name="expertDirectory"></param>
     /// <returns></returns>
-    private async Task ProcessSyncData(ExpertContent expertContent)
+    private async Task<List<ExpertFile>> ProcessSyncData(ExpertContent expertContent)
     {
-
+        List<ExpertRawFile> expertFilesNeedConvert = new List<ExpertRawFile>();
         List<ExpertFile> expertFiles = new();
         List<ExpertFile> expertSyncFiles = new();
         foreach (var itemFile in expertContent.ExpertFiles)
@@ -63,6 +64,7 @@ public class SyncDatabaseService
                         ProcessingStatus = CommonDomain.Enums.ExpertFileStatusEnum.Begin,
                     };
                     expertFiles.Add(expertFile);
+                    expertFilesNeedConvert.Add(itemFile);
                 }
                 else
                 {
@@ -74,5 +76,6 @@ public class SyncDatabaseService
         }
         await context.BulkInsertAsync(expertFiles);
         await context.BulkUpdateAsync(expertSyncFiles);
+        return expertFiles;
     }
 }

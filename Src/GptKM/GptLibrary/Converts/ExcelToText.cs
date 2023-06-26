@@ -6,44 +6,48 @@ namespace GptLibrary.Converts
 {
     public class ExcelToText : IFileToText
     {
-        public string ToText(string filePath)
+        public Task<string> ToText(string filePath)
         {
-            StringBuilder sb = new StringBuilder();
-
-            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(filePath, false))
+            var task = Task.Run(() =>
             {
-                WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
-                Sheet sheet = workbookPart.Workbook.Descendants<Sheet>().FirstOrDefault();
-                if (sheet != null)
+                StringBuilder sb = new StringBuilder();
+
+                using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(filePath, false))
                 {
-                    WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
-                    SharedStringTablePart sharedStringTablePart = workbookPart.SharedStringTablePart;
-                    var rows = worksheetPart.Worksheet.Descendants<Row>();
-
-                    foreach (var row in rows)
+                    WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
+                    Sheet sheet = workbookPart.Workbook.Descendants<Sheet>().FirstOrDefault();
+                    if (sheet != null)
                     {
-                        var cells = row.Elements<Cell>();
-                        bool firstCell = true;
+                        WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
+                        SharedStringTablePart sharedStringTablePart = workbookPart.SharedStringTablePart;
+                        var rows = worksheetPart.Worksheet.Descendants<Row>();
 
-                        foreach (var cell in cells)
+                        foreach (var row in rows)
                         {
-                            if (!firstCell)
+                            var cells = row.Elements<Cell>();
+                            bool firstCell = true;
+
+                            foreach (var cell in cells)
                             {
-                                sb.Append(",");
+                                if (!firstCell)
+                                {
+                                    sb.Append(",");
+                                }
+
+                                string cellValue = GetCellValue(cell, sharedStringTablePart);
+                                sb.Append(QuoteValueIfNeeded(cellValue));
+
+                                firstCell = false;
                             }
 
-                            string cellValue = GetCellValue(cell, sharedStringTablePart);
-                            sb.Append(QuoteValueIfNeeded(cellValue));
-
-                            firstCell = false;
+                            sb.AppendLine();
                         }
-
-                        sb.AppendLine();
                     }
                 }
-            }
 
-            return sb.ToString();
+                return sb.ToString();
+            });
+            return task;
         }
 
         string GetCellValue(Cell cell, SharedStringTablePart sharedStringTablePart)

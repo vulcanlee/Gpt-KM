@@ -253,6 +253,7 @@ try
     builder.Services.AddTransient<GptExpertDirectoryService>();
     builder.Services.AddTransient<GptExpertFileService>();
     builder.Services.AddTransient<GptExpertFileChunkService>();
+    builder.Services.AddTransient<SyncProcessingService>();
     #endregion
     #endregion
 

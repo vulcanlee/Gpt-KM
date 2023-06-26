@@ -5,13 +5,17 @@ namespace GptLibrary.Converts
 {
     public class MarkdownToText : IFileToText
     {
-        public string ToText(string filename)
+        public Task<string> ToText(string filename)
         {
-            string result = string.Empty;
+            var task = Task.Run(() =>
+            {
+                string result = string.Empty;
 
-            result = File.ReadAllText(filename);
+                result = File.ReadAllText(filename);
 
-            return result;
+                return result;
+            });
+            return task;
         }
     }
 }

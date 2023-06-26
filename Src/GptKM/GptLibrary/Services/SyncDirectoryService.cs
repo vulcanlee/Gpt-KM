@@ -28,7 +28,7 @@ namespace GptLibrary.Services
             ExpertContent expertContent = new ExpertContent();
             expertContent.SourceDirectory = expertDirectory.SourcePath;
             expertContent.ConvertDirectory = expertDirectory.ConvertPath;
-            CountFileExtensions(expertContent);
+            ExplorerDirectory(expertContent);
             PrepareConvertDirectory(expertContent);
 
             return expertContent;
@@ -55,10 +55,10 @@ namespace GptLibrary.Services
         }
 
         /// <summary>
-        /// 分析指定目錄下，所有檔案的副檔名符合可以進行文字轉換的清單
+        /// 分析指定目錄下，蒐集所有檔案的副檔名符合可以進行文字轉換的清單
         /// </summary>
         /// <param name="expertContent"></param>
-        void CountFileExtensions(ExpertContent expertContent)
+        void ExplorerDirectory(ExpertContent expertContent)
         {
             string sourceDirectoryPath = expertContent.SourceDirectory;
 

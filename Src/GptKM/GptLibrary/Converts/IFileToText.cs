@@ -2,6 +2,6 @@
 {
     public interface IFileToText
     {
-        string ToText(string filename);
+        Task<string> ToText(string filename);
     }
 }

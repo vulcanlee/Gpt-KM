@@ -6,25 +6,29 @@ namespace GptLibrary.Converts
 {
     public class PptToText : IFileToText
     {
-        public string ToText(string filePath)
+        public Task<string> ToText(string filePath)
         {
-            StringBuilder sb = new StringBuilder();
-
-            using (PresentationDocument presentationDocument = PresentationDocument.Open(filePath, false))
+            var task = Task.Run(() =>
             {
-                PresentationPart presentationPart = presentationDocument.PresentationPart;
-                if (presentationPart != null)
-                {
-                    foreach (SlideId slideId in presentationPart.Presentation.SlideIdList)
-                    {
-                        SlidePart slidePart = (SlidePart)presentationPart.GetPartById(slideId.RelationshipId);
+                StringBuilder sb = new StringBuilder();
 
-                        ExtractTextFromSlide(slidePart, sb);
+                using (PresentationDocument presentationDocument = PresentationDocument.Open(filePath, false))
+                {
+                    PresentationPart presentationPart = presentationDocument.PresentationPart;
+                    if (presentationPart != null)
+                    {
+                        foreach (SlideId slideId in presentationPart.Presentation.SlideIdList)
+                        {
+                            SlidePart slidePart = (SlidePart)presentationPart.GetPartById(slideId.RelationshipId);
+
+                            ExtractTextFromSlide(slidePart, sb);
+                        }
                     }
                 }
-            }
 
-            return sb.ToString();
+                return sb.ToString();
+            });
+            return task;
         }
 
         void ExtractTextFromSlide(SlidePart slidePart, StringBuilder sb)
