@@ -92,6 +92,7 @@ namespace GptLibrary.Services
                             await gptExpertFileService.GetAsync(fileInfo.FullName);
                         if (expertFileResult.Status == false)
                         {
+                            #region 僅處理不存在資料庫內的檔案
                             ExpertRawFile expertFile = new ExpertRawFile()
                             {
                                 Extension = fileInfo.Extension.ToLower(),
@@ -102,6 +103,7 @@ namespace GptLibrary.Services
                                 DirectoryName = $@"{fileInfo.DirectoryName}\",
                             };
                             expertContent.ExpertFiles.Add(expertFile);
+                            #endregion
                         }
                     }
                 }
