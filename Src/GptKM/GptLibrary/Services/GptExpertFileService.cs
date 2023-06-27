@@ -21,20 +21,24 @@ public class GptExpertFileService
 
     public async Task<ServiceResult<List<ExpertFile>>> GetAsync()
     {
-        var expertFiles = await context.ExpertFile.ToListAsync();
+        var expertFiles = await context.ExpertFile
+            .Include(x => x.ExpertDirectory).ToListAsync();
         return new ServiceResult<List<ExpertFile>>(expertFiles);
     }
 
     public async Task<ServiceResult<List<ExpertFile>>> GetAsync(ExpertDirectory expertDirectory)
     {
         var expertFiles = await context.ExpertFile
+            .Include(x => x.ExpertDirectory)
             .Where(x => x.ExpertDirectoryId == expertDirectory.Id).ToListAsync();
             return new ServiceResult<List<ExpertFile>>(expertFiles);
     }
 
     public async Task<ServiceResult<ExpertFile>> GetAsync(int id)
     {
-        var expertFile = await context.ExpertFile.FirstOrDefaultAsync(x => x.Id == id);
+        var expertFile = await context.ExpertFile
+            .Include(x => x.ExpertDirectory)
+            .FirstOrDefaultAsync(x => x.Id == id);
         if (expertFile == null)
         {
             return new ServiceResult<ExpertFile>($"ExpertFile id : [{id}] not found.");
@@ -48,6 +52,7 @@ public class GptExpertFileService
     public async Task<ServiceResult<ExpertFile>> GetAsync(string filename)
     {
         var expertFile = await context.ExpertFile
+            .Include(x => x.ExpertDirectory)
             .FirstOrDefaultAsync(x => x.FullName == filename);
         if (expertFile == null)
         {

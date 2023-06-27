@@ -29,8 +29,9 @@ public class ConvertToEmbeddingService
     public async Task ConvertAsync(ExpertFile expertFile, ConvertFileModel convertFile, int index)
     {
         string chunkembeddingFileName = Path
-                        .Combine(expertFile.FullName, $"{expertFile.FileName}{GptConstant.ConvertToEmbeddingTextFileExtension}");
-        string content =await File.ReadAllTextAsync(chunkembeddingFileName);
+                        .Combine(expertFile.FullName, $"{index}{GptConstant.ConvertToEmbeddingTextFileExtension}");
+        //string content =await File.ReadAllTextAsync(chunkembeddingFileName);
+        string content = convertFile.ConvertFileSplitItems[index-1].SourceText;
         float[] embeddings = await adaEmbeddingVector.GetEmbeddingAsync(content);
         ConvertFileSplitItemModel convertFileItemModel = convertFile.ConvertFileSplitItems.FirstOrDefault(x => x.Index == index)!;
         convertFileItemModel.Embedding = embeddings.ToList();

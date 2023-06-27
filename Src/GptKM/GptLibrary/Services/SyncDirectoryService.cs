@@ -32,6 +32,7 @@ namespace GptLibrary.Services
         public async Task<ExpertContent> ScanSourceDirectory(ExpertDirectory expertDirectory)
         {
             ExpertContent expertContent = new ExpertContent();
+            expertContent.Name = expertDirectory.Name;
 
             #region 檢查此對應目錄是否存在
             var expertDirectoryResult = await gptExpertDirectoryService.GetAsync(expertDirectory.Id);
@@ -84,7 +85,8 @@ namespace GptLibrary.Services
             async Task ProcessDirectoryAsync(DirectoryInfo directoryInfo)
             {
                 // Process all files in the current directory
-                foreach (var fileInfo in directoryInfo.GetFiles())
+                var files = directoryInfo.GetFiles();
+                foreach (var fileInfo in files)
                 {
                     if (convertFileExtensionMatch.IsMatch(fileInfo.Name))
                     {

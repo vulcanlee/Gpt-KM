@@ -14,15 +14,18 @@ public class ConvertToTextService
     private readonly ConverterToTextFactory converterToTextFactory;
     private readonly BuildFilenameService buildFilenameService;
     private readonly ConvertFileModelService convertFileModelService;
+    private readonly GptExpertFileService gptExpertFileService;
 
     public ConvertToTextService(ConvertFileExtensionMatchService convertFileExtensionMatch,
         ConverterToTextFactory converterToTextFactory, BuildFilenameService buildFilenameService,
-        ConvertFileModelService convertFileModelService)
+        ConvertFileModelService convertFileModelService,
+        GptExpertFileService gptExpertFileService)
     {
         this.convertFileExtensionMatch = convertFileExtensionMatch;
         this.converterToTextFactory = converterToTextFactory;
         this.buildFilenameService = buildFilenameService;
         this.convertFileModelService = convertFileModelService;
+        this.gptExpertFileService = gptExpertFileService;
     }
 
     /// <summary>
@@ -36,7 +39,12 @@ public class ConvertToTextService
         var contentTypeEnum = ContentType.GetContentTypeEnum(extinsion);
         IFileToText fileToText = converterToTextFactory.Create(contentTypeEnum);
         Tokenizer tokenizer = new Tokenizer();
-
+        var expertFileResult = await gptExpertFileService.GetAsync(expertFile.FullName);
+        if(expertFileResult.Status == false)
+        {
+            return convertFiles;
+        }
+        expertFile = expertFileResult.Payload;
         #region 將檔案內容，轉換成為文字
         string sourceText = await fileToText.ToTextAsync(expertFile.FullName);
         ConvertFileModel convertFile = new ConvertFileModel()
@@ -51,6 +59,6 @@ public class ConvertToTextService
         convertFile.SplitContext(expertFile, buildFilenameService);
         #endregion
 
-        return convertFiles;
+        return convertFile;
     }
 }

@@ -43,13 +43,13 @@ public class SyncFilesToDatabaseService
         List<ExpertRawFile> expertFilesNeedConvert = new List<ExpertRawFile>();
         List<ExpertFile> expertFiles = new();
         List<ExpertFile> expertSyncFiles = new();
+        var expertDirectoryResult = await gptExpertDirectoryService
+            .GetAsync(expertContent.Name);
+        if (expertDirectoryResult.Status == false) return expertFiles;
+        var expertDirectory = expertDirectoryResult.Payload;
         foreach (var itemFile in expertContent.ExpertFiles)
         {
-            var expertDirectoryResult = await gptExpertDirectoryService
-                .GetAsync(expertContent.SourceDirectory);
-            if (expertDirectoryResult.Status == false) continue;
-            var expertDirectory = expertDirectoryResult.Payload;
-            if (expertDirectory != null)
+            //if (expertDirectory != null)
             {
                 var checkFileResult = await gptExpertFileService.GetAsync(itemFile.FullName);
                 if (checkFileResult.Status == false)

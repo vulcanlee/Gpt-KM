@@ -16,10 +16,7 @@ namespace GptLibrary.Converts
 
                 // 讀取所有內容
                 XWPFWordExtractor extractor = new XWPFWordExtractor(document);
-                string text = extractor.Text;
-
-                // 輸出所有內容
-                Console.WriteLine(text);
+                result = extractor.Text;
 
                 // 關閉 C# 檔案
                 document.Close();
