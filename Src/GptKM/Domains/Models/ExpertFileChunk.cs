@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace EntityModel.Entities;
 
+[Index(nameof(FullName), IsUnique = false)]
+[Index(nameof(FullName), nameof(ConvertIndex), IsUnique = false)]
 public class ExpertFileChunk
 {
     public ExpertFileChunk()

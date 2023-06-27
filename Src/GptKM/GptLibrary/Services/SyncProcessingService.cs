@@ -30,11 +30,7 @@ public class SyncProcessingService
         if (expertDirectory == null) return;
 
         #region 檢查目錄與取得可用的檔案清單與建立轉換後的目錄結構
-        var task = Task.Run(() =>
-        {
-            expertContent = syncDirectoryService.ScanSourceDirectory(expertDirectory);
-        });
-        await task;
+        expertContent = await syncDirectoryService.ScanSourceDirectory(expertDirectory);
         #endregion
 
         #region 將實體檔案系統資訊，同步到資料庫中

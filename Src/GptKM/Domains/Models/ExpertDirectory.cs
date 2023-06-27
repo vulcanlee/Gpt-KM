@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,8 @@ namespace EntityModel.Entities;
 /// <summary>
 /// 生成語意內容的轉換目錄對應資訊
 /// </summary>
+[Index(nameof(Name), IsUnique = false)]
+[Index(nameof(SourcePath), IsUnique = false)]
 public class ExpertDirectory
 {
     public ExpertDirectory()

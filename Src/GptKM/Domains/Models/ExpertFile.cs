@@ -1,5 +1,6 @@
 ﻿using CommonDomain.Enums;
 using Domains.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace EntityModel.Entities;
 
+[Index(nameof(FullName), IsUnique = false)]
 public class ExpertFile
 {
     public ExpertFile()

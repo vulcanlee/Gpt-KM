@@ -12,10 +12,16 @@ namespace GptLibrary.Services
     public class SyncDirectoryService
     {
         private readonly ConvertFileExtensionMatchService convertFileExtensionMatch;
+        private readonly GptExpertDirectoryService gptExpertDirectoryService;
+        private readonly GptExpertFileService gptExpertFileService;
 
-        public SyncDirectoryService(ConvertFileExtensionMatchService convertFileExtensionMatch)
+        public SyncDirectoryService(ConvertFileExtensionMatchService convertFileExtensionMatch,
+            GptExpertDirectoryService gptExpertDirectoryService,
+            GptExpertFileService gptExpertFileService)
         {
             this.convertFileExtensionMatch = convertFileExtensionMatch;
+            this.gptExpertDirectoryService = gptExpertDirectoryService;
+            this.gptExpertFileService = gptExpertFileService;
         }
 
         /// <summary>
@@ -23,13 +29,22 @@ namespace GptLibrary.Services
         /// </summary>
         /// <param name="expertConfiguration">資料庫內的檔案路徑的定義物件</param>
         /// <returns></returns>
-        public ExpertContent ScanSourceDirectory(ExpertDirectory expertDirectory)
+        public async Task<ExpertContent> ScanSourceDirectory(ExpertDirectory expertDirectory)
         {
             ExpertContent expertContent = new ExpertContent();
+
+            #region 檢查此對應目錄是否存在
+            var expertDirectoryResult = await gptExpertDirectoryService.GetAsync(expertDirectory.Id);
+            if (expertDirectoryResult.Status == false)
+            {
+                return expertContent;
+            }
+            #endregion
+
             expertContent.SourceDirectory = expertDirectory.SourcePath;
             expertContent.ConvertDirectory = expertDirectory.ConvertPath;
-            ExplorerDirectory(expertContent);
-            PrepareConvertDirectory(expertContent);
+            await ExplorerDirectoryAsync(expertContent);
+            await PrepareConvertDirectoryAsync(expertContent);
 
             return expertContent;
         }
@@ -38,62 +53,70 @@ namespace GptLibrary.Services
         /// 準備要轉換後檔案需要用到的目錄
         /// </summary>
         /// <param name="expertContent"></param>
-        public void PrepareConvertDirectory(ExpertContent expertContent)
+        async Task PrepareConvertDirectoryAsync(ExpertContent expertContent)
         {
-            string baseTargetDirectory = expertContent.SourceDirectory;
-            string baseConvertDirectory = expertContent.ConvertDirectory;
-            var allDirectories = expertContent.ExpertFiles
-                .Select(x => x.DirectoryName).Distinct();
-            foreach (var directory in allDirectories)
+            await Task.Run(() =>
             {
-                string convertDirectory = directory.Replace(baseTargetDirectory, baseConvertDirectory);
-                if (System.IO.Directory.Exists(convertDirectory) == false)
+                string baseTargetDirectory = expertContent.SourceDirectory;
+                string baseConvertDirectory = expertContent.ConvertDirectory;
+                var allDirectories = expertContent.ExpertFiles
+                    .Select(x => x.DirectoryName).Distinct();
+                foreach (var directory in allDirectories)
                 {
-                    System.IO.Directory.CreateDirectory(convertDirectory);
+                    string convertDirectory = directory.Replace(baseTargetDirectory, baseConvertDirectory);
+                    if (System.IO.Directory.Exists(convertDirectory) == false)
+                    {
+                        System.IO.Directory.CreateDirectory(convertDirectory);
+                    }
                 }
-            }
+            });
         }
 
         /// <summary>
         /// 分析指定目錄下，蒐集所有檔案的副檔名符合可以進行文字轉換的清單
         /// </summary>
         /// <param name="expertContent"></param>
-        void ExplorerDirectory(ExpertContent expertContent)
+        async Task ExplorerDirectoryAsync(ExpertContent expertContent)
         {
             string sourceDirectoryPath = expertContent.SourceDirectory;
 
             #region Inline Method : Process the list of files found in the directory
-            void ProcessDirectory(DirectoryInfo directoryInfo)
+            async Task ProcessDirectoryAsync(DirectoryInfo directoryInfo)
             {
                 // Process all files in the current directory
                 foreach (var fileInfo in directoryInfo.GetFiles())
                 {
                     if (convertFileExtensionMatch.IsMatch(fileInfo.Name))
                     {
-                        ExpertRawFile expertFile = new ExpertRawFile()
+                        var expertFileResult =
+                            await gptExpertFileService.GetAsync(fileInfo.FullName);
+                        if (expertFileResult.Status == false)
                         {
-                            Extension = fileInfo.Extension.ToLower(),
-                            FileInfo = new ExpertFileInfo().FromFileInfo(fileInfo),
-                            FullName = fileInfo.FullName,
-                            FileName = fileInfo.Name,
-                            Size = fileInfo.Length,
-                            DirectoryName = $@"{fileInfo.DirectoryName}\",
-                        };
-                        expertContent.ExpertFiles.Add(expertFile);
+                            ExpertRawFile expertFile = new ExpertRawFile()
+                            {
+                                Extension = fileInfo.Extension.ToLower(),
+                                FileInfo = new ExpertFileInfo().FromFileInfo(fileInfo),
+                                FullName = fileInfo.FullName,
+                                FileName = fileInfo.Name,
+                                Size = fileInfo.Length,
+                                DirectoryName = $@"{fileInfo.DirectoryName}\",
+                            };
+                            expertContent.ExpertFiles.Add(expertFile);
+                        }
                     }
                 }
 
                 #region Recursively process all subdirectories
                 foreach (var subDirectoryInfo in directoryInfo.GetDirectories())
                 {
-                    ProcessDirectory(subDirectoryInfo);
+                    await ProcessDirectoryAsync(subDirectoryInfo);
                 }
                 #endregion
             }
             #endregion
 
             // 開始探索這個目錄，找出所有可以轉換成為文字的類型檔案
-            ProcessDirectory(new DirectoryInfo(sourceDirectoryPath));
+            await ProcessDirectoryAsync(new DirectoryInfo(sourceDirectoryPath));
             return;
         }
     }
