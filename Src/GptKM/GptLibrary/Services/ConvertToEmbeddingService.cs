@@ -14,12 +14,15 @@ public class ConvertToEmbeddingService
 {
     private readonly AdaEmbeddingVector adaEmbeddingVector;
     private readonly GptExpertFileService gptExpertFileService;
+    private readonly ConvertFileModelService convertFileModelService;
 
     public ConvertToEmbeddingService(AdaEmbeddingVector adaEmbeddingVector,
-        GptExpertFileService gptExpertFileService)
+        GptExpertFileService gptExpertFileService,
+        ConvertFileModelService convertFileModelService)
     {
         this.adaEmbeddingVector = adaEmbeddingVector;
         this.gptExpertFileService = gptExpertFileService;
+        this.convertFileModelService = convertFileModelService;
     }
 
     /// <summary>
@@ -28,20 +31,21 @@ public class ConvertToEmbeddingService
     /// <param name="expertFile"></param>
     public async Task ConvertAsync(ExpertFile expertFile, ConvertFileModel convertFile, int index)
     {
-        string chunkembeddingFileName = Path
-                        .Combine(expertFile.FullName, $"{index}{GptConstant.ConvertToEmbeddingTextFileExtension}");
+        var expertFileResult = await gptExpertFileService.GetAsync(expertFile.FullName);
+        expertFile = expertFileResult.Payload;
         //string content =await File.ReadAllTextAsync(chunkembeddingFileName);
-        string content = convertFile.ConvertFileSplitItems[index-1].SourceText;
-        float[] embeddings = await adaEmbeddingVector.GetEmbeddingAsync(content);
         ConvertFileSplitItemModel convertFileItemModel = convertFile.ConvertFileSplitItems.FirstOrDefault(x => x.Index == index)!;
+        string chunkembeddingFileName = convertFileItemModel.EmbeddingJsonFileName;
+        string content = convertFileItemModel.SourceText;
+        float[] embeddings = await adaEmbeddingVector.GetEmbeddingAsync(content);
         convertFileItemModel.Embedding = embeddings.ToList();
 
-        var expertFileResult = await gptExpertFileService.GetAsync(expertFile.Id);
-        if(expertFileResult.Status == true)
-        {
-            var expertFileItem = expertFileResult.Payload!;
-            expertFileItem.ProcessingStatus = CommonDomain.Enums.ExpertFileStatusEnum.ToEmbedding;
-            await gptExpertFileService.UpdateAsync(expertFileItem);
-        }
+        await convertFileModelService
+            .ExportEmbeddingJsonAsync(expertFile, convertFile, index);
+        await convertFileModelService
+            .ExportEmbeddingTextAsync(expertFile, convertFile, index);
+
+        expertFile.ProcessingStatus = CommonDomain.Enums.ExpertFileStatusEnum.ToEmbedding;
+        await gptExpertFileService.UpdateAsync(expertFile);
     }
 }

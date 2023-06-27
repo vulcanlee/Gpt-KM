@@ -12,16 +12,19 @@ public class SyncProcessingService
     private readonly SyncFilesToDatabaseService syncFilesToDatabase;
     private readonly ConvertToTextService convertToTextService;
     private readonly ConvertToEmbeddingService convertToEmbeddingService;
+    private readonly GptExpertFileService gptExpertFileService;
 
     public SyncProcessingService(SyncDirectoryService syncDirectoryService,
         SyncFilesToDatabaseService syncDatabaseService,
         ConvertToTextService convertToTextService,
-        ConvertToEmbeddingService convertToEmbeddingService)
+        ConvertToEmbeddingService convertToEmbeddingService,
+        GptExpertFileService gptExpertFileService)
     {
         this.syncDirectoryService = syncDirectoryService;
         this.syncFilesToDatabase = syncDatabaseService;
         this.convertToTextService = convertToTextService;
         this.convertToEmbeddingService = convertToEmbeddingService;
+        this.gptExpertFileService = gptExpertFileService;
     }
 
     public async Task BeginSyncDirectoryAsync(ExpertDirectory expertDirectory)
@@ -31,6 +34,18 @@ public class SyncProcessingService
 
         #region 檢查目錄與取得可用的檔案清單與建立轉換後的目錄結構
         expertContent = await syncDirectoryService.ScanSourceDirectory(expertDirectory);
+        #endregion
+
+        #region 清空現在檔案內容
+        var expertFilesReslut = await gptExpertFileService.GetAsync();
+        if (expertFilesReslut.Status == true)
+        {
+            var expertFiles = expertFilesReslut.Payload;
+            foreach (var item in expertFiles)
+            {
+                await gptExpertFileService.DeleteAsync(item.Id);
+            }
+        }
         #endregion
 
         #region 將實體檔案系統資訊，同步到資料庫中
