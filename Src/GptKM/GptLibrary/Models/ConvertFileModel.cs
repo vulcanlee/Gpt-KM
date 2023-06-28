@@ -28,7 +28,7 @@ namespace GptLibrary.Models
         /// <summary>
         /// 將文字內容切割成為許多 Chunk
         /// </summary>
-        public void SplitContext(ExpertFile expertFile,BuildFilenameService buildFilenameService)
+        public async void SplitContext(ExpertFile expertFile,BuildFilenameService buildFilenameService)
         {
             #region 計算 Embedding 與 Summary 的成本
             EmbeddingCost = AzureOpenAIServicePricing.CalculateEmbeddingCost(TokenSize);
@@ -36,7 +36,6 @@ namespace GptLibrary.Models
                 SummaryCost = AzureOpenAIServicePricing.CalculateSummaryCost(AzureOpenAIServicePricing.LanguageModelTextDavinci003MaxRequestTokens);
             else
                 SummaryCost = AzureOpenAIServicePricing.CalculateSummaryCost(TokenSize);
-            #endregion
 
             #region 將文字內容切割成為許多 Chunk
             string cacheSourceText = SourceText;

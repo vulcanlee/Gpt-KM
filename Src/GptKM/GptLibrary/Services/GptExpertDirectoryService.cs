@@ -60,7 +60,7 @@ public class GptExpertDirectoryService
 
     public async Task<ServiceResult<ExpertDirectory>> CreateAsync(ExpertDirectory expertDirectory)
     {
-        var expertDirectoryExist = await context.ExpertDirectory
+        var expertDirectoryExist = await context.ExpertDirectory.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Name == expertDirectory.Name);
         if (expertDirectoryExist != null)
         {
@@ -69,7 +69,7 @@ public class GptExpertDirectoryService
 
         await context.ExpertDirectory.AddAsync(expertDirectory);
         await context.SaveChangesAsync();
-        CleanTrackingHelper
+        CleanTrackingHelper.Clean<ExpertDirectory>(context);
         return new ServiceResult<ExpertDirectory>(expertDirectory);
     }
 }

@@ -62,6 +62,13 @@ public class ConvertToTextService
         await convertFileModelService.ExportConvertTextAsync(expertFile, convertFile);
 
         convertFile.SplitContext(expertFile, buildFilenameService);
+
+        #region 計算 TokenSize 與 EmbeddingCost 的成本
+        expertFile.TokenSize = convertFile.TokenSize;
+        expertFile.EmbeddingCost = convertFile.EmbeddingCost;
+        await gptExpertFileService.UpdateAsync(expertFile);
+        #endregion
+
         #endregion
 
         return convertFile;

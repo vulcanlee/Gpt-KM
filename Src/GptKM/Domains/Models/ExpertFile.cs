@@ -40,6 +40,8 @@ public class ExpertFile
     /// </summary>
     public string ConvertDirectoryName { get; set; } = string.Empty;
     public long Size { get; set; } = 0L;
+    public int TokenSize { get; set; } = 0;
+    public decimal EmbeddingCost { get; set; } = 0;
     public bool ProcessChunk { get; set; } =false;
     public int ChunkSize { get; set; } = 0;
     public ExpertFileStatusEnum ProcessingStatus { get; set; }
