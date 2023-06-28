@@ -33,12 +33,12 @@ public class ConvertToEmbeddingService
     {
         var expertFileResult = await gptExpertFileService.GetAsync(expertFile.FullName);
         expertFile = expertFileResult.Payload;
-        //string content =await File.ReadAllTextAsync(chunkembeddingFileName);
+
         ConvertFileSplitItemModel convertFileItemModel = convertFile.ConvertFileSplitItems.FirstOrDefault(x => x.Index == index)!;
         string chunkembeddingFileName = convertFileItemModel.EmbeddingJsonFileName;
         string content = convertFileItemModel.SourceText;
-        float[] embeddings = await adaEmbeddingVector.GetEmbeddingAsync(content);
-        convertFileItemModel.Embedding = embeddings.ToList();
+        //float[] embeddings = await adaEmbeddingVector.GetEmbeddingAsync(content);
+        //convertFileItemModel.Embedding = embeddings.ToList();
 
         await convertFileModelService
             .ExportEmbeddingJsonAsync(expertFile, convertFile, index);

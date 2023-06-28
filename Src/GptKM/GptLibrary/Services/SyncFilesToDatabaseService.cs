@@ -42,53 +42,55 @@ public class SyncFilesToDatabaseService
     {
         List<ExpertRawFile> expertFilesNeedConvert = new List<ExpertRawFile>();
         List<ExpertFile> expertFiles = new();
+        List<ExpertFile> expertAddFiles = new();
         List<ExpertFile> expertSyncFiles = new();
+
         var expertDirectoryResult = await gptExpertDirectoryService
             .GetAsync(expertContent.Name);
         if (expertDirectoryResult.Status == false) return expertFiles;
+        // 需要該目錄物件內的 Id 屬性值
         var expertDirectory = expertDirectoryResult.Payload;
-        foreach (var itemFile in expertContent.ExpertFiles)
+
+        foreach (var itemFile in expertContent.ExpertRawFiles)
         {
-            //if (expertDirectory != null)
+            var checkFileResult = await gptExpertFileService.GetAsync(itemFile.FullName);
+            if (checkFileResult.Status == false)
             {
-                var checkFileResult = await gptExpertFileService.GetAsync(itemFile.FullName);
-                if (checkFileResult.Status == false)
+                ExpertFile expertFile = new ExpertFile()
                 {
-                    ExpertFile expertFile = new ExpertFile()
-                    {
-                        FullName = itemFile.FullName,
-                        ExpertDirectoryId = expertDirectory.Id,
-                        DirectoryName = itemFile.DirectoryName,
-                        Extension = itemFile.Extension,
-                        FileName = itemFile.FileName,
-                        Size = itemFile.Size,
-                        ChunkSize = 0,
-                        CreateAt = DateTime.Now,
-                        UpdateAt = DateTime.Now,
-                        SyncAt = DateTime.Now,
-                        ProcessingStatus = CommonDomain.Enums.ExpertFileStatusEnum.Begin,
-                    };
-                    expertFiles.Add(expertFile);
-                    expertFilesNeedConvert.Add(itemFile);
-                }
-                else
+                    FullName = itemFile.FullName,
+                    ExpertDirectoryId = expertDirectory.Id,
+                    DirectoryName = itemFile.DirectoryName,
+                    Extension = itemFile.Extension,
+                    FileName = itemFile.FileName,
+                    Size = itemFile.Size,
+                    ChunkSize = 0,
+                    CreateAt = DateTime.Now,
+                    UpdateAt = DateTime.Now,
+                    SyncAt = DateTime.Now,
+                    ProcessingStatus = CommonDomain.Enums.ExpertFileStatusEnum.Begin,
+                };
+
+                expertFiles.Add(expertFile);
+                expertAddFiles.Add(expertFile);
+                expertFilesNeedConvert.Add(itemFile);
+            }
+            else
+            {
+                // 檔案已存在，更新同步時間資訊(用來判斷哪些檔案紀錄在資料庫內已經過時了)
+                var checkFile = checkFileResult.Payload;
+                checkFile.SyncAt = DateTime.Now;
+                if (checkFile.ProcessingStatus != CommonDomain.Enums.ExpertFileStatusEnum.Finish)
                 {
-                    // 檔案已存在，更新同步時間資訊(用來判斷哪些檔案紀錄在資料庫內已經過時了)
-                    var checkFile = checkFileResult.Payload;
-                    checkFile.SyncAt = DateTime.Now;
-                    expertSyncFiles.Add(checkFile);
+                    expertFiles.Add(checkFile);
                 }
+                expertSyncFiles.Add(checkFile);
             }
         }
 
-        await gptExpertFileService.CreateAsync(expertFiles);
+        await gptExpertFileService.CreateAsync(expertAddFiles);
         await gptExpertFileService.UpdateAsync(expertSyncFiles);
 
-        #region 將 Chunk 區塊內容寫入到資料內
-        foreach (var item in expertFiles)
-        {
-        }
-        #endregion
         return expertFiles;
     }
 }

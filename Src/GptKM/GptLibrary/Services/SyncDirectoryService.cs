@@ -60,7 +60,7 @@ namespace GptLibrary.Services
             {
                 string baseTargetDirectory = expertContent.SourceDirectory;
                 string baseConvertDirectory = expertContent.ConvertDirectory;
-                var allDirectories = expertContent.ExpertFiles
+                var allDirectories = expertContent.ExpertRawFiles
                     .Select(x => x.DirectoryName).Distinct();
                 foreach (var directory in allDirectories)
                 {
@@ -117,7 +117,7 @@ namespace GptLibrary.Services
                                 Size = fileInfo.Length,
                                 DirectoryName = $@"{fileInfo.DirectoryName}\",
                             };
-                            expertContent.ExpertFiles.Add(expertRawFile);
+                            expertContent.ExpertRawFiles.Add(expertRawFile);
                             #endregion
                         }
                     }

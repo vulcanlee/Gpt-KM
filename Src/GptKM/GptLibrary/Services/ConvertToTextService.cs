@@ -34,28 +34,33 @@ public class ConvertToTextService
     /// <param name="expertFile"></param>
     public async Task<ConvertFileModel> ConvertAsync(ExpertFile expertFile)
     {
-        ConvertFileModel convertFiles = new();
-        var extinsion = System.IO.Path.GetExtension(expertFile.FullName);
-        var contentTypeEnum = ContentType.GetContentTypeEnum(extinsion);
-        IFileToText fileToText = converterToTextFactory.Create(contentTypeEnum);
-        Tokenizer tokenizer = new Tokenizer();
         var expertFileResult = await gptExpertFileService.GetAsync(expertFile.FullName);
-        if(expertFileResult.Status == false)
+        if (expertFileResult.Status == false)
         {
-            return convertFiles;
+            return null;
         }
         expertFile = expertFileResult.Payload;
+
+        var extinsion = System.IO.Path.GetExtension(expertFile.FullName);
+        var contentTypeEnum = ContentType.GetContentTypeEnum(extinsion);
+
+        IFileToText fileToText = converterToTextFactory.Create(contentTypeEnum);
+        Tokenizer tokenizer = new Tokenizer();
+
         #region 將檔案內容，轉換成為文字
         string sourceText = await fileToText.ToTextAsync(expertFile.FullName);
+
         ConvertFileModel convertFile = new ConvertFileModel()
         {
+            FileName = buildFilenameService.BuildConvertedText(expertFile.FullName),
+            FileSize = expertFile.Size,
+            SourceText = sourceText,
+            SourceTextSize = sourceText.Length,
+            TokenSize = tokenizer.CountToken(sourceText),
         };
-        convertFile.FileName = buildFilenameService.BuildConvertedText(expertFile.FullName);
-        convertFile.FileSize = expertFile.Size;
-        convertFile.SourceText = sourceText;
-        convertFile.SourceTextSize = sourceText.Length;
-        convertFile.TokenSize = tokenizer.CountToken(sourceText);
+
         await convertFileModelService.ExportConvertTextAsync(expertFile, convertFile);
+
         convertFile.SplitContext(expertFile, buildFilenameService);
         #endregion
 

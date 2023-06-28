@@ -5,6 +5,9 @@ using GptLibrary.Services;
 
 namespace GptLibrary.Models
 {
+    /// <summary>
+    /// 進行文字轉換與切割處理需求之類別
+    /// </summary>
     public class ConvertFileModel
     {
         public string DirectoryName { get; set; } = string.Empty;

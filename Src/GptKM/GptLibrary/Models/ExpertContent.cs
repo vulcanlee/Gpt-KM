@@ -15,9 +15,9 @@
         /// </summary>
         public string ConvertDirectory { get; set; } = string.Empty;
         /// <summary>
-        /// 所有搜尋到的檔案紀錄
+        /// 在指定目錄下，所有搜尋到的檔案紀錄
         /// </summary>
-        public List<ExpertRawFile> ExpertFiles { get; set; } = new List<ExpertRawFile>();
+        public List<ExpertRawFile> ExpertRawFiles { get; set; } = new List<ExpertRawFile>();
         /// <summary>
         /// 有紀錄的文件副檔案名稱
         /// </summary>

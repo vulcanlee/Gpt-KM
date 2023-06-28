@@ -1,4 +1,5 @@
-﻿using CommonDomain.DataModels;
+﻿using BAL.Helpers;
+using CommonDomain.DataModels;
 using Domains.Models;
 using EFCore.BulkExtensions;
 using EntityModel.Entities;
@@ -21,13 +22,17 @@ public class GptExpertDirectoryService
 
     public async Task<ServiceResult<List<ExpertDirectory>>> GetAsync()
     {
-        var expertDirectories = await context.ExpertDirectory.ToListAsync();
+        var expertDirectories = await context.ExpertDirectory
+            .AsNoTracking()
+            .ToListAsync();
         return new ServiceResult<List<ExpertDirectory>>(expertDirectories);
     }
 
     public async Task<ServiceResult<ExpertDirectory>> GetAsync(string name)
     {
-        var expertDirectory = await context.ExpertDirectory.FirstOrDefaultAsync(x => x.Name == name);
+        var expertDirectory = await context.ExpertDirectory
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Name == name);
         if (expertDirectory == null)
         {
             return new ServiceResult<ExpertDirectory>($"ExpertDirectory name : [{name}] not found.");
@@ -40,7 +45,9 @@ public class GptExpertDirectoryService
 
     public async Task<ServiceResult<ExpertDirectory>> GetAsync(int id)
     {
-        var expertDirectory = await context.ExpertDirectory.FirstOrDefaultAsync(x => x.Id == id);
+        var expertDirectory = await context.ExpertDirectory
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id);
         if (expertDirectory == null)
         {
             return new ServiceResult<ExpertDirectory>($"ExpertDirectory id : [{id}] not found.");
@@ -62,6 +69,7 @@ public class GptExpertDirectoryService
 
         await context.ExpertDirectory.AddAsync(expertDirectory);
         await context.SaveChangesAsync();
+        CleanTrackingHelper
         return new ServiceResult<ExpertDirectory>(expertDirectory);
     }
 }

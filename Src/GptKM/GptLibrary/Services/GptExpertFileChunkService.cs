@@ -1,4 +1,5 @@
-﻿using CommonDomain.DataModels;
+﻿using BAL.Helpers;
+using CommonDomain.DataModels;
 using Domains.Models;
 using EFCore.BulkExtensions;
 using EntityModel.Entities;
@@ -21,20 +22,22 @@ public class GptExpertFileChunkService
 
     public async Task<ServiceResult<List<ExpertFileChunk>>> GetAsync()
     {
-        var expertFileChunks = await context.ExpertFileChunk.ToListAsync();
+        var expertFileChunks = await context.ExpertFileChunk
+            .AsNoTracking().ToListAsync();
         return new ServiceResult<List<ExpertFileChunk>>(expertFileChunks);
     }
 
     public async Task<ServiceResult<List<ExpertFileChunk>>> GetAsync(ExpertFile expertFile)
     {
-        var expertFileChunks = await context.ExpertFileChunk
+        var expertFileChunks = await context.ExpertFileChunk.AsNoTracking()
             .Where(x => x.ExpertFileId == expertFile.Id).ToListAsync();
             return new ServiceResult<List<ExpertFileChunk>>(expertFileChunks);
     }
 
     public async Task<ServiceResult<ExpertFileChunk>> GetAsync(int id)
     {
-        var expertFileChunk = await context.ExpertFileChunk.FirstOrDefaultAsync(x => x.Id == id);
+        var expertFileChunk = await context.ExpertFileChunk
+            .AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         if (expertFileChunk == null)
         {
             return new ServiceResult<ExpertFileChunk>($"ExpertFileChunk id : [{id}] not found.");
@@ -47,7 +50,7 @@ public class GptExpertFileChunkService
 
     public async Task<ServiceResult<ExpertFileChunk>> CreateAsync(ExpertFileChunk ExpertFileChunk)
     {
-        var ExpertFileChunkExist = await context.ExpertFileChunk
+        var ExpertFileChunkExist = await context.ExpertFileChunk.AsNoTracking()
             .FirstOrDefaultAsync(x => x.FullName == ExpertFileChunk.FullName);
         if (ExpertFileChunkExist != null)
         {
@@ -56,12 +59,14 @@ public class GptExpertFileChunkService
 
         await context.ExpertFileChunk.AddAsync(ExpertFileChunk);
         await context.SaveChangesAsync();
+        CleanTrackingHelper.Clean<ExpertFileChunk>(context);
         return new ServiceResult<ExpertFileChunk>(ExpertFileChunk);
     }
 
     public async Task<ServiceResult<ExpertFileChunk>> UpdateAsync(ExpertFileChunk ExpertFileChunk)
     {
         var ExpertFileChunkExist = await context.ExpertFileChunk
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == ExpertFileChunk.Id);
         if (ExpertFileChunkExist == null)
         {
@@ -70,12 +75,14 @@ public class GptExpertFileChunkService
 
         context.Entry(ExpertFileChunkExist).CurrentValues.SetValues(ExpertFileChunk);
         await context.SaveChangesAsync();
+        CleanTrackingHelper.Clean<ExpertFileChunk>(context);
         return new ServiceResult<ExpertFileChunk>(ExpertFileChunk);
     }
 
     public async Task<ServiceResult<ExpertFileChunk>> DeleteAsync(int id)
     {
         var ExpertFileChunkExist = await context.ExpertFileChunk
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
         if (ExpertFileChunkExist == null)
         {
@@ -84,6 +91,7 @@ public class GptExpertFileChunkService
 
         context.ExpertFileChunk.Remove(ExpertFileChunkExist);
         await context.SaveChangesAsync();
+        CleanTrackingHelper.Clean<ExpertFileChunk>(context);
         return new ServiceResult<ExpertFileChunk>(ExpertFileChunkExist);
     }
 }

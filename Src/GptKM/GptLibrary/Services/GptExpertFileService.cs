@@ -1,4 +1,6 @@
-﻿using CommonDomain.DataModels;
+﻿using BAL.Helpers;
+using CommonDomain.DataModels;
+using CommonDomain.Enums;
 using Domains.Models;
 using EFCore.BulkExtensions;
 using EntityModel.Entities;
@@ -22,6 +24,7 @@ public class GptExpertFileService
     public async Task<ServiceResult<List<ExpertFile>>> GetAsync()
     {
         var expertFiles = await context.ExpertFile
+            .AsNoTracking()
             .Include(x => x.ExpertDirectory).ToListAsync();
         return new ServiceResult<List<ExpertFile>>(expertFiles);
     }
@@ -29,14 +32,16 @@ public class GptExpertFileService
     public async Task<ServiceResult<List<ExpertFile>>> GetAsync(ExpertDirectory expertDirectory)
     {
         var expertFiles = await context.ExpertFile
+            .AsNoTracking()
             .Include(x => x.ExpertDirectory)
             .Where(x => x.ExpertDirectoryId == expertDirectory.Id).ToListAsync();
-            return new ServiceResult<List<ExpertFile>>(expertFiles);
+        return new ServiceResult<List<ExpertFile>>(expertFiles);
     }
 
     public async Task<ServiceResult<ExpertFile>> GetAsync(int id)
     {
         var expertFile = await context.ExpertFile
+            .AsNoTracking()
             .Include(x => x.ExpertDirectory)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (expertFile == null)
@@ -52,6 +57,7 @@ public class GptExpertFileService
     public async Task<ServiceResult<ExpertFile>> GetAsync(string filename)
     {
         var expertFile = await context.ExpertFile
+            .AsNoTracking()
             .Include(x => x.ExpertDirectory)
             .FirstOrDefaultAsync(x => x.FullName == filename);
         if (expertFile == null)
@@ -64,29 +70,55 @@ public class GptExpertFileService
         }
     }
 
+    public async Task<ServiceResult<ExpertFile>> ChangeStatusAsync(string filename, ExpertFileStatusEnum expertFileStatusEnum)
+    {
+        var expertFile = await context.ExpertFile.AsNoTracking()
+            .Include(x => x.ExpertDirectory)
+            .FirstOrDefaultAsync(x => x.FullName == filename);
+        if (expertFile == null)
+        {
+            return new ServiceResult<ExpertFile>($"ExpertFile filename : [{filename}] not found.");
+        }
+        else
+        {
+            expertFile.ProcessingStatus = expertFileStatusEnum;
+            context.ExpertFile.Update(expertFile);
+            var foo = await context.SaveChangesAsync();
+            return new ServiceResult<ExpertFile>(expertFile);
+        }
+    }
+
     public async Task<ServiceResult<ExpertFile>> CreateAsync(ExpertFile ExpertFile)
     {
         var ExpertFileExist = await context.ExpertFile
             .FirstOrDefaultAsync(x => x.FullName == ExpertFile.FullName);
         if (ExpertFileExist != null)
         {
-              return new ServiceResult<ExpertFile>($"ExpertFile name : [{ExpertFile.FullName}] already exist.");
+            return new ServiceResult<ExpertFile>($"ExpertFile name : [{ExpertFile.FullName}] already exist.");
         }
 
         await context.ExpertFile.AddAsync(ExpertFile);
         await context.SaveChangesAsync();
+        CleanTrackingHelper.Clean<ExpertFile>(context);
         return new ServiceResult<ExpertFile>(ExpertFile);
     }
 
+    /// <summary>
+    /// 使用 BulkInsertAsync 來產生紀錄
+    /// </summary>
+    /// <param name="expertFiles"></param>
+    /// <returns></returns>
     public async Task<ServiceResult<List<ExpertFile>>> CreateAsync(List<ExpertFile> expertFiles)
     {
         await context.BulkInsertAsync(expertFiles);
+        CleanTrackingHelper.Clean<ExpertFile>(context);
         return new ServiceResult<List<ExpertFile>>(expertFiles);
     }
 
     public async Task<ServiceResult<ExpertFile>> UpdateAsync(ExpertFile ExpertFile)
     {
         var ExpertFileExist = await context.ExpertFile
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == ExpertFile.Id);
         if (ExpertFileExist == null)
         {
@@ -95,18 +127,20 @@ public class GptExpertFileService
 
         context.Entry(ExpertFileExist).CurrentValues.SetValues(ExpertFile);
         await context.SaveChangesAsync();
+        CleanTrackingHelper.Clean<ExpertFile>(context);
         return new ServiceResult<ExpertFile>(ExpertFile);
     }
 
     public async Task<ServiceResult<List<ExpertFile>>> UpdateAsync(List<ExpertFile> expertFiles)
     {
         await context.BulkUpdateAsync(expertFiles);
+        CleanTrackingHelper.Clean<ExpertFile>(context);
         return new ServiceResult<List<ExpertFile>>(expertFiles);
     }
 
     public async Task<ServiceResult<ExpertFile>> DeleteAsync(int id)
     {
-        var ExpertFileExist = await context.ExpertFile
+        var ExpertFileExist = await context.ExpertFile.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
         if (ExpertFileExist == null)
         {
@@ -115,6 +149,7 @@ public class GptExpertFileService
 
         context.ExpertFile.Remove(ExpertFileExist);
         await context.SaveChangesAsync();
+        CleanTrackingHelper.Clean<ExpertFile>(context);
         return new ServiceResult<ExpertFile>(ExpertFileExist);
     }
 }
