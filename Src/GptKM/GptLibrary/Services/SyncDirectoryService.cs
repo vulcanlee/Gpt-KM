@@ -92,10 +92,23 @@ namespace GptLibrary.Services
                     {
                         var expertFileResult =
                             await gptExpertFileService.GetAsync(fileInfo.FullName);
-                        if (expertFileResult.Status == false)
+                        bool addFile = true;
+
+                        #region 除非該檔案已經處理完成，否則，若資料庫內有此紀錄，一樣要繼續處理
+                        if (expertFileResult.Status == true)
+                        {
+                            var expertFile = expertFileResult.Payload;
+                            if(expertFile.ProcessingStatus != CommonDomain.Enums.ExpertFileStatusEnum.Finish)
+                            {
+                                addFile = true;
+                            }
+                        }
+                        #endregion
+
+                        if (addFile)
                         {
                             #region 僅處理不存在資料庫內的檔案
-                            ExpertRawFile expertFile = new ExpertRawFile()
+                            ExpertRawFile expertRawFile = new ExpertRawFile()
                             {
                                 Extension = fileInfo.Extension.ToLower(),
                                 FileInfo = new ExpertFileInfo().FromFileInfo(fileInfo),
@@ -104,7 +117,7 @@ namespace GptLibrary.Services
                                 Size = fileInfo.Length,
                                 DirectoryName = $@"{fileInfo.DirectoryName}\",
                             };
-                            expertContent.ExpertFiles.Add(expertFile);
+                            expertContent.ExpertFiles.Add(expertRawFile);
                             #endregion
                         }
                     }
