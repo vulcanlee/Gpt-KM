@@ -34,5 +34,9 @@ public class ExpertFileChunk
     /// <summary>
     /// 檔案大小 - 單位: 位元組 (Byte) ，從檔案系統得到的數據
     /// </summary>
+    public string EmbeddingTextFileName { get; set; } = string.Empty;
+    public string EmbeddingJsonFileName { get; set; } = string.Empty;
     public long Size { get; set; } = 0L;
+    public int TokenSize { get; set; } = 0;
+    public Decimal EmbeddingCost { get; set; }
 }

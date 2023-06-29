@@ -5,6 +5,7 @@ using EFCore.BulkExtensions;
 using EntityModel.Entities;
 using GptLibrary.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Dynamic;
 
 namespace GptLibrary.Services;
 
@@ -31,7 +32,23 @@ public class GptExpertFileChunkService
     {
         var expertFileChunks = await context.ExpertFileChunk.AsNoTracking()
             .Where(x => x.ExpertFileId == expertFile.Id).ToListAsync();
-            return new ServiceResult<List<ExpertFileChunk>>(expertFileChunks);
+        return new ServiceResult<List<ExpertFileChunk>>(expertFileChunks);
+    }
+
+    public async Task<ServiceResult<ExpertFileChunk>> GetAsync(ExpertFile expertFile,
+        int index)
+    {
+        var expertFileChunk = await context.ExpertFileChunk.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.ExpertFileId == expertFile.Id &&
+            x.ConvertIndex == index);
+        if (expertFileChunk == null)
+        {
+            return new ServiceResult<ExpertFileChunk>($"ExpertFileChunk Id / ConvertIndex : [{expertFile.Id} / {index}] not found.");
+        }
+        else
+        {
+            return new ServiceResult<ExpertFileChunk>(expertFileChunk);
+        }
     }
 
     public async Task<ServiceResult<ExpertFileChunk>> GetAsync(int id)

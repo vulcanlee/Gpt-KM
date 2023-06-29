@@ -66,6 +66,7 @@ public class ConvertToTextService
         #region 計算 TokenSize 與 EmbeddingCost 的成本
         expertFile.TokenSize = convertFile.TokenSize;
         expertFile.EmbeddingCost = convertFile.EmbeddingCost;
+        expertFile.ProcessingStatus = CommonDomain.Enums.ExpertFileStatusEnum.ToText;
         await gptExpertFileService.UpdateAsync(expertFile);
         #endregion
 

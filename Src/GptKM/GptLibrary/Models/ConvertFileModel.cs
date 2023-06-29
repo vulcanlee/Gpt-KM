@@ -36,6 +36,7 @@ namespace GptLibrary.Models
                 SummaryCost = AzureOpenAIServicePricing.CalculateSummaryCost(AzureOpenAIServicePricing.LanguageModelTextDavinci003MaxRequestTokens);
             else
                 SummaryCost = AzureOpenAIServicePricing.CalculateSummaryCost(TokenSize);
+            #endregion
 
             #region 將文字內容切割成為許多 Chunk
             string cacheSourceText = SourceText;

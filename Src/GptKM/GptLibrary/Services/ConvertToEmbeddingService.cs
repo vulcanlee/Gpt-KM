@@ -14,14 +14,17 @@ public class ConvertToEmbeddingService
 {
     private readonly AdaEmbeddingVector adaEmbeddingVector;
     private readonly GptExpertFileService gptExpertFileService;
+    private readonly GptExpertFileChunkService gptExpertFileChunkService;
     private readonly ConvertFileModelService convertFileModelService;
 
     public ConvertToEmbeddingService(AdaEmbeddingVector adaEmbeddingVector,
         GptExpertFileService gptExpertFileService,
+        GptExpertFileChunkService gptExpertFileChunkService,
         ConvertFileModelService convertFileModelService)
     {
         this.adaEmbeddingVector = adaEmbeddingVector;
         this.gptExpertFileService = gptExpertFileService;
+        this.gptExpertFileChunkService = gptExpertFileChunkService;
         this.convertFileModelService = convertFileModelService;
     }
 
@@ -47,5 +50,45 @@ public class ConvertToEmbeddingService
 
         expertFile.ProcessingStatus = CommonDomain.Enums.ExpertFileStatusEnum.ToEmbedding;
         await gptExpertFileService.UpdateAsync(expertFile);
+
+        #region 產生 Chunk 紀錄
+        Tokenizer tokenizer = new Tokenizer();
+
+        var expertFileChunkResult = await gptExpertFileChunkService.GetAsync(expertFile, index);
+        var tokenSize = tokenizer.CountToken(content);
+        var embeddingCost = AzureOpenAIServicePricing.CalculateEmbeddingCost(tokenSize);
+
+        if (expertFileChunkResult.Status == true)
+        {
+            #region 修改 Chunk 紀錄
+            var expertFileChunk = expertFileChunkResult.Payload;
+            expertFileChunk.Size = content.Length;
+            expertFileChunk.TokenSize = tokenSize;
+            expertFileChunk.EmbeddingCost = embeddingCost;
+            expertFileChunk.EmbeddingJsonFileName = convertFileItemModel.EmbeddingJsonFileName;
+            expertFileChunk.EmbeddingTextFileName = convertFileItemModel.EmbeddingTextFileName;
+            await gptExpertFileChunkService.UpdateAsync(expertFileChunk);
+            #endregion
+        }
+        else
+        {
+            #region 新增 Chunk 紀錄
+            var expertFileChunk = new ExpertFileChunk()
+            {
+                 DirectoryName = expertFile.DirectoryName,
+                 ExpertFileId = expertFile.Id,
+                 ConvertIndex = index,
+                 TokenSize = tokenSize,
+                 EmbeddingCost = embeddingCost,
+                 FullName = expertFile.FullName,
+                 FileName = expertFile.FileName,
+                 Size = content.Length,
+                 EmbeddingJsonFileName = convertFileItemModel.EmbeddingJsonFileName,
+                 EmbeddingTextFileName = convertFileItemModel.EmbeddingTextFileName
+            };
+            await gptExpertFileChunkService.CreateAsync(expertFileChunk);
+            #endregion
+        }
+        #endregion
     }
 }
