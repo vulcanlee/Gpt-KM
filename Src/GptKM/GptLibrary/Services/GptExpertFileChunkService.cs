@@ -65,19 +65,20 @@ public class GptExpertFileChunkService
         }
     }
 
-    public async Task<ServiceResult<ExpertFileChunk>> CreateAsync(ExpertFileChunk ExpertFileChunk)
+    public async Task<ServiceResult<ExpertFileChunk>> CreateAsync(ExpertFileChunk expertFileChunk)
     {
         var ExpertFileChunkExist = await context.ExpertFileChunk.AsNoTracking()
-            .FirstOrDefaultAsync(x => x.FullName == ExpertFileChunk.FullName);
+            .FirstOrDefaultAsync(x => x.FullName == expertFileChunk.FullName &&
+            x.ConvertIndex == expertFileChunk.ConvertIndex);
         if (ExpertFileChunkExist != null)
         {
-              return new ServiceResult<ExpertFileChunk>($"ExpertFileChunk name : [{ExpertFileChunk.FullName}] already exist.");
+              return new ServiceResult<ExpertFileChunk>($"ExpertFileChunk name : [{expertFileChunk.FullName}] already exist.");
         }
 
-        await context.ExpertFileChunk.AddAsync(ExpertFileChunk);
+        await context.ExpertFileChunk.AddAsync(expertFileChunk);
         await context.SaveChangesAsync();
         CleanTrackingHelper.Clean<ExpertFileChunk>(context);
-        return new ServiceResult<ExpertFileChunk>(ExpertFileChunk);
+        return new ServiceResult<ExpertFileChunk>(expertFileChunk);
     }
 
     public async Task<ServiceResult<ExpertFileChunk>> UpdateAsync(ExpertFileChunk ExpertFileChunk)
