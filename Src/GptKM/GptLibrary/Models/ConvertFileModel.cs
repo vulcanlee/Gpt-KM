@@ -28,7 +28,7 @@ namespace GptLibrary.Models
         /// <summary>
         /// 將文字內容切割成為許多 Chunk
         /// </summary>
-        public async void SplitContext(ExpertFile expertFile,BuildFilenameService buildFilenameService)
+        public async void SplitContext(ExpertFile expertFile, BuildFilenameService buildFilenameService)
         {
             #region 計算 Embedding 與 Summary 的成本
             EmbeddingCost = AzureOpenAIServicePricing.CalculateEmbeddingCost(TokenSize);
@@ -44,19 +44,47 @@ namespace GptLibrary.Models
             int embeddingIndex = 1;
 
             int evaluateSize = AzureOpenAIServicePricing
-                .EmbeddingModelTextEmbeddingAda002RealRequestTokens + 
+                .EmbeddingModelTextEmbeddingAda002RealRequestTokens +
                 AzureOpenAIServicePricing.EmbeddingModelTextEmbeddingAda002RealRequestPatchTokens;
             int tokens = 0;
             string content = SourceText;
             while (true)
             {
-                if(content.Length == 0) break;
+                if (content.Length == 0) break;
                 string reachMaxTokenOfText = content;
+
+                #region 若第一次取得的 Token 過小，則先逐步擴大字串數量
                 if (reachMaxTokenOfText.Length > evaluateSize)
                 {
-                    reachMaxTokenOfText = reachMaxTokenOfText.Substring(0, evaluateSize);
+                    reachMaxTokenOfText = content.Substring(0, evaluateSize);
+                    int incrementStringAmount = 0;
+                    while (true)
+                    {
+                        tokens = tokenizer.CountToken(reachMaxTokenOfText);
+                        if (tokens < (AzureOpenAIServicePricing.EmbeddingModelTextEmbeddingAda002RealRequestTokens))
+                        {
+                            if (reachMaxTokenOfText.Length >= content.Length)
+                            {
+                                reachMaxTokenOfText = content;
+                                break;
+                            }
+                            else
+                            {
+                                incrementStringAmount += AzureOpenAIServicePricing.IncrementStringAmount;
+                                var checkLength = evaluateSize + incrementStringAmount;
+                                if (checkLength >= content.Length)
+                                    checkLength = content.Length;
+                                reachMaxTokenOfText = content
+                                    .Substring(0, checkLength);
+                            }
+                        }
+                        else
+                            break;
+                    }
                 }
-                //bool needSplitAgain = false;
+                #endregion
+
+                #region 若第一次取得的 Token 過大，則逐步縮小字串數量
                 while (true)
                 {
                     tokens = tokenizer.CountToken(reachMaxTokenOfText);
@@ -67,7 +95,7 @@ namespace GptLibrary.Models
                     else
                         break;
                 }
-                //needSplitAgain = true;
+                #endregion
 
                 int startIndex = content.Length - reachMaxTokenOfText.Length;
                 content = content.Substring(reachMaxTokenOfText.Length);
@@ -91,6 +119,10 @@ namespace GptLibrary.Models
 
                 //if (needSplitAgain == false) break;
                 embeddingIndex++;
+                if (embeddingIndex == 11)
+                {
+                    int foo = 0;
+                }
             }
             #endregion
         }
