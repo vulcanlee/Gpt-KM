@@ -50,23 +50,24 @@ namespace GptLibrary.Models
             string content = SourceText;
             while (true)
             {
+                if(content.Length == 0) break;
                 string reachMaxTokenOfText = content;
                 if (reachMaxTokenOfText.Length > evaluateSize)
                 {
                     reachMaxTokenOfText = reachMaxTokenOfText.Substring(0, evaluateSize);
                 }
-                bool needSplitAgain = false;
+                //bool needSplitAgain = false;
                 while (true)
                 {
                     tokens = tokenizer.CountToken(reachMaxTokenOfText);
                     if (tokens > (AzureOpenAIServicePricing.EmbeddingModelTextEmbeddingAda002RealRequestTokens))
                     {
                         reachMaxTokenOfText = reachMaxTokenOfText.Substring(0, reachMaxTokenOfText.Length - 100);
-                        needSplitAgain = true;
                     }
                     else
                         break;
                 }
+                //needSplitAgain = true;
 
                 int startIndex = content.Length - reachMaxTokenOfText.Length;
                 content = content.Substring(reachMaxTokenOfText.Length);
@@ -76,9 +77,9 @@ namespace GptLibrary.Models
                 int estimateTokens = tokenizer.CountToken(reachMaxTokenOfText);
 
                 convertFileSplit.EmbeddingJsonFileName =
-                    buildFilenameService.BuildEmbeddingText(expertFile.FullName, embeddingIndex++);
+                    buildFilenameService.BuildEmbeddingJson(expertFile.FullName, embeddingIndex);
                 convertFileSplit.EmbeddingTextFileName =
-                    buildFilenameService.BuildEmbeddingText(expertFile.FullName, embeddingIndex++);
+                    buildFilenameService.BuildEmbeddingText(expertFile.FullName, embeddingIndex);
                 convertFileSplit.Index = embeddingIndex;
                 convertFileSplit.SourceText = reachMaxTokenOfText;
                 convertFileSplit.SourceTextSize = reachMaxTokenOfText.Length;
@@ -88,7 +89,7 @@ namespace GptLibrary.Models
                 ConvertFileSplitItems.Add(convertFileSplit);
                 #endregion
 
-                if (needSplitAgain == false) break;
+                //if (needSplitAgain == false) break;
                 embeddingIndex++;
             }
             #endregion
