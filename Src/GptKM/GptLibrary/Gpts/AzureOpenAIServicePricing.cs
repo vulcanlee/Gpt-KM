@@ -16,6 +16,7 @@ namespace GptLibrary.Gpts
         public static readonly int EmbeddingModelTextEmbeddingAda002MaxRequestTokens = 8_191;
         public static readonly int EmbeddingModelTextEmbeddingAda002ResponseTokens = 500;
         public static readonly int EmbeddingModelTextEmbeddingAda002RealRequestTokens = 2500;
+        public static readonly int EmbeddingModelTextEmbeddingAda002RealRequestPatchTokens = 1000;
 
         public static decimal CalculateEmbeddingCost(int tokenCount)
         {
