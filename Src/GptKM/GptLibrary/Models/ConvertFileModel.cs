@@ -1,4 +1,4 @@
-﻿using EntityModel.Entities;
+﻿using Domains.Models;
 using GptLibrary.Gpt;
 using GptLibrary.Gpts;
 using GptLibrary.Services;

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EntityModel.Entities;
+namespace Domains.Models;
 
 [Index(nameof(FullName), IsUnique = false)]
 [Index(nameof(FullName), nameof(ConvertIndex), IsUnique = false)]

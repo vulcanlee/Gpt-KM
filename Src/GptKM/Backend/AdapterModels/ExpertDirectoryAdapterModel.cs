@@ -1,5 +1,4 @@
-﻿using EntityModel.Entities;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Backend.AdapterModels

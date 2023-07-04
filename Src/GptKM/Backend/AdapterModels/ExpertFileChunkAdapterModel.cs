@@ -1,7 +1,4 @@
-﻿using CommonDomain.Enums;
-using EntityModel.Entities;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using Domains.Models;
 
 namespace Backend.AdapterModels
 {

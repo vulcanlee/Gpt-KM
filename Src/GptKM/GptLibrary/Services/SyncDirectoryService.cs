@@ -1,11 +1,5 @@
-﻿using EntityModel.Entities;
-using GptLibrary.Converts;
+﻿using Domains.Models;
 using GptLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GptLibrary.Services
 {

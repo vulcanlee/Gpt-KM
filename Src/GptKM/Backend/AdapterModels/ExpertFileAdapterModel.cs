@@ -1,7 +1,5 @@
 ﻿using CommonDomain.Enums;
-using EntityModel.Entities;
-using System;
-using System.ComponentModel.DataAnnotations;
+using Domains.Models;
 
 namespace Backend.AdapterModels
 {
@@ -49,7 +47,7 @@ namespace Backend.AdapterModels
         /// </summary>
         public DateTime SyncAt { get; set; } = DateTime.Now;
 
-        public virtual ICollection<ExpertFileChunk> ExpertFileChunk { get; set; }
+        public virtual ICollection<ExpertFileChunkAdapterModel> ExpertFileChunk { get; set; }
 
         public ExpertDirectoryAdapterModel Clone()
         {

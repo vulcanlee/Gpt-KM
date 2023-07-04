@@ -1,4 +1,4 @@
-﻿using EntityModel.Entities;
+﻿using Domains.Models;
 using GptLibrary.Models;
 using Newtonsoft.Json;
 

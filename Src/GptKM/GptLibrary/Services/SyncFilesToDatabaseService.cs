@@ -1,8 +1,5 @@
 ﻿using Domains.Models;
-using EFCore.BulkExtensions;
-using EntityModel.Entities;
 using GptLibrary.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace GptLibrary.Services;
 

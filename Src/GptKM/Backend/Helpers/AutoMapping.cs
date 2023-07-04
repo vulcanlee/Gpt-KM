@@ -10,6 +10,9 @@
         public AutoMapping()
         {
             #region Blazor AdapterModel
+            CreateMap<ExpertDirectory, ExpertDirectoryAdapterModel>();
+            CreateMap<ExpertDirectoryAdapterModel, ExpertDirectory>();
+
             CreateMap<ExceptionRecord, ExceptionRecordAdapterModel>();
             CreateMap<ExceptionRecordAdapterModel, ExceptionRecord>();
 
