@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Prism.Events;
 using Backend.Events;
 using Backend.Models;
+using Backend.Services.Interfaces;
 
 namespace Backend.Helpers
 {
@@ -12,6 +13,10 @@ namespace Backend.Helpers
         public static IServiceCollection AddCustomServices(this IServiceCollection services)
         {
             #region 註冊服務
+            services.AddTransient<IExpertDirectoryService, ExpertDirectoryService>();
+            services.AddTransient<IExpertFileService, ExpertFileService>();
+            services.AddTransient<IExpertFileChunkService, ExpertFileChunkService>();
+
             services.AddTransient<IExportDataService, ExportDataService>();
             services.AddTransient<IExceptionRecordService, ExceptionRecordService>();
             services.AddTransient<IMailQueueService, MailQueueService>();

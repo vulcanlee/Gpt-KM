@@ -17,17 +17,17 @@ namespace Backend.Services
     using System;
     using Backend.Services.Interfaces;
 
-    public class ExpertDirectoryService : IExpertDirectoryService
+    public class ExpertFileChunkService : IExpertFileChunkService
     {
         #region 欄位與屬性
         private readonly BackendDBContext context;
         public IMapper Mapper { get; }
-        public ILogger<ExpertDirectoryService> Logger { get; }
+        public ILogger<ExpertFileChunkService> Logger { get; }
         #endregion
 
         #region 建構式
-        public ExpertDirectoryService(BackendDBContext context, IMapper mapper,
-            ILogger<ExpertDirectoryService> logger)
+        public ExpertFileChunkService(BackendDBContext context, IMapper mapper,
+            ILogger<ExpertFileChunkService> logger)
         {
             this.context = context;
             Mapper = mapper;
@@ -36,11 +36,11 @@ namespace Backend.Services
         #endregion
 
         #region CRUD 服務
-        public async Task<DataRequestResult<ExpertDirectoryAdapterModel>> GetAsync(DataRequest dataRequest)
+        public async Task<DataRequestResult<ExpertFileChunkAdapterModel>> GetAsync(DataRequest dataRequest)
         {
-            List<ExpertDirectoryAdapterModel> data = new();
-            DataRequestResult<ExpertDirectoryAdapterModel> result = new();
-            var DataSource = context.ExpertDirectory
+            List<ExpertFileChunkAdapterModel> data = new();
+            DataRequestResult<ExpertFileChunkAdapterModel> result = new();
+            var DataSource = context.ExpertFileChunk
                 .AsNoTracking();
 
             #region 進行搜尋動作
@@ -57,10 +57,10 @@ namespace Backend.Services
                 SortCondition CurrentSortCondition = dataRequest.Sorted;
                 switch (CurrentSortCondition.Id)
                 {
-                    case (int)ExpertDirectorySortEnum.NameDescending:
+                    case (int)ExpertFileChunkSortEnum.NameDescending:
                         DataSource = DataSource.OrderByDescending(x => x.Name);
                         break;
-                    case (int)ExpertDirectorySortEnum.NameAscending:
+                    case (int)ExpertFileChunkSortEnum.NameAscending:
                         DataSource = DataSource.OrderBy(x => x.Name);
                         break;
                     default:
@@ -72,7 +72,7 @@ namespace Backend.Services
 
             #region 進行分頁
             // 取得記錄總數量，將要用於分頁元件面板使用
-            result.Count = DataSource.Cast<ExpertDirectory>().Count();
+            result.Count = DataSource.Cast<ExpertFileChunk>().Count();
             DataSource = DataSource.Skip(dataRequest.Skip);
             if (dataRequest.Take != 0)
             {
@@ -81,8 +81,8 @@ namespace Backend.Services
             #endregion
 
             #region 在這裡進行取得資料與與額外屬性初始化
-            List<ExpertDirectoryAdapterModel> adapterModelObjects =
-                Mapper.Map<List<ExpertDirectoryAdapterModel>>(DataSource);
+            List<ExpertFileChunkAdapterModel> adapterModelObjects =
+                Mapper.Map<List<ExpertFileChunkAdapterModel>>(DataSource);
 
             foreach (var adapterModelItem in adapterModelObjects)
             {
@@ -95,27 +95,27 @@ namespace Backend.Services
             return result;
         }
 
-        public async Task<ExpertDirectoryAdapterModel> GetAsync(int id)
+        public async Task<ExpertFileChunkAdapterModel> GetAsync(int id)
         {
-            ExpertDirectory item = await context.ExpertDirectory
+            ExpertFileChunk item = await context.ExpertFileChunk
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
-            ExpertDirectoryAdapterModel result = Mapper.Map<ExpertDirectoryAdapterModel>(item);
+            ExpertFileChunkAdapterModel result = Mapper.Map<ExpertFileChunkAdapterModel>(item);
             await OhterDependencyData(result);
             return result;
         }
 
-        public async Task<VerifyRecordResult> AddAsync(ExpertDirectoryAdapterModel paraObject)
+        public async Task<VerifyRecordResult> AddAsync(ExpertFileChunkAdapterModel paraObject)
         {
             try
             {
-                CleanTrackingHelper.Clean<ExpertDirectory>(context);
-                ExpertDirectory itemParameter = Mapper.Map<ExpertDirectory>(paraObject);
-                CleanTrackingHelper.Clean<ExpertDirectory>(context);
-                await context.ExpertDirectory
+                CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+                ExpertFileChunk itemParameter = Mapper.Map<ExpertFileChunk>(paraObject);
+                CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+                await context.ExpertFileChunk
                     .AddAsync(itemParameter);
                 await context.SaveChangesAsync();
-                CleanTrackingHelper.Clean<ExpertDirectory>(context);
+                CleanTrackingHelper.Clean<ExpertFileChunk>(context);
                 return VerifyRecordResultFactory.Build(true);
             }
             catch (Exception ex)
@@ -125,13 +125,13 @@ namespace Backend.Services
             }
         }
 
-        public async Task<VerifyRecordResult> UpdateAsync(ExpertDirectoryAdapterModel paraObject)
+        public async Task<VerifyRecordResult> UpdateAsync(ExpertFileChunkAdapterModel paraObject)
         {
             try
             {
-                ExpertDirectory itemData = Mapper.Map<ExpertDirectory>(paraObject);
-                CleanTrackingHelper.Clean<ExpertDirectory>(context);
-                ExpertDirectory item = await context.ExpertDirectory
+                ExpertFileChunk itemData = Mapper.Map<ExpertFileChunk>(paraObject);
+                CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+                ExpertFileChunk item = await context.ExpertFileChunk
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == paraObject.Id);
                 if (item == null)
@@ -140,10 +140,10 @@ namespace Backend.Services
                 }
                 else
                 {
-                    CleanTrackingHelper.Clean<ExpertDirectory>(context);
+                    CleanTrackingHelper.Clean<ExpertFileChunk>(context);
                     context.Entry(itemData).State = EntityState.Modified;
                     await context.SaveChangesAsync();
-                    CleanTrackingHelper.Clean<ExpertDirectory>(context);
+                    CleanTrackingHelper.Clean<ExpertFileChunk>(context);
                     return VerifyRecordResultFactory.Build(true);
                 }
             }
@@ -158,8 +158,8 @@ namespace Backend.Services
         {
             try
             {
-                CleanTrackingHelper.Clean<ExpertDirectory>(context);
-                ExpertDirectory item = await context.ExpertDirectory
+                CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+                ExpertFileChunk item = await context.ExpertFileChunk
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == id);
                 if (item == null)
@@ -168,10 +168,10 @@ namespace Backend.Services
                 }
                 else
                 {
-                    CleanTrackingHelper.Clean<ExpertDirectory>(context);
+                    CleanTrackingHelper.Clean<ExpertFileChunk>(context);
                     context.Entry(item).State = EntityState.Deleted;
                     await context.SaveChangesAsync();
-                    CleanTrackingHelper.Clean<ExpertDirectory>(context);
+                    CleanTrackingHelper.Clean<ExpertFileChunk>(context);
                     return VerifyRecordResultFactory.Build(true);
                 }
             }
@@ -184,9 +184,9 @@ namespace Backend.Services
         #endregion
 
         #region CRUD 的限制條件檢查
-        public async Task<VerifyRecordResult> BeforeAddCheckAsync(ExpertDirectoryAdapterModel paraObject)
+        public async Task<VerifyRecordResult> BeforeAddCheckAsync(ExpertFileChunkAdapterModel paraObject)
         {
-            var searchItem = await context.ExpertDirectory
+            var searchItem = await context.ExpertFileChunk
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Name == paraObject.Name);
             if (searchItem != null)
@@ -196,10 +196,10 @@ namespace Backend.Services
             return VerifyRecordResultFactory.Build(true);
         }
 
-        public async Task<VerifyRecordResult> BeforeUpdateCheckAsync(ExpertDirectoryAdapterModel paraObject)
+        public async Task<VerifyRecordResult> BeforeUpdateCheckAsync(ExpertFileChunkAdapterModel paraObject)
         {
-            CleanTrackingHelper.Clean<ExpertDirectory>(context);
-            var searchItem = await context.ExpertDirectory
+            CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+            var searchItem = await context.ExpertFileChunk
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == paraObject.Id);
             if (searchItem == null)
@@ -207,7 +207,7 @@ namespace Backend.Services
                 return VerifyRecordResultFactory.Build(false, ErrorMessageEnum.要更新的紀錄_發生同時存取衝突_已經不存在資料庫上);
             }
 
-            searchItem = await context.ExpertDirectory
+            searchItem = await context.ExpertFileChunk
                .AsNoTracking()
                .FirstOrDefaultAsync(x => x.Name == paraObject.Name &&
                x.Id != paraObject.Id);
@@ -218,14 +218,14 @@ namespace Backend.Services
             return VerifyRecordResultFactory.Build(true);
         }
 
-        public async Task<VerifyRecordResult> BeforeDeleteCheckAsync(ExpertDirectoryAdapterModel paraObject)
+        public async Task<VerifyRecordResult> BeforeDeleteCheckAsync(ExpertFileChunkAdapterModel paraObject)
         {
             try
             {
                 CleanTrackingHelper.Clean<OrderItem>(context);
-                CleanTrackingHelper.Clean<ExpertDirectory>(context);
+                CleanTrackingHelper.Clean<ExpertFileChunk>(context);
 
-                var searchItem = await context.ExpertDirectory
+                var searchItem = await context.ExpertFileChunk
                  .AsNoTracking()
                  .FirstOrDefaultAsync(x => x.Id == paraObject.Id);
                 if (searchItem == null)
@@ -235,7 +235,7 @@ namespace Backend.Services
 
                 var searchOrderItemItem = await context.OrderItem
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.ExpertDirectoryId == paraObject.Id);
+                    .FirstOrDefaultAsync(x => x.ExpertFileChunkId == paraObject.Id);
                 if (searchOrderItemItem != null)
                 {
                     return VerifyRecordResultFactory.Build(false, ErrorMessageEnum.該紀錄無法刪除因為有其他資料表在使用中);
@@ -250,7 +250,7 @@ namespace Backend.Services
         #endregion
 
         #region 其他服務方法
-        Task OhterDependencyData(ExpertDirectoryAdapterModel data)
+        Task OhterDependencyData(ExpertFileChunkAdapterModel data)
         {
             return Task.FromResult(0);
         }

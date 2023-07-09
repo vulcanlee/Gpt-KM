@@ -11,7 +11,11 @@
         {
             #region Blazor AdapterModel
             CreateMap<ExpertDirectory, ExpertDirectoryAdapterModel>();
+            CreateMap<ExpertFileAdapterModel, ExpertFile>();
+            CreateMap<ExpertDirectory, ExpertDirectoryAdapterModel>();
             CreateMap<ExpertDirectoryAdapterModel, ExpertDirectory>();
+            CreateMap<ExpertFileChunk, ExpertFileChunkAdapterModel>();
+            CreateMap<ExpertFileChunkAdapterModel, ExpertFileChunk>();
 
             CreateMap<ExceptionRecord, ExceptionRecordAdapterModel>();
             CreateMap<ExceptionRecordAdapterModel, ExceptionRecord>();
