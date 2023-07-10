@@ -17,7 +17,7 @@ namespace Backend.Services
     using System;
     using Backend.Services.Interfaces;
 
-    public class ExpertFileChunkService : IExpertFileChunkService
+    public class ExpertFileChunkService : IExpertFileChunkService1
     {
         #region 欄位與屬性
         private readonly BackendDBContext context;
@@ -41,13 +41,14 @@ namespace Backend.Services
             List<ExpertFileChunkAdapterModel> data = new();
             DataRequestResult<ExpertFileChunkAdapterModel> result = new();
             var DataSource = context.ExpertFileChunk
-                .AsNoTracking();
+                .AsNoTracking()
+                .AsQueryable();
 
             #region 進行搜尋動作
             if (!string.IsNullOrWhiteSpace(dataRequest.Search))
             {
                 DataSource = DataSource
-                .Where(x => x.Name.Contains(dataRequest.Search));
+                .Where(x => x.FileName.Contains(dataRequest.Search));
             }
             #endregion
 
@@ -58,13 +59,74 @@ namespace Backend.Services
                 switch (CurrentSortCondition.Id)
                 {
                     case (int)ExpertFileChunkSortEnum.NameDescending:
-                        DataSource = DataSource.OrderByDescending(x => x.Name);
+                        DataSource = DataSource.OrderByDescending(x => x.FileName);
                         break;
                     case (int)ExpertFileChunkSortEnum.NameAscending:
-                        DataSource = DataSource.OrderBy(x => x.Name);
+                        DataSource = DataSource.OrderBy(x => x.FileName);
                         break;
                     default:
                         DataSource = DataSource.OrderBy(x => x.Id);
+                        break;
+                }
+            }
+            #endregion
+
+            #region 進行分頁
+            // 取得記錄總數量，將要用於分頁元件面板使用
+            result.Count = DataSource.Cast<ExpertFileChunk>().Count();
+            DataSource = DataSource.Skip(dataRequest.Skip);
+            if (dataRequest.Take != 0)
+            {
+                DataSource = DataSource.Take(dataRequest.Take);
+            }
+            #endregion
+
+            #region 在這裡進行取得資料與與額外屬性初始化
+            List<ExpertFileChunkAdapterModel> adapterModelObjects =
+                Mapper.Map<List<ExpertFileChunkAdapterModel>>(DataSource);
+
+            foreach (var adapterModelItem in adapterModelObjects)
+            {
+                await OhterDependencyData(adapterModelItem);
+
+            }
+            #endregion
+
+            result.Result = adapterModelObjects;
+            await Task.Yield();
+            return result;
+        }
+
+        public async Task<DataRequestResult<ExpertFileChunkAdapterModel>> GetByHeaderIDAsync(int id, DataRequest dataRequest)
+        {
+            List<ExpertFileChunkAdapterModel> data = new();
+            DataRequestResult<ExpertFileChunkAdapterModel> result = new();
+            var DataSource = context.ExpertFileChunk
+                .AsNoTracking()
+                .Where(x => x.ExpertFileId == id);
+
+            #region 進行搜尋動作
+            if (!string.IsNullOrWhiteSpace(dataRequest.Search))
+            {
+                DataSource = DataSource
+                .Where(x => x.FileName.Contains(dataRequest.Search));
+            }
+            #endregion
+
+            #region 進行排序動作
+            if (dataRequest.Sorted != null)
+            {
+                SortCondition CurrentSortCondition = dataRequest.Sorted;
+                switch (CurrentSortCondition.Id)
+                {
+                    case (int)ExpertFileChunkSortEnum.NameDescending:
+                        DataSource = DataSource.OrderByDescending(x => x.FileName);
+                        break;
+                    case (int)ExpertFileChunkSortEnum.NameAscending:
+                        DataSource = DataSource.OrderBy(x => x.FileName);
+                        break;
+                    default:
+                        DataSource = DataSource.OrderBy(x => x.FileName);
                         break;
                 }
             }
@@ -109,7 +171,6 @@ namespace Backend.Services
         {
             try
             {
-                CleanTrackingHelper.Clean<ExpertFileChunk>(context);
                 ExpertFileChunk itemParameter = Mapper.Map<ExpertFileChunk>(paraObject);
                 CleanTrackingHelper.Clean<ExpertFileChunk>(context);
                 await context.ExpertFileChunk
@@ -186,12 +247,14 @@ namespace Backend.Services
         #region CRUD 的限制條件檢查
         public async Task<VerifyRecordResult> BeforeAddCheckAsync(ExpertFileChunkAdapterModel paraObject)
         {
-            var searchItem = await context.ExpertFileChunk
+            CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+            var item = await context.ExpertFileChunk
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Name == paraObject.Name);
-            if (searchItem != null)
+                .FirstOrDefaultAsync(x => x.ExpertFileId == paraObject.ExpertFileId &&
+                x.ConvertIndex == paraObject.ConvertIndex);
+            if (item != null)
             {
-                return VerifyRecordResultFactory.Build(false, ErrorMessageEnum.要新增的紀錄已經存在無法新增);
+                return VerifyRecordResultFactory.Build(false, "該 Chunk 已經存在`,不能重複");
             }
             return VerifyRecordResultFactory.Build(true);
         }
@@ -199,6 +262,7 @@ namespace Backend.Services
         public async Task<VerifyRecordResult> BeforeUpdateCheckAsync(ExpertFileChunkAdapterModel paraObject)
         {
             CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+
             var searchItem = await context.ExpertFileChunk
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == paraObject.Id);
@@ -208,44 +272,29 @@ namespace Backend.Services
             }
 
             searchItem = await context.ExpertFileChunk
-               .AsNoTracking()
-               .FirstOrDefaultAsync(x => x.Name == paraObject.Name &&
-               x.Id != paraObject.Id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.ExpertFileId == paraObject.ExpertFileId &&
+                x.ConvertIndex == paraObject.ConvertIndex &&
+                x.Id != paraObject.Id);
             if (searchItem != null)
             {
-                return VerifyRecordResultFactory.Build(false, ErrorMessageEnum.要修改的紀錄已經存在無法修改);
+                return VerifyRecordResultFactory.Build(false, "該 Chunk 已經存在，不能重複");
             }
             return VerifyRecordResultFactory.Build(true);
         }
 
         public async Task<VerifyRecordResult> BeforeDeleteCheckAsync(ExpertFileChunkAdapterModel paraObject)
         {
-            try
+            CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+            var searchItem = await context.ExpertFileChunk
+             .AsNoTracking()
+             .FirstOrDefaultAsync(x => x.Id == paraObject.Id);
+            if (searchItem == null)
             {
-                CleanTrackingHelper.Clean<OrderItem>(context);
-                CleanTrackingHelper.Clean<ExpertFileChunk>(context);
-
-                var searchItem = await context.ExpertFileChunk
-                 .AsNoTracking()
-                 .FirstOrDefaultAsync(x => x.Id == paraObject.Id);
-                if (searchItem == null)
-                {
-                    return VerifyRecordResultFactory.Build(false, ErrorMessageEnum.無法刪除紀錄_要刪除的紀錄已經不存在資料庫上);
-                }
-
-                var searchOrderItemItem = await context.OrderItem
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.ExpertFileChunkId == paraObject.Id);
-                if (searchOrderItemItem != null)
-                {
-                    return VerifyRecordResultFactory.Build(false, ErrorMessageEnum.該紀錄無法刪除因為有其他資料表在使用中);
-                }
-                return VerifyRecordResultFactory.Build(true);
+                return VerifyRecordResultFactory.Build(false, ErrorMessageEnum.無法刪除紀錄_要刪除的紀錄已經不存在資料庫上);
             }
-            catch (Exception ex)
-            {
-                return VerifyRecordResultFactory.Build(false, "刪除記錄發生例外異常", ex);
-            }
+
+            return VerifyRecordResultFactory.Build(true);
         }
         #endregion
 
