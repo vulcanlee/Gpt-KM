@@ -2,7 +2,6 @@
 using CommonDomain.DataModels;
 using Domains.Models;
 using EFCore.BulkExtensions;
-using EntityModel.Entities;
 using GptLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Dynamic;

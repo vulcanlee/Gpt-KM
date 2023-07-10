@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using EntityModel.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
