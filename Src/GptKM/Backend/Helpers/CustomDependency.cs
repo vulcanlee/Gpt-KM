@@ -38,6 +38,8 @@ namespace Backend.Helpers
             #endregion
 
             #region 註冊 ViewModel
+            services.AddTransient<ExpertDirectoryViewModel>();
+
             services.AddTransient<ExceptionRecordViewModel>();
             services.AddTransient<MailQueueViewModel>();
             services.AddTransient<AccountPolicyViewModel>();

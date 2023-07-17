@@ -233,7 +233,7 @@ namespace Backend.Services
                     return VerifyRecordResultFactory.Build(false, ErrorMessageEnum.無法刪除紀錄_要刪除的紀錄已經不存在資料庫上);
                 }
 
-                var searchOrderItemItem = await context.OrderItem
+                var searchOrderItemItem = await context.ExpertFile
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.ExpertDirectoryId == paraObject.Id);
                 if (searchOrderItemItem != null)

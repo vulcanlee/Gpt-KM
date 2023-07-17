@@ -16,6 +16,7 @@ namespace Backend.Services.Interfaces
         Task<VerifyRecordResult> DeleteAsync(int id);
         Task<DataRequestResult<ExpertFileChunkAdapterModel>> GetAsync(DataRequest dataRequest);
         Task<ExpertFileChunkAdapterModel> GetAsync(int id);
+        Task<DataRequestResult<ExpertFileChunkAdapterModel>> GetByHeaderIDAsync(int id, DataRequest dataRequest);
         Task<VerifyRecordResult> UpdateAsync(ExpertFileChunkAdapterModel paraObject);
     }
 }

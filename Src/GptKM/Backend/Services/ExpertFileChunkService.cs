@@ -17,7 +17,7 @@ namespace Backend.Services
     using System;
     using Backend.Services.Interfaces;
 
-    public class ExpertFileChunkService : IExpertFileChunkService1
+    public class ExpertFileChunkService : IExpertFileChunkService
     {
         #region 欄位與屬性
         private readonly BackendDBContext context;

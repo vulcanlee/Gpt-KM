@@ -659,6 +659,22 @@ namespace Backend.Services
             cc += 10;
             menuData = new MenuData()
             {
+                Name = BAL.Helpers.MagicHelper.目錄對應管理功能名稱,
+                CodeName = "ExpertDirectory",
+                Enable = true,
+                Icon = "mdi-lightbulb-group",
+                IsGroup = false,
+                Level = 1,
+                MenuRoleId = menuRole開發者.Id,
+                Sequence = cc,
+            };
+            context.Add(menuData);
+            #endregion
+
+            #region 商品管理功能名稱
+            cc += 10;
+            menuData = new MenuData()
+            {
                 Name = BAL.Helpers.MagicHelper.商品管理功能名稱,
                 CodeName = "Product",
                 Enable = true,
