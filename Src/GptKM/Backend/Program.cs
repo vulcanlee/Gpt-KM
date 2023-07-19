@@ -265,10 +265,13 @@ try
     IOptions<OpenAIConfiguration> openAIConfigurationOption = app.Services.GetRequiredService<IOptions<OpenAIConfiguration>>();
     OpenAIConfiguration openAIConfigurationValue = openAIConfigurationOption.Value;
     OpenAIConfiguration openAIConfiguration = app.Services.GetRequiredService<OpenAIConfiguration>();
-    openAIConfiguration.AzureOpenAIKey = openAIConfigurationValue.AzureOpenAIKey;
-    openAIConfiguration.AzureOpenAIEndpoint = openAIConfigurationValue.AzureOpenAIEndpoint;
-    openAIConfiguration.TextDavinciModelName = openAIConfigurationValue.TextDavinciModelName;
-    openAIConfiguration.TextEmbeddingAdaModelName = openAIConfigurationValue.TextEmbeddingAdaModelName;
+
+    openAIConfiguration = openAIConfigurationValue;
+
+    //openAIConfiguration.AzureOpenAIKey = openAIConfigurationValue.AzureOpenAIKey;
+    //openAIConfiguration.AzureOpenAIEndpoint = openAIConfigurationValue.AzureOpenAIEndpoint;
+    //openAIConfiguration.TextDavinciModelName = openAIConfigurationValue.TextDavinciModelName;
+    //openAIConfiguration.TextEmbeddingAdaModelName = openAIConfigurationValue.TextEmbeddingAdaModelName;
     #endregion
 
     #region 當呼叫 API ( /api/someController ) 且該服務端點不存在的時候，將會替換網頁為 404 的 APIResult 訊息
