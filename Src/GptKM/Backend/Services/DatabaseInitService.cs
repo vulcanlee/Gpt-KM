@@ -676,7 +676,7 @@ namespace Backend.Services
             menuData = new MenuData()
             {
                 Name = BAL.Helpers.MagicHelper.上傳檔案清單功能名稱,
-                CodeName = "FileUploadList",
+                CodeName = "FileList",
                 Enable = true,
                 Icon = "mdi-lightbulb-group",
                 IsGroup = false,

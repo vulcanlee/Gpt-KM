@@ -42,6 +42,7 @@ namespace Backend.Services
             DataRequestResult<ExpertFileAdapterModel> result = new();
             var DataSource = context.ExpertFile
                 .AsNoTracking()
+                .Include(x=>x.ExpertDirectory)
                 .Include(x => x.ExpertFileChunk)
                 .AsQueryable();
 
@@ -104,6 +105,7 @@ namespace Backend.Services
             DataRequestResult<ExpertFileAdapterModel> result = new();
             var DataSource = context.ExpertFile
                 .AsNoTracking()
+                .Include(x => x.ExpertDirectory)
                 .Include(x => x.ExpertFileChunk)
                 .Where(x => x.ExpertDirectoryId == id);
 
@@ -164,6 +166,7 @@ namespace Backend.Services
             ExpertFile item = await context.ExpertFile
                 .AsNoTracking()
                 .Include(x => x.ExpertFileChunk)
+                .Include(x => x.ExpertDirectory)
                 .FirstOrDefaultAsync(x => x.Id == id);
             ExpertFileAdapterModel result = Mapper.Map<ExpertFileAdapterModel>(item);
             await OhterDependencyData(result);
@@ -313,6 +316,7 @@ namespace Backend.Services
         #region 其他服務方法
         Task OhterDependencyData(ExpertFileAdapterModel data)
         {
+            data.ConvertDirectoryName = data.ExpertDirectory.Name;
             return Task.FromResult(0);
         }
         #endregion

@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
     using AutoMapper;
+    using Backend.Services;
     using Backend.AdapterModels;
     using CommonDomain.DataModels;
     using Newtonsoft.Json;
@@ -12,6 +13,9 @@
 
     public partial class ExpertFileAdapter : DataAdaptor<IExpertFileService>
     {
+        [Parameter]
+        public int HeaderID { get; set; }
+
         [Parameter]
         public SortCondition CurrentSortCondition { get; set; }
 
@@ -37,7 +41,15 @@
             #region 發出查詢要求
             try
             {
-                DataRequestResult<ExpertFileAdapterModel> adaptorModelObjects = await Service.GetAsync(dataRequest);
+                DataRequestResult<ExpertFileAdapterModel> adaptorModelObjects;
+                if (HeaderID == -1)
+                {
+                    adaptorModelObjects = await Service.GetAsync(dataRequest);
+                }
+                else
+                {
+                    adaptorModelObjects = await Service.GetByHeaderIDAsync(HeaderID, dataRequest);
+                }
                 var item = dataManagerRequest.RequiresCounts
                     ? new DataResult() { Result = adaptorModelObjects.Result, Count = adaptorModelObjects.Count }
                     : (object)adaptorModelObjects.Result;

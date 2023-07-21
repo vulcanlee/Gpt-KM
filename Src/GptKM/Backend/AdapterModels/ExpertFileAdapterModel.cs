@@ -8,6 +8,7 @@ namespace Backend.AdapterModels
         public int Id { get; set; }
         public int ExpertDirectoryId { get; set; }
         public ExpertDirectory ExpertDirectory { get; set; }
+        public string ExpertDirectoryName { get; set; } = string.Empty;
         /// <summary>
         /// 存在的目錄之絕對路徑名稱
         /// </summary>
@@ -49,9 +50,9 @@ namespace Backend.AdapterModels
 
         public virtual ICollection<ExpertFileChunkAdapterModel> ExpertFileChunk { get; set; }
 
-        public ExpertDirectoryAdapterModel Clone()
+        public ExpertFileAdapterModel Clone()
         {
-            return ((ICloneable)this).Clone() as ExpertDirectoryAdapterModel;
+            return ((ICloneable)this).Clone() as ExpertFileAdapterModel;
         }
         object ICloneable.Clone()
         {

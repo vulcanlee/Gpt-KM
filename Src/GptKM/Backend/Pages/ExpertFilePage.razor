@@ -1,0 +1,14 @@
+﻿@page "/FileList"
+@attribute [Authorize(Roles = "FileList")]
+
+<PageTitle>@Title</PageTitle>
+
+<div>
+    <div class="page-title">@BAL.Helpers.MagicHelper.上傳檔案清單功能名稱</div>
+    <ExpertFileView />
+</div>
+
+@code{
+    public string Title { get; set; } = Backend.Helpers.HeaderBuilderHelper
+        .GetTitle(BAL.Helpers.MagicHelper.上傳檔案清單功能名稱);
+}

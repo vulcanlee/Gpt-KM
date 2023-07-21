@@ -40,6 +40,7 @@ namespace Backend.Helpers
 
             #region 註冊 ViewModel
             services.AddTransient<RootFileUploadViewModel>();
+            services.AddTransient<ExpertFileViewModel>();
             services.AddTransient<ExpertDirectoryViewModel>();
 
             services.AddTransient<ExceptionRecordViewModel>();

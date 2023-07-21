@@ -1,8 +1,15 @@
 ﻿@page "/ExpertDirectory"
 @attribute [Authorize(Roles = "ExpertDirectory")]
 
+<PageTitle>@Title</PageTitle>
+
 <div>
     <div class="page-title">@BAL.Helpers.MagicHelper.目錄對應管理功能名稱</div>
     <ExpertDirectoryView PageSize="@MagicHelper.GridPageSize" />
 
 </div>
+
+@code {
+    public string Title { get; set; } = Backend.Helpers.HeaderBuilderHelper
+        .GetTitle(BAL.Helpers.MagicHelper.目錄對應管理功能名稱);
+}
