@@ -10,7 +10,7 @@
         public AutoMapping()
         {
             #region Blazor AdapterModel
-            CreateMap<ExpertDirectory, ExpertDirectoryAdapterModel>();
+            CreateMap<ExpertFile, ExpertFileAdapterModel>();
             CreateMap<ExpertFileAdapterModel, ExpertFile>();
             CreateMap<ExpertDirectory, ExpertDirectoryAdapterModel>();
             CreateMap<ExpertDirectoryAdapterModel, ExpertDirectory>();

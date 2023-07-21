@@ -14,6 +14,8 @@
     public partial class ExpertFileAdapter : DataAdaptor<IExpertFileService>
     {
         [Parameter]
+        public ILogger<ExpertFileAdapter> Logger { get; set; }
+        [Parameter]
         public int HeaderID { get; set; }
 
         [Parameter]
@@ -56,8 +58,9 @@
                 await Task.Yield();
                 return item;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.LogError(ex, "ExpertFileAdapter 發生例外異常");
                 return new DataResult() { Result = new List<ExpertFileAdapterModel>(), Count = 0 };
             }
             #endregion
