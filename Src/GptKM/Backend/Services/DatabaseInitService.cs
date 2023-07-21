@@ -655,7 +655,7 @@ namespace Backend.Services
             #endregion
 
             #region 範例程式碼，隱藏其功能表清單
-            #region 商品管理功能名稱
+            #region 目錄對應管理功能名稱
             cc += 10;
             menuData = new MenuData()
             {
@@ -671,12 +671,12 @@ namespace Backend.Services
             context.Add(menuData);
             #endregion
 
-            #region 商品管理功能名稱
+            #region 檔案上傳功能名稱
             cc += 10;
             menuData = new MenuData()
             {
-                Name = BAL.Helpers.MagicHelper.商品管理功能名稱,
-                CodeName = "Product",
+                Name = BAL.Helpers.MagicHelper.上傳檔案清單功能名稱,
+                CodeName = "FileUploadList",
                 Enable = true,
                 Icon = "mdi-lightbulb-group",
                 IsGroup = false,
@@ -687,12 +687,12 @@ namespace Backend.Services
             context.Add(menuData);
             #endregion
 
-            #region 商品管理功能名稱
+            #region 檔案上傳功能名稱
             cc += 10;
             menuData = new MenuData()
             {
-                Name = BAL.Helpers.MagicHelper.訂單管理功能名稱,
-                CodeName = "Order",
+                Name = BAL.Helpers.MagicHelper.檔案上傳功能名稱,
+                CodeName = "FileUpload",
                 Enable = true,
                 Icon = "mdi-lightbulb-group",
                 IsGroup = false,
@@ -702,6 +702,7 @@ namespace Backend.Services
             };
             context.Add(menuData);
             #endregion
+
             #endregion
             #endregion
 

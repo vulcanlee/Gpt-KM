@@ -1,0 +1,101 @@
+﻿@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Calendars
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Buttons
+
+@inject RootFileUploadViewModel ViewModel
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+<div class="form-row">
+    <div class="form-group col">
+        <label class="control-label">上傳檔案(限定一次僅能上傳一個檔案)</label>
+        <SfUploader @ref="upload1" AutoUpload="true" AllowMultiple=false
+                    AllowedExtensions=".xls, .xlsx">
+            <UploaderEvents ValueChange="UploaderChange"></UploaderEvents>
+        </SfUploader>
+    </div>
+</div>
+
+@if (ViewModel.PreCheckHasError == true)
+{
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+            <span class="">匯入前的檢查結果</span>
+        </div>
+        <div class="card-body bg-light">
+            <div>
+                <div class="h3 text-secondary">
+                    指定上傳檔案 : @ViewModel.UploadFileName
+                </div>
+                <div class="h2 text-danger">
+                    @ViewModel.Message
+                </div>
+                <div class="text-info">
+                    @ViewModel.ProcessingLog
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="footer-button">
+    @*<SfButton CssClass="e-primary save-btn" @onclick="ViewModel.OnSaveAsync">儲存</SfButton>*@
+</div>
+
+<div>@ViewModel.PasswordStrengthName</div>
+
+<MessageBox Height="@ViewModel.MessageBox.Height" Width="@ViewModel.MessageBox.Width"
+            IsVisible="@ViewModel.MessageBox.IsVisible"
+            Title="@ViewModel.MessageBox.Title" Message="@ViewModel.MessageBox.Body"
+            Callback="ViewModel.MessageBox.MessageDelegate" />
+
+<DialogBackground />
+
+@code {
+    SfUploader upload1;
+
+    public async Task UploaderChange(UploadChangeEventArgs args)
+    {
+        ViewModel.Message = "";
+        ViewModel.ShowStatusHandler = null;
+        ViewModel.ShowStatusHandler = (x) =>
+        {
+            InvokeAsync(() =>
+            {
+                ViewModel.ProcessingLog = x;
+                ViewModel.Message = ViewModel.Message;
+                StateHasChanged();
+            });
+        };
+        ViewModel.IsLoad = false;
+        if (args.Files.Count > 0)
+        {
+            ViewModel.UploadFileName = args.Files[0].FileInfo.Name;
+            //await ViewModel.DataHelper.GetUploadFileAsync(args.Files[0].Stream);
+        }
+        await upload1.ClearAll();
+        //if (ViewModel.PreCheckHasError == false)
+        //UploadFileIsReady = true;
+    }
+}
+

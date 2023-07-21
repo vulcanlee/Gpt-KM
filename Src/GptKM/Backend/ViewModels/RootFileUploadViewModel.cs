@@ -32,6 +32,12 @@ namespace Backend.ViewModels
         public NavigationManager NavigationManager { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
         public bool Relogin { get; set; } = false;
+        public string Message { get; set; }=string.Empty;
+        public string ProcessingLog { get; set; }=string.Empty;
+        public string UploadFileName { get; set; }=string.Empty;
+        public bool PreCheckHasError { get; set; }=false;
+        public bool IsLoad { get; set; }=false;
+        public Action<string> ShowStatusHandler;
 
         public RootFileUploadViewModel(IRootFileUploadService RootFileUploadService,
             NavigationManager navigationManager, IHttpContextAccessor httpContextAccessor)
@@ -45,64 +51,6 @@ namespace Backend.ViewModels
             LocalEditContext = context;
         }
         public string PasswordStrengthName { get; set; }
-        public async Task OnSaveAsync()
-        {
-            Relogin = false;
-            var PasswordStrength = PasswordCheck.GetPasswordStrength(RootFileUploadModel.NewPassword);
-            PasswordStrengthName = PasswordStrength.ToString();
-
-            MyUserAdapterModel myUserAdapterModel = new MyUserAdapterModel();
-            #region 進行 Form Validation 檢查驗證作業
-            if (LocalEditContext.Validate() == false)
-            {
-                return;
-            }
-            #endregion
-
-            #region 其他資料完整性驗證
-            if (RootFileUploadModel.NewPasswordAgain != RootFileUploadModel.NewPassword)
-            {
-                MessageBox.Show("400px", "200px",
-                    ErrorMessageMappingHelper.Instance.GetErrorMessage(ErrorMessageEnum.警告),
-                    ErrorMessageMappingHelper.Instance.GetErrorMessage(ErrorMessageEnum.新密碼2次輸入須相同),
-                    CloseMessageBox);
-                return;
-            }
-            else
-            {
-                myUserAdapterModel = await RootFileUploadService.GetCurrentUser();
-                if (myUserAdapterModel == null)
-                {
-                    MessageBox.Show("400px", "200px",
-                        ErrorMessageMappingHelper.Instance.GetErrorMessage(ErrorMessageEnum.警告),
-                        ErrorMessageMappingHelper.Instance.GetErrorMessage(ErrorMessageEnum.使用者不存在),
-                        CloseMessageBox);
-                    return;
-                }
-            }
-            #endregion
-
-            string msg = await RootFileUploadService
-                .CheckWetherCanRootFileUpload(myUserAdapterModel, RootFileUploadModel.NewPassword);
-            if (string.IsNullOrEmpty(msg) == false)
-            {
-                MessageBox.Show("400px", "200px",
-                    ErrorMessageMappingHelper.Instance.GetErrorMessage(ErrorMessageEnum.警告), msg,
-                        CloseMessageBox);
-                return;
-            }
-
-            #region 進行密碼變更
-            await RootFileUploadService.RootFileUpload(myUserAdapterModel, RootFileUploadModel.NewPassword,
-                HttpContextAccessor.GetConnectionIP());
-            Relogin = true;
-            MessageBox.Show("400px", "200px",
-                ErrorMessageMappingHelper.Instance.GetErrorMessage(ErrorMessageEnum.警告),
-                ErrorMessageMappingHelper.Instance.GetErrorMessage(ErrorMessageEnum.密碼已經變更成功),
-                        CloseMessageBox);
-
-            #endregion
-        }
 
         public async Task CloseMessageBox()
         {

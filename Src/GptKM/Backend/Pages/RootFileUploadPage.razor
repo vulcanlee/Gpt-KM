@@ -1,0 +1,14 @@
+﻿@page "/FileUpload"
+@attribute [Authorize(Roles = "FileUpload")]
+
+<PageTitle>@Title</PageTitle>
+
+<div>
+    <div class="page-title">@BAL.Helpers.MagicHelper.檔案上傳功能名稱</div>
+    <RootFileUploadView />
+</div>
+
+@code{
+    public string Title { get; set; } = Backend.Helpers.HeaderBuilderHelper
+        .GetTitle(BAL.Helpers.MagicHelper.檔案上傳功能名稱);
+}

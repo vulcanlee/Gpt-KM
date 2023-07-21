@@ -13,6 +13,7 @@ namespace Backend.Helpers
         public static IServiceCollection AddCustomServices(this IServiceCollection services)
         {
             #region 註冊服務
+            services.AddTransient<IRootFileUploadService, RootFileUploadService>();
             services.AddTransient<IExpertDirectoryService, ExpertDirectoryService>();
             services.AddTransient<IExpertFileService, ExpertFileService>();
             services.AddTransient<IExpertFileChunkService, ExpertFileChunkService>();
@@ -38,6 +39,7 @@ namespace Backend.Helpers
             #endregion
 
             #region 註冊 ViewModel
+            services.AddTransient<RootFileUploadViewModel>();
             services.AddTransient<ExpertDirectoryViewModel>();
 
             services.AddTransient<ExceptionRecordViewModel>();

@@ -39,6 +39,8 @@ namespace BAL.Helpers
         public static readonly string Excel匯入功能名稱 = "Excel 匯入";
         public static readonly string 帳號管理功能名稱 = "帳號管理";
         public static readonly string 目錄對應管理功能名稱 = "目錄對應";
+        public static readonly string 上傳檔案清單功能名稱 = "上傳檔案清單";
+        public static readonly string 檔案上傳功能名稱 = "檔案上傳";
         public static readonly string 訂單管理功能名稱 = "訂單管理";
         public static readonly string 訂單明細管理功能名稱 = "訂單明細管理";
         public static readonly string 商品管理功能名稱 = "商品管理";
