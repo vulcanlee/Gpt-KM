@@ -140,18 +140,16 @@
 @code{
     SfGrid<ExpertFileAdapterModel> Grid;
     [Parameter]
+    public int ParentId { get; set; } = 0;
     public MasterRecord Header { get; set; } = new MasterRecord();
     [Parameter]
     public int PageSize { get; set; } = 15;
-    [Parameter]
-    public EventCallback<MasterRecord> OnRecordChanged { get; set; }
-    [Parameter]
-    public EventCallback<object> OnViewRender { get; set; }
 
     #region 生命週期事件
     protected override void OnInitialized()
     {
         ViewModel.Setup(this, this);
+        Header.Id = ParentId;
     }
     protected override void OnParametersSet()
     {
@@ -165,10 +163,6 @@
         if (firstRender == true)
         {
             ViewModel.Setup(this, this);
-        }
-        if (OnViewRender.HasDelegate)
-        {
-            await OnViewRender.InvokeAsync(null);
         }
     }
     #endregion

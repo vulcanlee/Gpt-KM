@@ -1,14 +1,29 @@
-﻿@page "/FileList"
+﻿@page "/FileList/{p?}"
 @attribute [Authorize(Roles = "FileList")]
 
 <PageTitle>@Title</PageTitle>
 
 <div>
     <div class="page-title">@BAL.Helpers.MagicHelper.上傳檔案清單功能名稱</div>
-    <ExpertFileView />
+    <ExpertFileView PageSize="@MagicHelper.GridPageSize" ParentId="ParentId" />
 </div>
 
 @code{
+    [Parameter]
+    public string? p { get; set; }
+    public int Header { get; set; } = 0;
+    public int ParentId { get; set; } = 0;
     public string Title { get; set; } = Backend.Helpers.HeaderBuilderHelper
         .GetTitle(BAL.Helpers.MagicHelper.上傳檔案清單功能名稱);
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine(p);
+        if (int.TryParse(p, out int Header))
+        {
+            ParentId = Header;
+        }
+        //if (Header != null)
+        //    ParentId = Header.Value;
+    }
 }

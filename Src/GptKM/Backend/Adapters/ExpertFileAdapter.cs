@@ -42,7 +42,7 @@
             try
             {
                 DataRequestResult<ExpertFileAdapterModel> adaptorModelObjects;
-                if (HeaderID == -1)
+                if (HeaderID <= 0)
                 {
                     adaptorModelObjects = await Service.GetAsync(dataRequest);
                 }
