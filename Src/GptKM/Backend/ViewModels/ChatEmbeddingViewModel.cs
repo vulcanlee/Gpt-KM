@@ -69,7 +69,7 @@ namespace Backend.ViewModels
 
         public void ShowChunkContext(SearchResult searchResult)
         {
-            if(searchResult.ShowEmbeddingText == true)
+            if (searchResult.ShowEmbeddingText == true)
             {
                 searchResult.ShowEmbeddingText = false;
             }
@@ -82,6 +82,15 @@ namespace Backend.ViewModels
 
                 searchResult.ShowEmbeddingText = true;
             }
+        }
+
+        public async Task GetAnswerAsync(SearchResult searchResult)
+        {
+            ChatEmbeddingModel.DoSearching = true;
+            ChatEmbeddingModel.Answer = "";
+            ChatEmbeddingModel.Answer = await embeddingSearchHelper
+                .GetAnswerAsync(searchResult.GptEmbeddingItem.ExpertFileChunk, ChatEmbeddingModel.Question);
+            ChatEmbeddingModel.DoSearching = false;
         }
     }
 }

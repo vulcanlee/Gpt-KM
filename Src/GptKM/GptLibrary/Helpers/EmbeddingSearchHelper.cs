@@ -19,15 +19,17 @@ public class EmbeddingSearchHelper
 {
     private readonly OpenAIConfiguration openAIConfiguration;
     private readonly AdaEmbeddingVector adaEmbeddingVector;
+    private readonly DavinciPromptCompletion davinciPromptCompletion;
     private readonly ILogger<EmbeddingSearchHelper> logger;
     List<GptEmbeddingItem> allDocumentsEmbedding = new();
 
     public EmbeddingSearchHelper(OpenAIConfiguration openAIConfiguration,
-        AdaEmbeddingVector adaEmbeddingVector,
+        AdaEmbeddingVector adaEmbeddingVector, DavinciPromptCompletion davinciPromptCompletion,
         ILogger<EmbeddingSearchHelper> logger)
     {
         this.openAIConfiguration = openAIConfiguration;
         this.adaEmbeddingVector = adaEmbeddingVector;
+        this.davinciPromptCompletion = davinciPromptCompletion;
         this.logger = logger;
     }
 
@@ -55,6 +57,15 @@ public class EmbeddingSearchHelper
         allDocumentsCosineSimilarity = allDocumentsCosineSimilarity
             .OrderByDescending(x => x.CosineSimilarity).Take(10).ToList();
         return allDocumentsCosineSimilarity;
+    }
+
+    public async Task<string> GetAnswerAsync(ExpertFileChunk expertFileChunk, string question)
+    {
+        string result = string.Empty;
+        string fileName = expertFileChunk.EmbeddingTextFileName;
+        string chunkMessage = await File.ReadAllTextAsync(fileName);
+        result = await davinciPromptCompletion.GptSummaryAsync(chunkMessage, $"請使用底下提示文字，回答這個問題:\"{question}\"");
+        return result;
     }
 
     public async Task AddAsync(ExpertFile expertFile)

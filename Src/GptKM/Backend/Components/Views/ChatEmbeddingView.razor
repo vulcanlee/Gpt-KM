@@ -8,6 +8,7 @@
 @using Syncfusion.Blazor.DropDowns
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.ProgressBar
 
 @inject ChatEmbeddingViewModel ViewModel
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -38,6 +39,16 @@
     </div>
 }
 
+@if (ViewModel.ChatEmbeddingModel.DoSearching == true)
+{
+    <SfProgressBar Type="ProgressType.Circular" Value="20" Width="160px" Height="160px"
+                   StartAngle="180" EndAngle="180" CornerRadius="CornerType.Round"
+                   IsIndeterminate="true" Minimum="0" Maximum="100">
+        <ProgressBarAnimation Enable="true" Duration="2000" Delay="0"></ProgressBarAnimation>
+    </SfProgressBar>
+    <div class="text-primary h2">處理中，請稍後</div>
+}
+
 @if (ViewModel.ChatEmbeddingModel.SearchResult.Count > 0)
 {
     foreach (var item in ViewModel.ChatEmbeddingModel.SearchResult)
@@ -56,7 +67,8 @@
             </div>
             <div class="row my-1">
                 <div class="col">
-                    <SfButton CssClass="e-primary save-btn">解答</SfButton>
+                    <SfButton CssClass="e-primary save-btn"
+                    @onclick="()=>ViewModel.GetAnswerAsync(item)">解答</SfButton>
                 </div>
                 <div class="col">
                     <SfButton CssClass="e-primary save-btn">下載</SfButton>

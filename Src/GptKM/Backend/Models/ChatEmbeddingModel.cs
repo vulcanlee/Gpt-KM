@@ -12,6 +12,7 @@ namespace Backend.Models
     {
         public string Question { get; set; }=string.Empty;
         public string Answer { get; set; } = string.Empty;
+        public bool DoSearching { get; set; } = false;
         public List<SearchResult> SearchResult { get; set; } = new List<SearchResult>();
     }
 
