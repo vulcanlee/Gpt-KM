@@ -73,6 +73,7 @@ namespace Backend.ViewModels
             {
                 searchResult.ShowEmbeddingText = false;
             }
+            else
             {
                 foreach (var item in ChatEmbeddingModel.SearchResult)
                 {
