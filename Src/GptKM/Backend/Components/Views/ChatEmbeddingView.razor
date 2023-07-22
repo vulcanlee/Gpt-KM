@@ -1,4 +1,5 @@
-﻿@using Syncfusion.Blazor
+﻿@using GptLibrary.Models;
+@using Syncfusion.Blazor
 @using Syncfusion.Blazor.Data
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Popups
@@ -18,17 +19,62 @@
             <div class="row">
                 <div class="col-11">
                     <SfTextBox Type="InputType.Password" Multiline="true" Placeholder="請輸入你的問題"
-                    rows="3"
+                               rows="3"
                     @bind-Value="ViewModel.ChatEmbeddingModel.Question"></SfTextBox>
                 </div>
                 <div class="col-1">
                     <SfButton CssClass="e-primary save-btn"
-                    @onclick="ViewModel.SendQuestionAsync">送出</SfButton>
+                    @onclick="DoSearchAsync">送出</SfButton>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@if (string.IsNullOrEmpty(ViewModel.ChatEmbeddingModel.Answer) == false)
+{
+    <div class="alert alert-primary my-2" role="alert">
+        @ViewModel.ChatEmbeddingModel.Answer
+    </div>
+}
+
+@if (ViewModel.ChatEmbeddingModel.SearchResult.Count > 0)
+{
+    foreach (var item in ViewModel.ChatEmbeddingModel.SearchResult)
+    {
+        <div class="alert alert-secondary my-1" role="alert">
+            <div class="row">
+                <div class="col-2">
+                    @item.GptEmbeddingItem.CosineSimilarity
+                </div>
+                <div class="col-1">
+                    @item.GptEmbeddingItem.ExpertFileChunk.ConvertIndex
+                </div>
+                <div class="col-9" @onclick="()=>ViewModel.ShowChunkContext(item)">
+                    @item.GptEmbeddingItem.FileName
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="col">
+                    <SfButton CssClass="e-primary save-btn">解答</SfButton>
+                </div>
+                <div class="col">
+                    <SfButton CssClass="e-primary save-btn">下載</SfButton>
+                </div>
+            </div>
+            @if (item.ShowEmbeddingText == true)
+            {
+                <div class="alert alert-warning m-1" role="alert">
+                    <div class="row mt-2">
+                        <div class="col">
+                            @item.GptEmbeddingItem.ChunkContent
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
 
 <MessageBox Height="@ViewModel.MessageBox.Height" Width="@ViewModel.MessageBox.Width"
             IsVisible="@ViewModel.MessageBox.IsVisible"
@@ -38,5 +84,18 @@
 <DialogBackground />
 
 @code {
+    async Task DoSearchAsync()
+    {
+        ViewModel.ChatEmbeddingModel.SearchResult.Clear();
+        List<GptEmbeddingItem> gptResult = await ViewModel.SendQuestionAsync();
+        foreach (var item in gptResult)
+        {
+            ViewModel.ChatEmbeddingModel.SearchResult.Add(new SearchResult()
+                {
+                    GptEmbeddingItem = item,
+                    ShowEmbeddingText = false
+                });
+        }
+    }
 }
 

@@ -20,7 +20,7 @@ public class EmbeddingSearchHelper
     private readonly OpenAIConfiguration openAIConfiguration;
     private readonly AdaEmbeddingVector adaEmbeddingVector;
     private readonly ILogger<EmbeddingSearchHelper> logger;
-    List<GptEmbeddingItem> allDocumentsEmbedding=new();
+    List<GptEmbeddingItem> allDocumentsEmbedding = new();
 
     public EmbeddingSearchHelper(OpenAIConfiguration openAIConfiguration,
         AdaEmbeddingVector adaEmbeddingVector,
@@ -90,6 +90,7 @@ public class EmbeddingSearchHelper
                     Embedding = theEmbedding,
                     FileName = expertFileChunkItem.FullName,
                     ChunkContent = embeddingContentContext,
+                    ExpertFileChunk = expertFileChunkItem
                 };
                 allDocumentsEmbedding.Add(embeddingItem);
             }

@@ -1,17 +1,6 @@
-﻿using Backend.AdapterModels;
-using Backend.Models;
+﻿using Backend.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using BAL.Helpers;
-using CommonDomain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Backend.Helpers;
-using Backend.Services.Interfaces;
-using Syncfusion.Blazor.Inputs;
 using CommonDomain.DataModels;
 using Backend.Services;
 using GptLibrary.Helpers;
@@ -71,11 +60,27 @@ namespace Backend.ViewModels
                 NavigationManager.NavigateTo("/Logout", true);
         }
 
-        public async Task SendQuestionAsync()
+        public async Task<List<GptEmbeddingItem>> SendQuestionAsync()
         {
             List<GptEmbeddingItem> gptEmbeddings = 
                 await embeddingSearchHelper.SearchAsync(ChatEmbeddingModel.Question);
+            return gptEmbeddings;
         }
 
+        public void ShowChunkContext(SearchResult searchResult)
+        {
+            if(searchResult.ShowEmbeddingText == true)
+            {
+                searchResult.ShowEmbeddingText = false;
+            }
+            {
+                foreach (var item in ChatEmbeddingModel.SearchResult)
+                {
+                    item.ShowEmbeddingText = false;
+                }
+
+                searchResult.ShowEmbeddingText = true;
+            }
+        }
     }
 }
