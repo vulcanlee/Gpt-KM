@@ -9,6 +9,7 @@ using CommonDomain.DataModels;
 using GptLibrary.Converts;
 using GptLibrary.Gpts;
 using GptLibrary.Services;
+using GptLibrary.Helpers;
 
 namespace Backend.Helpers
 {
@@ -64,6 +65,7 @@ namespace Backend.Helpers
             #endregion
 
             #region GPT Service
+            services.AddSingleton<EmbeddingSearchHelper>();
             services.AddSingleton<OpenAIConfiguration>();
             services.AddTransient<ConverterToTextFactory>();
             services.AddTransient<ConvertFileExtensionMatchService>();

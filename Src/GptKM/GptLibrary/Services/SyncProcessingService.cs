@@ -1,4 +1,6 @@
-﻿using Domains.Models;
+﻿using CommonDomain.DataModels;
+using Domains.Models;
+using GptLibrary.Helpers;
 using GptLibrary.Models;
 
 namespace GptLibrary.Services;
@@ -13,18 +15,21 @@ public class SyncProcessingService
     private readonly ConvertToTextService convertToTextService;
     private readonly ConvertToEmbeddingService convertToEmbeddingService;
     private readonly GptExpertFileService gptExpertFileService;
+    private readonly EmbeddingSearchHelper embeddingSearchHelper;
 
     public SyncProcessingService(SyncDirectoryService syncDirectoryService,
         SyncFilesToDatabaseService syncDatabaseService,
         ConvertToTextService convertToTextService,
         ConvertToEmbeddingService convertToEmbeddingService,
-        GptExpertFileService gptExpertFileService)
+        GptExpertFileService gptExpertFileService,
+        EmbeddingSearchHelper embeddingSearchHelper)
     {
         this.syncDirectoryService = syncDirectoryService;
         this.syncFilesToDatabase = syncDatabaseService;
         this.convertToTextService = convertToTextService;
         this.convertToEmbeddingService = convertToEmbeddingService;
         this.gptExpertFileService = gptExpertFileService;
+        this.embeddingSearchHelper = embeddingSearchHelper;
     }
 
     public async Task BeginSyncDirectoryAsync(ExpertDirectory expertDirectory)
@@ -71,6 +76,12 @@ public class SyncProcessingService
             #endregion
 
             await gptExpertFileService.ChangeStatusAsync(item.FullName, CommonDomain.Enums.ExpertFileStatusEnum.Finish);
+            ServiceResult<ExpertFile> expertFileResult = await gptExpertFileService.GetAsync(item.FullName);
+            if (expertFileResult.Status == true)
+            {
+                ExpertFile expertFile = expertFileResult.Payload;
+                await embeddingSearchHelper.AddAsync(expertFile);
+            }
         }
         #endregion
 

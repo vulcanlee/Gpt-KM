@@ -1,6 +1,7 @@
 ﻿using Domains.Models;
 using GptLibrary.Gpt;
 using GptLibrary.Gpts;
+using GptLibrary.Helpers;
 using GptLibrary.Models;
 using System.Dynamic;
 
@@ -15,16 +16,19 @@ public class ConvertToEmbeddingService
     private readonly GptExpertFileService gptExpertFileService;
     private readonly GptExpertFileChunkService gptExpertFileChunkService;
     private readonly ConvertFileModelService convertFileModelService;
+    private readonly EmbeddingSearchHelper embeddingSearchHelper;
 
     public ConvertToEmbeddingService(AdaEmbeddingVector adaEmbeddingVector,
         GptExpertFileService gptExpertFileService,
         GptExpertFileChunkService gptExpertFileChunkService,
-        ConvertFileModelService convertFileModelService)
+        ConvertFileModelService convertFileModelService,
+        EmbeddingSearchHelper embeddingSearchHelper)
     {
         this.adaEmbeddingVector = adaEmbeddingVector;
         this.gptExpertFileService = gptExpertFileService;
         this.gptExpertFileChunkService = gptExpertFileChunkService;
         this.convertFileModelService = convertFileModelService;
+        this.embeddingSearchHelper = embeddingSearchHelper;
     }
 
     /// <summary>
@@ -36,7 +40,8 @@ public class ConvertToEmbeddingService
         var expertFileResult = await gptExpertFileService.GetAsync(expertFile.FullName);
         expertFile = expertFileResult.Payload;
 
-        ConvertFileSplitItemModel convertFileItemModel = convertFile.ConvertFileSplitItems.FirstOrDefault(x => x.Index == index)!;
+        ConvertFileSplitItemModel convertFileItemModel = convertFile
+            .ConvertFileSplitItems.FirstOrDefault(x => x.Index == index)!;
         string chunkembeddingFileName = convertFileItemModel.EmbeddingJsonFileName;
         string content = convertFileItemModel.SourceText;
 
