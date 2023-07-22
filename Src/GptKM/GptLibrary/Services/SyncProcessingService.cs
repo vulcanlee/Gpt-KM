@@ -73,5 +73,7 @@ public class SyncProcessingService
             await gptExpertFileService.ChangeStatusAsync(item.FullName, CommonDomain.Enums.ExpertFileStatusEnum.Finish);
         }
         #endregion
+
+        int foo = 0;
     }
 }

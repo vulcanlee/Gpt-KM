@@ -68,6 +68,7 @@ public class SyncFilesToDatabaseService
                     ProcessingStatus = CommonDomain.Enums.ExpertFileStatusEnum.Begin,
                 };
 
+                await Console.Out.WriteLineAsync($"Found File : {expertFile.FileName}");
                 expertFiles.Add(expertFile);
                 expertAddFiles.Add(expertFile);
                 expertFilesNeedConvert.Add(itemFile);

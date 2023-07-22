@@ -33,7 +33,7 @@ namespace GptLibrary.Gpts
             #region 使用 Azure.AI.OpenAI 套件來 OpenAIClient 物件
             // Todo : 這裡要修改使用 appsetting 方式來取得
             var apiKey = openAIConfiguration.AzureOpenAIKey;
-            string endpoint = "https://openailabtw.openai.azure.com/";
+            string endpoint = openAIConfiguration.AzureOpenAIEndpoint;
             var client = new OpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
             #endregion
 

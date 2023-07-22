@@ -39,8 +39,11 @@ public class ConvertToEmbeddingService
         ConvertFileSplitItemModel convertFileItemModel = convertFile.ConvertFileSplitItems.FirstOrDefault(x => x.Index == index)!;
         string chunkembeddingFileName = convertFileItemModel.EmbeddingJsonFileName;
         string content = convertFileItemModel.SourceText;
-        //float[] embeddings = await adaEmbeddingVector.GetEmbeddingAsync(content);
-        //convertFileItemModel.Embedding = embeddings.ToList();
+
+        #region 產生 Embedding 向量
+        float[] embeddings = await adaEmbeddingVector.GetEmbeddingAsync(content);
+        convertFileItemModel.Embedding = embeddings.ToList();
+        #endregion
 
         await convertFileModelService
             .ExportEmbeddingJsonAsync(expertFile, convertFile, index);

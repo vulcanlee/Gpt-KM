@@ -7,11 +7,15 @@
 
 <h3>檢測 GPT 功能</h3>
 
-<div class="footer-button">
-    <SfButton CssClass="e-primary save-btn" @onclick="CheckDirectory">檢查對應目錄</SfButton>
-</div>
+@if (IsRunning == false)
+{
+    <div class="footer-button">
+        <SfButton CssClass="e-primary save-btn" @onclick="CheckDirectory">檢查對應目錄</SfButton>
+    </div>
+}
 
 @code {
+    public bool IsRunning { get; set; } = false;
     async Task CheckDirectory()
     {
         ExpertDirectory expertDirectory = null;
@@ -43,7 +47,11 @@
         #endregion
 
         #region 檢查專家目錄
+        IsRunning = true;
+        StateHasChanged();
         await SyncProcessingService.BeginSyncDirectoryAsync(expertDirectory);
+        IsRunning = false;
+        StateHasChanged();
         #endregion
 
     }

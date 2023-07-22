@@ -42,7 +42,7 @@ namespace Backend.Services
             DataRequestResult<ExpertFileAdapterModel> result = new();
             var DataSource = context.ExpertFile
                 .AsNoTracking()
-                .Include(x=>x.ExpertDirectory)
+                .Include(x => x.ExpertDirectory)
                 .Include(x => x.ExpertFileChunk)
                 .AsQueryable();
 
@@ -226,6 +226,7 @@ namespace Backend.Services
             try
             {
                 CleanTrackingHelper.Clean<ExpertFile>(context);
+                CleanTrackingHelper.Clean<ExpertFileChunk>(context);
                 ExpertFile item = await context.ExpertFile
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == id);
@@ -236,9 +237,20 @@ namespace Backend.Services
                 else
                 {
                     CleanTrackingHelper.Clean<ExpertFile>(context);
+                    CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+
+                    #region 刪除 Chunk
+                    List<ExpertFileChunk> fileChunks = await context.ExpertFileChunk
+                        .Where(x => x.ExpertFileId == id)
+                        .ToListAsync();
+                    context.ExpertFileChunk.RemoveRange(fileChunks);
+                    await context.SaveChangesAsync();
+                    #endregion
+
                     context.Entry(item).State = EntityState.Deleted;
                     await context.SaveChangesAsync();
                     CleanTrackingHelper.Clean<ExpertFile>(context);
+                    CleanTrackingHelper.Clean<ExpertFileChunk>(context);
                     return VerifyRecordResultFactory.Build(true);
                 }
             }

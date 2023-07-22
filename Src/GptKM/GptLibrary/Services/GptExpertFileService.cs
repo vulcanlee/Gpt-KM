@@ -71,6 +71,9 @@ public class GptExpertFileService
 
     public async Task<ServiceResult<ExpertFile>> ChangeStatusAsync(string filename, ExpertFileStatusEnum expertFileStatusEnum)
     {
+        CleanTrackingHelper.Clean<ExpertDirectory>(context);
+        CleanTrackingHelper.Clean<ExpertFile>(context);
+        CleanTrackingHelper.Clean<ExpertFileChunk>(context);
         var expertFile = await context.ExpertFile.AsNoTracking()
             .Include(x => x.ExpertDirectory)
             .FirstOrDefaultAsync(x => x.FullName == filename);

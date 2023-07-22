@@ -266,6 +266,16 @@ try
     OpenAIConfiguration openAIConfigurationValue = openAIConfigurationOption.Value;
     OpenAIConfiguration openAIConfiguration = app.Services.GetRequiredService<OpenAIConfiguration>();
 
+    #region 設定 Singleton 物件內的屬性
+    openAIConfiguration.AzureOpenAIKey = openAIConfigurationValue.AzureOpenAIKey;
+    openAIConfiguration.AzureOpenAIEndpoint = openAIConfigurationValue.AzureOpenAIEndpoint;
+    openAIConfiguration.TextDavinciModelName = openAIConfigurationValue.TextDavinciModelName;
+    openAIConfiguration.TextEmbeddingAdaModelName = openAIConfigurationValue.TextEmbeddingAdaModelName;
+    openAIConfiguration.DefaultSourcePath = openAIConfigurationValue.DefaultSourcePath;
+    openAIConfiguration.DefaultConvertPath = openAIConfigurationValue.DefaultConvertPath;
+    openAIConfiguration.DefaultExpertDirectoryName = openAIConfigurationValue.DefaultExpertDirectoryName;
+
+    #endregion
     openAIConfiguration = openAIConfigurationValue;
 
     //openAIConfiguration.AzureOpenAIKey = openAIConfigurationValue.AzureOpenAIKey;

@@ -2,7 +2,7 @@
 using Domains.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Backend.Services
+namespace Backend.Services.Interfaces
 {
     public interface IRootFileUploadService
     {
