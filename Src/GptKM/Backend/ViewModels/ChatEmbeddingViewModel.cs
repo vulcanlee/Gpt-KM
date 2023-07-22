@@ -62,8 +62,11 @@ namespace Backend.ViewModels
 
         public async Task<List<GptEmbeddingItem>> SendQuestionAsync()
         {
+            ChatEmbeddingModel.Answer = "";
+            ChatEmbeddingModel.DoSearching = true;
             List<GptEmbeddingItem> gptEmbeddings = 
                 await embeddingSearchHelper.SearchAsync(ChatEmbeddingModel.Question);
+            ChatEmbeddingModel.DoSearching = false;
             return gptEmbeddings;
         }
 
