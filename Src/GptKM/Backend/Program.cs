@@ -238,23 +238,6 @@ try
         .GetSection(nameof(OpenAIConfiguration)));
     #endregion
 
-    #region GPT Service
-    builder.Services.AddSingleton<OpenAIConfiguration>();
-    builder.Services.AddTransient<ConverterToTextFactory>();
-    builder.Services.AddTransient<ConvertFileExtensionMatchService>();
-    builder.Services.AddTransient<SyncDirectoryService>();
-    builder.Services.AddTransient<SyncFilesToDatabaseService>();
-    builder.Services.AddTransient<ConvertToTextService>();
-    builder.Services.AddTransient<BuildFilenameService>();
-    builder.Services.AddTransient<ConvertFileModelService>();
-    builder.Services.AddTransient<ConvertToEmbeddingService>();
-    builder.Services.AddTransient<AdaEmbeddingVector>();
-    builder.Services.AddTransient<DavinciPromptCompletion>();
-    builder.Services.AddTransient<GptExpertDirectoryService>();
-    builder.Services.AddTransient<GptExpertFileService>();
-    builder.Services.AddTransient<GptExpertFileChunkService>();
-    builder.Services.AddTransient<SyncProcessingService>();
-    #endregion
     #endregion
 
     var app = builder.Build();

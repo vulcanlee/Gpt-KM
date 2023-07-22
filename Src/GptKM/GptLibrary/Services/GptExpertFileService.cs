@@ -28,6 +28,17 @@ public class GptExpertFileService
         return new ServiceResult<List<ExpertFile>>(expertFiles);
     }
 
+    public async Task<ServiceResult<List<ExpertFile>>> GetAllEmbeddingAsync()
+    {
+        var expertFiles = await context.ExpertFile
+            .AsNoTracking()
+            .Include(x => x.ExpertDirectory)
+            .Include(x=>x.ExpertFileChunk)
+            .Where(x=>x.ProcessingStatus == ExpertFileStatusEnum.Finish)
+            .ToListAsync();
+        return new ServiceResult<List<ExpertFile>>(expertFiles);
+    }
+
     public async Task<ServiceResult<List<ExpertFile>>> GetAsync(ExpertDirectory expertDirectory)
     {
         var expertFiles = await context.ExpertFile

@@ -5,6 +5,10 @@ using Prism.Events;
 using Backend.Events;
 using Backend.Models;
 using Backend.Services.Interfaces;
+using CommonDomain.DataModels;
+using GptLibrary.Converts;
+using GptLibrary.Gpts;
+using GptLibrary.Services;
 
 namespace Backend.Helpers
 {
@@ -59,6 +63,24 @@ namespace Backend.Helpers
             services.AddTransient<OrderItemViewModel>();
             #endregion
 
+            #region GPT Service
+            services.AddSingleton<OpenAIConfiguration>();
+            services.AddTransient<ConverterToTextFactory>();
+            services.AddTransient<ConvertFileExtensionMatchService>();
+            services.AddTransient<SyncDirectoryService>();
+            services.AddTransient<SyncFilesToDatabaseService>();
+            services.AddTransient<ConvertToTextService>();
+            services.AddTransient<BuildFilenameService>();
+            services.AddTransient<ConvertFileModelService>();
+            services.AddTransient<ConvertToEmbeddingService>();
+            services.AddTransient<AdaEmbeddingVector>();
+            services.AddTransient<DavinciPromptCompletion>();
+            services.AddTransient<GptExpertDirectoryService>();
+            services.AddTransient<GptExpertFileService>();
+            services.AddTransient<GptExpertFileChunkService>();
+            services.AddTransient<SyncProcessingService>();
+            #endregion
+
             #region 其他服務註冊
             services.AddScoped<CurrentUser>();
             services.AddScoped<UserHelper>();
@@ -69,6 +91,7 @@ namespace Backend.Helpers
             services.AddScoped<BlazorAppContext>();
             services.AddScoped<IEventAggregator, EventAggregator>();
             #endregion
+
             return services;
         }
     }
