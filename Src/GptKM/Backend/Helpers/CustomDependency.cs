@@ -13,6 +13,7 @@ namespace Backend.Helpers
         public static IServiceCollection AddCustomServices(this IServiceCollection services)
         {
             #region 註冊服務
+            services.AddTransient<IChatEmbeddingService, ChatEmbeddingService>();
             services.AddTransient<IRootFileUploadService, RootFileUploadService>();
             services.AddTransient<IExpertDirectoryService, ExpertDirectoryService>();
             services.AddTransient<IExpertFileService, ExpertFileService>();
