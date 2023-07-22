@@ -1,0 +1,14 @@
+﻿@page "/ChatEmbedding"
+@attribute [Authorize(Roles = "ChatEmbedding")]
+
+<PageTitle>@Title</PageTitle>
+
+<div>
+    <div class="page-title">@BAL.Helpers.MagicHelper.探索知識庫功能名稱</div>
+    <ChatEmbeddingView />
+</div>
+
+@code{
+    public string Title { get; set; } = Backend.Helpers.HeaderBuilderHelper
+        .GetTitle(BAL.Helpers.MagicHelper.探索知識庫功能名稱);
+}

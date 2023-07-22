@@ -1,0 +1,42 @@
+﻿@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Calendars
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Buttons
+
+@inject ChatEmbeddingViewModel ViewModel
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="info-container">
+    <div class="form-row">
+        <div class="form-group col">
+            <label for="Name" class="control-label">輸入你的問題</label>
+            <div class="row">
+                <div class="col-11">
+                    <SfTextBox Type="InputType.Password" Multiline="true" Placeholder="請輸入你的問題"
+                    rows="3"
+                    @bind-Value="ViewModel.ChatEmbeddingModel.Question"></SfTextBox>
+                </div>
+                <div class="col-1">
+                    <SfButton CssClass="e-primary save-btn"
+                    @onclick="ViewModel.SendQuestionAsync">送出</SfButton>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<MessageBox Height="@ViewModel.MessageBox.Height" Width="@ViewModel.MessageBox.Width"
+            IsVisible="@ViewModel.MessageBox.IsVisible"
+            Title="@ViewModel.MessageBox.Title" Message="@ViewModel.MessageBox.Body"
+            Callback="ViewModel.MessageBox.MessageDelegate" />
+
+<DialogBackground />
+
+@code {
+}
+

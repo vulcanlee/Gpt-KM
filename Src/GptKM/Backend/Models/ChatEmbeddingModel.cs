@@ -9,10 +9,6 @@ namespace Backend.Models
 {
     public class ChatEmbeddingModel
     {
-        [Required(ErrorMessage = "請輸入新密碼")]
-        [StringSame("NewPasswordAgain", ErrorMessage = "兩次輸入的密碼必須相同")]
-        public string NewPassword { get; set; }
-        [Required(ErrorMessage = "請輸入第二次新密碼")]
-        public string NewPasswordAgain { get; set; }
+        public string Question { get; set; }=string.Empty;
     }
 }

@@ -69,6 +69,7 @@ public class GptExpertFileService
         var expertFile = await context.ExpertFile
             .AsNoTracking()
             .Include(x => x.ExpertDirectory)
+            .Include(x=>x.ExpertFileChunk)
             .FirstOrDefaultAsync(x => x.FullName == filename);
         if (expertFile == null)
         {

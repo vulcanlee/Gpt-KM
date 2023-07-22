@@ -1,9 +1,11 @@
-﻿@using Syncfusion.Blazor
+﻿@using GptLibrary.Helpers;
+@using Syncfusion.Blazor
 @using Syncfusion.Blazor.Buttons
 @using GptLibrary.Services
 
 @inject GptExpertDirectoryService GptExpertDirectoryService
 @inject SyncProcessingService SyncProcessingService
+@inject SearchCollectionBuilderHelper SearchCollectionBuilderHelper
 
 <h3>檢測 GPT 功能</h3>
 
@@ -14,8 +16,18 @@
     </div>
 }
 
+<div class="my-3">
+    <SfButton CssClass="e-primary save-btn" @onclick="SearchCollectionBuild">建立搜尋索引</SfButton>
+</div>
+
 @code {
     public bool IsRunning { get; set; } = false;
+
+    async Task SearchCollectionBuild()
+    {
+        await SearchCollectionBuilderHelper.BuildAsync();
+    }
+
     async Task CheckDirectory()
     {
         ExpertDirectory expertDirectory = null;

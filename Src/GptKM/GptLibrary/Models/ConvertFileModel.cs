@@ -2,6 +2,7 @@
 using GptLibrary.Gpt;
 using GptLibrary.Gpts;
 using GptLibrary.Services;
+using NPOI.HPSF;
 
 namespace GptLibrary.Models
 {
@@ -22,8 +23,8 @@ namespace GptLibrary.Models
         /// 將一個檔案切割成為不同 Chunk 的相關資訊
         /// </summary>
         public List<ConvertFileSplitItemModel> ConvertFileSplitItems = new List<ConvertFileSplitItemModel>();
-        public Decimal EmbeddingCost { get; set; }
-        public Decimal SummaryCost { get; set; }
+        public System.Decimal EmbeddingCost { get; set; }
+        public System.Decimal SummaryCost { get; set; }
 
         /// <summary>
         /// 將文字內容切割成為許多 Chunk
@@ -104,10 +105,15 @@ namespace GptLibrary.Models
                 ConvertFileSplitItemModel convertFileSplit = new ConvertFileSplitItemModel();
                 int estimateTokens = tokenizer.CountToken(reachMaxTokenOfText);
 
+                #region 生成轉換後的目錄檔案名稱
+                string convertFileName = expertFile.FullName
+                    .Replace(expertFile.ExpertDirectory.SourcePath, expertFile.ExpertDirectory.ConvertPath);
+
+                #endregion
                 convertFileSplit.EmbeddingJsonFileName =
-                    buildFilenameService.BuildEmbeddingJson(expertFile.FullName, embeddingIndex);
+                    buildFilenameService.BuildEmbeddingJson(convertFileName, embeddingIndex);
                 convertFileSplit.EmbeddingTextFileName =
-                    buildFilenameService.BuildEmbeddingText(expertFile.FullName, embeddingIndex);
+                    buildFilenameService.BuildEmbeddingText(convertFileName, embeddingIndex);
                 convertFileSplit.Index = embeddingIndex;
                 convertFileSplit.SourceText = reachMaxTokenOfText;
                 convertFileSplit.SourceTextSize = reachMaxTokenOfText.Length;

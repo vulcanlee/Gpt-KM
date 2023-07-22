@@ -14,6 +14,8 @@ using Backend.Services.Interfaces;
 using Syncfusion.Blazor.Inputs;
 using CommonDomain.DataModels;
 using Backend.Services;
+using GptLibrary.Helpers;
+using GptLibrary.Models;
 
 namespace Backend.ViewModels
 {
@@ -42,15 +44,18 @@ namespace Backend.ViewModels
         public bool IsLoad { get; set; } = false;
         public Action<string> ShowStatusHandler;
         private readonly OpenAIConfiguration openAIConfiguration;
+        private readonly EmbeddingSearchHelper embeddingSearchHelper;
 
         public ChatEmbeddingViewModel(IChatEmbeddingService ChatEmbeddingService,
             NavigationManager navigationManager, IHttpContextAccessor httpContextAccessor,
-            OpenAIConfiguration openAIConfiguration)
+            OpenAIConfiguration openAIConfiguration,
+            EmbeddingSearchHelper embeddingSearchHelper)
         {
             ChatEmbeddingService = ChatEmbeddingService;
             NavigationManager = navigationManager;
             HttpContextAccessor = httpContextAccessor;
             this.openAIConfiguration = openAIConfiguration;
+            this.embeddingSearchHelper = embeddingSearchHelper;
         }
         public void OnEditContestChanged(EditContext context)
         {
@@ -66,27 +71,10 @@ namespace Backend.ViewModels
                 NavigationManager.NavigateTo("/Logout", true);
         }
 
-        public async Task GetUploadFileAsync(List<UploadFiles> uploadFiles)
+        public async Task SendQuestionAsync()
         {
-            UploadFiles uploadFile = uploadFiles.FirstOrDefault();
-            MemoryStream inputFileStream = uploadFile.Stream;
-            Syncfusion.Blazor.Inputs.FileInfo fileInfo = uploadFile.FileInfo;
-            if(fileInfo.StatusCode == "2")
-            {
-                #region 上傳成功
-                #region 建立檔案名稱
-                var expertDirectory = await ChatEmbeddingService
-                    .GetDefaultExpertDirectoryAsync(openAIConfiguration.DefaultExpertDirectoryName);
-                string fileName = Path.Combine(expertDirectory.SourcePath, fileInfo.Name);
-                var expertFile = await ChatEmbeddingService.GetExpertFileAsync(fileName, expertDirectory);
-                #endregion
-                using (FileStream file = new FileStream(fileName, FileMode.Create, System.IO.FileAccess.Write))
-                {
-                    await uploadFile.File.OpenReadStream(long.MaxValue).CopyToAsync(file);
-                    file.Close();
-                }
-                #endregion
-            }
+            List<GptEmbeddingItem> gptEmbeddings = 
+                await embeddingSearchHelper.SearchAsync(ChatEmbeddingModel.Question);
         }
 
     }

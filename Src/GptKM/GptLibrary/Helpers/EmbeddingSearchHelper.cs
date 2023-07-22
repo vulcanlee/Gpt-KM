@@ -1,6 +1,7 @@
 ﻿using Azure.AI.OpenAI;
 using CommonDomain.DataModels;
 using Domains.Models;
+using GptLibrary.Gpts;
 using GptLibrary.Models;
 using GptLibrary.Services;
 using Microsoft.Extensions.Logging;
@@ -16,20 +17,44 @@ namespace GptLibrary.Helpers;
 
 public class EmbeddingSearchHelper
 {
-    private readonly GptExpertFileService gptExpertFileService;
+    private readonly OpenAIConfiguration openAIConfiguration;
+    private readonly AdaEmbeddingVector adaEmbeddingVector;
     private readonly ILogger<EmbeddingSearchHelper> logger;
-    List<GptEmbeddingItem> allDocumentsEmbedding;
+    List<GptEmbeddingItem> allDocumentsEmbedding=new();
 
-    public EmbeddingSearchHelper(ConvertFileModelService convertFileModelService,
+    public EmbeddingSearchHelper(OpenAIConfiguration openAIConfiguration,
+        AdaEmbeddingVector adaEmbeddingVector,
         ILogger<EmbeddingSearchHelper> logger)
     {
-        this.gptExpertFileService = gptExpertFileService;
+        this.openAIConfiguration = openAIConfiguration;
+        this.adaEmbeddingVector = adaEmbeddingVector;
         this.logger = logger;
     }
 
     public void Reset()
     {
         allDocumentsEmbedding.Clear();
+    }
+
+    public async Task<List<GptEmbeddingItem>> SearchAsync(string question)
+    {
+        List<GptEmbeddingItem> allDocumentsCosineSimilarity = new();
+        allDocumentsCosineSimilarity.Clear();
+        await Task.Yield();
+        float[] questionEmbedding = await adaEmbeddingVector.GetEmbeddingAsync(question);
+
+        foreach (var item in allDocumentsEmbedding)
+        {
+            // calculate cosine similarity
+            var v2 = item.Embedding;
+            var v1 = MathNet.Numerics.LinearAlgebra.Vector<float>.Build.DenseOfArray(questionEmbedding); ;
+            var cosineSimilarity = v1.DotProduct(v2) / (v1.L2Norm() * v2.L2Norm());
+            item.CosineSimilarity = cosineSimilarity;
+            allDocumentsCosineSimilarity.Add(item);
+        }
+        allDocumentsCosineSimilarity = allDocumentsCosineSimilarity
+            .OrderByDescending(x => x.CosineSimilarity).Take(10).ToList();
+        return allDocumentsCosineSimilarity;
     }
 
     public async Task AddAsync(ExpertFile expertFile)

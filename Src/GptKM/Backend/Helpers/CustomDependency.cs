@@ -45,6 +45,7 @@ namespace Backend.Helpers
             #endregion
 
             #region 註冊 ViewModel
+            services.AddTransient<ChatEmbeddingViewModel>();
             services.AddTransient<RootFileUploadViewModel>();
             services.AddTransient<ExpertFileViewModel>();
             services.AddTransient<ExpertDirectoryViewModel>();
@@ -65,6 +66,7 @@ namespace Backend.Helpers
             #endregion
 
             #region GPT Service
+            services.AddTransient<SearchCollectionBuilderHelper>();
             services.AddSingleton<EmbeddingSearchHelper>();
             services.AddSingleton<OpenAIConfiguration>();
             services.AddTransient<ConverterToTextFactory>();

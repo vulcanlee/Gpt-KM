@@ -76,12 +76,15 @@ public class SyncProcessingService
             #endregion
 
             await gptExpertFileService.ChangeStatusAsync(item.FullName, CommonDomain.Enums.ExpertFileStatusEnum.Finish);
+
+            #region 產生 EmbeddingSearchHelper 集合物件
             ServiceResult<ExpertFile> expertFileResult = await gptExpertFileService.GetAsync(item.FullName);
             if (expertFileResult.Status == true)
             {
                 ExpertFile expertFile = expertFileResult.Payload;
                 await embeddingSearchHelper.AddAsync(expertFile);
             }
+            #endregion
         }
         #endregion
 
