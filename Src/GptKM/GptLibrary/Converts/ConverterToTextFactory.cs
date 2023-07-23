@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using GptLibrary.Models;
+using Microsoft.Extensions.Logging;
 using System.Text;
 
 namespace GptLibrary.Converts
@@ -10,6 +11,12 @@ namespace GptLibrary.Converts
     /// </summary>
     public class ConverterToTextFactory
     {
+        private readonly ILogger<ConverterToTextFactory> logger;
+
+        public ConverterToTextFactory(ILogger<ConverterToTextFactory> logger)
+        {
+            this.logger = logger;
+        }
         /// <summary>
         /// 產生生成文字內容的物件
         /// </summary>
@@ -33,7 +40,8 @@ namespace GptLibrary.Converts
             }
             else if (contentType == ContentTypeEnum.PDF)
             {
-                result = new PdfToText();
+
+                result = new PdfToText(logger);
             }
             else if (contentType == ContentTypeEnum.HTML)
             {

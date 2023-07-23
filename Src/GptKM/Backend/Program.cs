@@ -222,6 +222,7 @@ try
     }
     builder.Services.AddHostedService<PasswordPolicyHostedService>();
     builder.Services.AddHostedService<SendingMailHostedService>();
+    builder.Services.AddHostedService<SyncSearchIndexService>();
 
     // 背景服務是否需要暫停執行
     builder.Services.AddSingleton<BackgroundExecuteMode>();

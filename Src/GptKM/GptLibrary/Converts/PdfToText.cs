@@ -2,11 +2,18 @@
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
+using Microsoft.Extensions.Logging;
 
 namespace GptLibrary.Converts
 {
     public class PdfToText : IFileToText
     {
+        private readonly ILogger<ConverterToTextFactory> logger;
+
+        public PdfToText(ILogger<ConverterToTextFactory> logger)
+        {
+            this.logger = logger;
+        }
         public Task<string> ToTextAsync(string filename)
         {
             var task = Task.Run(() =>
@@ -17,19 +24,20 @@ namespace GptLibrary.Converts
                 {
                     using (PdfDocument pdfDoc = new PdfDocument(pdfReader))
                     {
-                        int numberOfPages = pdfDoc.GetNumberOfPages();
-
-                        for (int i = 1; i <= numberOfPages; i++)
+                        try
                         {
-                            try
+                            int numberOfPages = pdfDoc.GetNumberOfPages();
+
+                            for (int i = 1; i <= numberOfPages; i++)
                             {
                                 ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
                                 string pageContent = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i), strategy);
                                 result.AppendLine(pageContent);
                             }
-                            catch (Exception)
-                            {
-                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, $"抽取檔案 {filename} 成為文字發生錯誤");
                         }
                     }
                 }
