@@ -39,14 +39,17 @@
                     OnToolbarClick="ViewModel.ToolbarClickHandler"/>
         <GridPageSettings PageSize="@PageSize" />
         <GridColumns>
-            <GridColumn Field=@nameof(ExpertFileAdapterModel.ExpertDirectoryName) HeaderText="目錄名稱" />
+            <GridColumn Field=@nameof(ExpertFileAdapterModel.ExpertDirectoryName) HeaderText="目錄名稱"
+            Width="200"/>
             <GridColumn Field=@nameof(ExpertFileAdapterModel.FileName) HeaderText="檔案名稱" />
+            <GridColumn Field=@nameof(ExpertFileAdapterModel.ExpertFileStatusName) HeaderText="狀態"
+            Width="100"/>
             <GridColumn HeaderText="命令" Width="@MagicHelper.DataGrid2個命令寬度" TextAlign="@TextAlign.Center"
                         CustomAttributes="@(new Dictionary<string, object>(){ { "class", "p-0 m-0" }})">
                 <GridCommandColumns>
-                    <GridCommandColumn Title="@ButtonIdHelper.ButtonNameEdit"
+                    <GridCommandColumn Title="@ButtonIdHelper.ButtonNameReset"
                                        ButtonOption="@(new CommandButtonOptions()
-                                                   { Content = "", IconCss = @ButtonIdHelper.ButtonIdEdit})" />
+                                                   { Content = "", IconCss = @ButtonIdHelper.ButtonIdReset})" />
                     <GridCommandColumn Title="@ButtonIdHelper.ButtonNameDelete"
                                        ButtonOption="@(new CommandButtonOptions()
                                                    { Content = "", IconCss = ButtonIdHelper.ButtonIdDelete})" />

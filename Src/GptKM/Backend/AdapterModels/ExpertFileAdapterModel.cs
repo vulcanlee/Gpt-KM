@@ -35,6 +35,7 @@ namespace Backend.AdapterModels
         public bool ProcessChunk { get; set; } = false;
         public int ChunkSize { get; set; } = 0;
         public ExpertFileStatusEnum ProcessingStatus { get; set; }
+        public string ExpertFileStatusName { get; set; } = string.Empty;
         /// <summary>
         /// 建立時間
         /// </summary>

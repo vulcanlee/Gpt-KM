@@ -341,6 +341,7 @@ namespace Backend.Services
         Task OhterDependencyData(ExpertFileAdapterModel data)
         {
             data.ConvertDirectoryName = data.ExpertDirectory.Name;
+            data.ExpertFileStatusName = data.ProcessingStatus.ToString();
             return Task.FromResult(0);
         }
         #endregion
