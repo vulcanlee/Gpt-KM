@@ -31,6 +31,7 @@ public class SearchCollectionBuilderHelper
 
     public async Task BuildAsync()
     {
+        embeddingSearchHelper.Reset();
         ServiceResult<List<ExpertFile>> expertFileResult =
             await gptExpertFileService.GetAllEmbeddingAsync();
         if(expertFileResult.Status == true)
