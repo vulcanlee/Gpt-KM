@@ -12,6 +12,7 @@
 
 @inject ChatEmbeddingViewModel ViewModel
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
 
 <div class="info-container">
     <div class="form-row">
@@ -66,12 +67,14 @@
                 </div>
             </div>
             <div class="row my-1">
+                
                 <div class="col">
                     <SfButton CssClass="e-primary save-btn"
                     @onclick="()=>ViewModel.GetAnswerAsync(item)">解答</SfButton>
                 </div>
                 <div class="col">
-                    <SfButton CssClass="e-primary save-btn">下載</SfButton>
+                    <SfButton CssClass="e-primary save-btn"
+                    @onclick="()=>DownloadFileAsync(item)">下載</SfButton>
                 </div>
             </div>
             @if (item.ShowEmbeddingText == true)
@@ -108,6 +111,19 @@
                     ShowEmbeddingText = false
                 });
         }
+    }
+
+    async Task DownloadFileAsync(SearchResult searchResult)
+    {
+        // https://learn.microsoft.com/en-us/aspnet/core/blazor/file-downloads?view=aspnetcore-7.0
+        string filename = searchResult.GptEmbeddingItem.ExpertFileChunk.ExpertFile.FileName;
+        string fullfilename = searchResult.GptEmbeddingItem.ExpertFileChunk.ExpertFile.FullName;
+
+        var fileStream = ViewModel.GetFileStream(fullfilename);
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", filename, streamRef);
     }
 }
 

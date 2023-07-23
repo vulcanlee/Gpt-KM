@@ -5,6 +5,7 @@ using CommonDomain.DataModels;
 using Backend.Services;
 using GptLibrary.Helpers;
 using GptLibrary.Models;
+using Microsoft.JSInterop;
 
 namespace Backend.ViewModels
 {
@@ -94,6 +95,25 @@ namespace Backend.ViewModels
             ChatEmbeddingModel.Answer = await embeddingSearchHelper
                 .GetAnswerAsync(searchResult.GptEmbeddingItem.ExpertFileChunk, ChatEmbeddingModel.Question);
             ChatEmbeddingModel.DoSearching = false;
+        }
+
+        //public async Task DownloadFileAsync(SearchResult searchResult)
+        //{
+        //    // https://learn.microsoft.com/en-us/aspnet/core/blazor/file-downloads?view=aspnetcore-7.0
+        //    string filename = searchResult.GptEmbeddingItem.ExpertFileChunk.ExpertFile.FileName;
+        //    string fullfilename = searchResult.GptEmbeddingItem.ExpertFileChunk.ExpertFile.FullName;
+
+        //    var fileStream = GetFileStream();
+        //    var fileName = "log.bin";
+
+        //    using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        //    await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        //}
+
+        public Stream GetFileStream(string fullfilename)
+        {
+            return File.OpenRead(fullfilename);
         }
     }
 }
