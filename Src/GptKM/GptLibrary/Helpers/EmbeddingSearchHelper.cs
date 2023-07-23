@@ -114,7 +114,7 @@ public class EmbeddingSearchHelper
         return;
     }
 
-    public Task DeleteAsync(ExpertFile expertFile)
+    public Task DeleteAllChunkRawFileAsync(ExpertFile expertFile)
     {
         try
         {
@@ -134,6 +134,7 @@ public class EmbeddingSearchHelper
                         logger.LogWarning(ex, $"刪除內嵌搜尋 {chunkembeddingContentFileName} 發生錯誤");
                     }
                 }
+
                 if (File.Exists(chunkembeddingFileName))
                 {
                     try
@@ -154,13 +155,26 @@ public class EmbeddingSearchHelper
                 }
                 else
                 {
-                    logger.LogWarning($"刪除內嵌搜尋集合物件 {itemEmbedding.ExpertFileChunk.Id} : {expertFile.FileName} 發生錯誤");
+                    //logger.LogWarning($"刪除內嵌搜尋集合物件 {itemEmbedding.ExpertFileChunk.Id} : {expertFile.FileName} 發生錯誤");
                 }
             }
         }
         catch (Exception ex)
         {
             logger.LogWarning(ex, $"刪除內嵌搜尋 {expertFile.Id} : {expertFile.FileName} 發生錯誤");
+        }
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteExpertFileAsync(ExpertFile expertFile)
+    {
+        try
+        {
+            File.Delete(expertFile.FullName);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, $"刪除原始資料檔案 {expertFile.FullName} 發生錯誤");
         }
         return Task.CompletedTask;
     }

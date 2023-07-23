@@ -10,6 +10,6 @@ namespace Backend.Services.Interfaces
         IMapper Mapper { get; }
 
         Task<ExpertDirectory> GetDefaultExpertDirectoryAsync(string name);
-        Task<ExpertFile> GetExpertFileAsync(string name, ExpertDirectory expertDirectory);
+        Task<ExpertFile> GetExpertFileAndResetStatusAsync(string name, ExpertDirectory expertDirectory);
     }
 }

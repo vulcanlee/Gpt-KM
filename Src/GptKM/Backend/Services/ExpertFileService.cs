@@ -173,6 +173,18 @@ namespace Backend.Services
             return result;
         }
 
+        public async Task<ExpertFileAdapterModel> GetAsync(string filename)
+        {
+            ExpertFile item = await context.ExpertFile
+                .AsNoTracking()
+                .Include(x => x.ExpertFileChunk)
+                .Include(x => x.ExpertDirectory)
+                .FirstOrDefaultAsync(x => x.FileName == filename);
+            ExpertFileAdapterModel result = Mapper.Map<ExpertFileAdapterModel>(item);
+            await OhterDependencyData(result);
+            return result;
+        }
+
         public async Task<VerifyRecordResult> AddAsync(ExpertFileAdapterModel paraObject)
         {
             try

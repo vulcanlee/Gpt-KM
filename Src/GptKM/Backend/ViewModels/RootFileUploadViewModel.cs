@@ -13,6 +13,9 @@ using Backend.Helpers;
 using Backend.Services.Interfaces;
 using Syncfusion.Blazor.Inputs;
 using CommonDomain.DataModels;
+using GptLibrary.Services;
+using Domains.Models;
+using GptLibrary.Helpers;
 
 namespace Backend.ViewModels
 {
@@ -41,15 +44,21 @@ namespace Backend.ViewModels
         public bool IsLoad { get; set; } = false;
         public Action<string> ShowStatusHandler;
         private readonly OpenAIConfiguration openAIConfiguration;
+        private readonly GptExpertFileChunkService gptExpertFileChunkService;
+        private readonly EmbeddingSearchHelper embeddingSearchHelper;
 
         public RootFileUploadViewModel(IRootFileUploadService rootFileUploadService,
             NavigationManager navigationManager, IHttpContextAccessor httpContextAccessor,
-            OpenAIConfiguration openAIConfiguration)
+            OpenAIConfiguration openAIConfiguration, GptExpertFileService gptExpertFileService,
+            GptExpertFileChunkService gptExpertFileChunkService,
+            EmbeddingSearchHelper embeddingSearchHelper)
         {
             RootFileUploadService = rootFileUploadService;
             NavigationManager = navigationManager;
             HttpContextAccessor = httpContextAccessor;
             this.openAIConfiguration = openAIConfiguration;
+            this.gptExpertFileChunkService = gptExpertFileChunkService;
+            this.embeddingSearchHelper = embeddingSearchHelper;
         }
         public void OnEditContestChanged(EditContext context)
         {
@@ -77,13 +86,29 @@ namespace Backend.ViewModels
                 var expertDirectory = await RootFileUploadService
                     .GetDefaultExpertDirectoryAsync(openAIConfiguration.DefaultExpertDirectoryName);
                 string fileName = Path.Combine(expertDirectory.SourcePath, fileInfo.Name);
-                var expertFile = await RootFileUploadService.GetExpertFileAsync(fileName, expertDirectory);
                 #endregion
+
+                #region 建立檔案
                 using (FileStream file = new FileStream(fileName, FileMode.Create, System.IO.FileAccess.Write))
                 {
                     await uploadFile.File.OpenReadStream(long.MaxValue).CopyToAsync(file);
                     file.Close();
                 }
+                #endregion
+
+                #region 若資料已經存在，則設定為尚未開始，並清除該檔案在索引內資料
+                var expertFile = await RootFileUploadService.GetExpertFileAndResetStatusAsync(fileName, expertDirectory);
+                if (expertFile!=null)
+                {
+                    await embeddingSearchHelper.DeleteAllChunkRawFileAsync(expertFile);
+
+                    foreach (var item in expertFile.ExpertFileChunk)
+                    {
+                        await gptExpertFileChunkService.DeleteAsync(item.Id);
+                    }
+                }
+                #endregion
+
                 #endregion
             }
         }

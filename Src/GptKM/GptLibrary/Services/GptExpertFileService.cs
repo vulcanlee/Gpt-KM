@@ -53,6 +53,7 @@ public class GptExpertFileService
         var expertFile = await context.ExpertFile
             .AsNoTracking()
             .Include(x => x.ExpertDirectory)
+            .Include(x=>x.ExpertFileChunk)
             .FirstOrDefaultAsync(x => x.Id == id);
         if (expertFile == null)
         {
@@ -131,6 +132,7 @@ public class GptExpertFileService
 
     public async Task<ServiceResult<ExpertFile>> UpdateAsync(ExpertFile ExpertFile)
     {
+        CleanTrackingHelper.Clean<ExpertFile>(context);
         var ExpertFileExist = await context.ExpertFile
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == ExpertFile.Id);

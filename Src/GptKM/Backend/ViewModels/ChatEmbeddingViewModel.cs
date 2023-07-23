@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using CommonDomain.DataModels;
-using Backend.Services;
 using GptLibrary.Helpers;
 using GptLibrary.Models;
 using Microsoft.JSInterop;
+using Backend.Services.Interfaces;
 
 namespace Backend.ViewModels
 {
@@ -23,7 +23,6 @@ namespace Backend.ViewModels
         #endregion
         public ChatEmbeddingModel ChatEmbeddingModel { get; set; } = new ChatEmbeddingModel();
         public EditContext LocalEditContext { get; set; }
-        public IChatEmbeddingService ChatEmbeddingService { get; }
         public NavigationManager NavigationManager { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
         public bool Relogin { get; set; } = false;
@@ -36,12 +35,10 @@ namespace Backend.ViewModels
         private readonly OpenAIConfiguration openAIConfiguration;
         private readonly EmbeddingSearchHelper embeddingSearchHelper;
 
-        public ChatEmbeddingViewModel(IChatEmbeddingService ChatEmbeddingService,
-            NavigationManager navigationManager, IHttpContextAccessor httpContextAccessor,
+        public ChatEmbeddingViewModel( NavigationManager navigationManager, IHttpContextAccessor httpContextAccessor,
             OpenAIConfiguration openAIConfiguration,
             EmbeddingSearchHelper embeddingSearchHelper)
         {
-            ChatEmbeddingService = ChatEmbeddingService;
             NavigationManager = navigationManager;
             HttpContextAccessor = httpContextAccessor;
             this.openAIConfiguration = openAIConfiguration;

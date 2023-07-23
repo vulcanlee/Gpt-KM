@@ -55,10 +55,12 @@ namespace Backend.Services
             return expertDirectory;
         }
 
-        public async Task<ExpertFile> GetExpertFileAsync(string name, ExpertDirectory expertDirectory)
+        public async Task<ExpertFile> GetExpertFileAndResetStatusAsync(string name, ExpertDirectory expertDirectory)
         {
             ExpertFile expertFile = null;
             expertFile = await context.ExpertFile
+                .Include(x=> x.ExpertDirectory)
+                .Include(x=>x.ExpertFileChunk)
                 .FirstOrDefaultAsync(x => x.FullName == name);
             if (expertFile != null)
             {

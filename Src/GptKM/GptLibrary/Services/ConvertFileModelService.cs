@@ -22,6 +22,14 @@ public class ConvertFileModelService
         await File.WriteAllTextAsync(filename, convertFile.SourceText);
     }
 
+    public async Task DeleteExportConvertTextFileAsync(ExpertFile expertFile, ConvertFileModel convertFile)
+    {
+        string filename = convertFile.FileName;
+        filename = filename.Replace(expertFile.ExpertDirectory.SourcePath, expertFile.ExpertDirectory.ConvertPath);
+        await Task.Yield();
+        File.Delete(filename);
+    }
+
     /// <summary>
     /// 將指定 Chunk 的 字串內容 寫入到檔案內
     /// </summary>

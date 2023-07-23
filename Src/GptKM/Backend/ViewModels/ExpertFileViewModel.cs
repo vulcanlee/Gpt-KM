@@ -7,7 +7,6 @@ namespace Backend.ViewModels
     using Backend.AdapterModels;
     using Backend.Helpers;
     using Backend.Interfaces;
-    using Backend.Services;
     using Backend.SortModels;
     using Domains.Models;
     using Microsoft.AspNetCore.Components.Forms;
@@ -17,18 +16,23 @@ namespace Backend.ViewModels
     using Syncfusion.Blazor.Navigations;
     using Backend.Models;
     using Backend.Services.Interfaces;
+    using GptLibrary.Services;
+    using GptLibrary.Helpers;
 
     public class ExpertFileViewModel
     {
         #region Constructor
         public ExpertFileViewModel(IExpertFileService CurrentService,
            BackendDBContext context, IMapper Mapper,
-           TranscationResultHelper transcationResultHelper)
+           TranscationResultHelper transcationResultHelper,
+           EmbeddingSearchHelper embeddingSearchHelper, GptExpertFileService gptExpertFileService)
         {
             this.CurrentService = CurrentService;
             this.context = context;
             mapper = Mapper;
             TranscationResultHelper = transcationResultHelper;
+            this.embeddingSearchHelper = embeddingSearchHelper;
+            this.gptExpertFileService = gptExpertFileService;
             ExpertFileSort.Initialization(SortConditions);
 
             #region 工具列按鈕初始化
@@ -132,6 +136,9 @@ namespace Backend.ViewModels
         private readonly IExpertFileService CurrentService;
         private readonly BackendDBContext context;
         private readonly IMapper mapper;
+        private readonly EmbeddingSearchHelper embeddingSearchHelper;
+        private readonly GptExpertFileService gptExpertFileService;
+
         /// <summary>
         /// 這個元件整體的通用介面方法
         /// </summary>
@@ -218,9 +225,32 @@ namespace Backend.ViewModels
                 var checkAgain = await checkTask;
                 if (checkAgain == true)
                 {
-                    var verifyRecordResult = await CurrentService.DeleteAsync(CurrentNeedDeleteRecord.Id);
-                    await TranscationResultHelper.CheckDatabaseResult(MessageBox, verifyRecordResult);
-                    dataGrid.RefreshGrid();
+                    var expertFileResult = await gptExpertFileService.GetAsync(CurrentNeedDeleteRecord.Id);
+                    if (expertFileResult.Status == true)
+                    {
+                        ExpertFile expertFile = expertFileResult.Payload;
+                        await embeddingSearchHelper.DeleteAllChunkRawFileAsync(expertFile);
+
+                        try
+                        {
+                            CleanTrackingHelper.Clean<ExpertDirectory>(context);
+                            CleanTrackingHelper.Clean<ExpertFile>(context);
+                            CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+                            context.ExpertFileChunk.RemoveRange(expertFile.ExpertFileChunk);
+                            await context.SaveChangesAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            await Console.Out.WriteLineAsync(ex.Message);
+                        }
+
+                        CleanTrackingHelper.Clean<ExpertFile>(context);
+                        var verifyRecordResult = await CurrentService.DeleteAsync(CurrentNeedDeleteRecord.Id);
+                        await TranscationResultHelper.CheckDatabaseResult(MessageBox, verifyRecordResult);
+
+                        await embeddingSearchHelper.DeleteExpertFileAsync(expertFile);
+                        dataGrid.RefreshGrid();
+                    }
                 }
                 #endregion
                 #endregion

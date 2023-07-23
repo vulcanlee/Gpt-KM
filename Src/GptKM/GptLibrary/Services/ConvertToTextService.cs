@@ -70,6 +70,7 @@ public class ConvertToTextService
         await gptExpertFileService.UpdateAsync(expertFile);
         #endregion
 
+        await convertFileModelService.DeleteExportConvertTextFileAsync(expertFile, convertFile);
         #endregion
 
         return convertFile;

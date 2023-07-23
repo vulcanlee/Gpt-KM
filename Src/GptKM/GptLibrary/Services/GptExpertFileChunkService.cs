@@ -98,6 +98,7 @@ public class GptExpertFileChunkService
 
     public async Task<ServiceResult<ExpertFileChunk>> DeleteAsync(int id)
     {
+        CleanTrackingHelper.Clean<ExpertFileChunk>(context);
         var ExpertFileChunkExist = await context.ExpertFileChunk
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
