@@ -14,6 +14,9 @@ using CommonDomain.DataModels;
 using Backend.Events;
 using Backend.Helpers;
 using Backend.AdapterModels;
+using GptLibrary.Helpers;
+using Domains.Models;
+using GptLibrary.Services;
 
 namespace Backend.Services
 {
@@ -22,7 +25,8 @@ namespace Backend.Services
         public SyncSearchIndexService(ILogger<SendingMailHostedService> logger,
             IServer server, IConfiguration configuration, IServiceScopeFactory serviceScopeFactory,
             SystemBroadcast systemBroadcast,
-            BackgroundExecuteMode backgroundExecuteMode)
+            BackgroundExecuteMode backgroundExecuteMode,
+            EmbeddingSearchHelper embeddingSearchHelper)
         {
             Logger = logger;
             Server = server;
@@ -30,6 +34,7 @@ namespace Backend.Services
             ServiceScopeFactory = serviceScopeFactory;
             SystemBroadcast = systemBroadcast;
             BackgroundExecuteMode = backgroundExecuteMode;
+            this.embeddingSearchHelper = embeddingSearchHelper;
         }
 
         public ILogger<SendingMailHostedService> Logger { get; }
@@ -42,30 +47,40 @@ namespace Backend.Services
         DateTime StartupTime = DateTime.Now;
         Task PasswordPolicyTask;
         CancellationTokenSource cancellationTokenSource = new();
+        private readonly EmbeddingSearchHelper embeddingSearchHelper;
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             int smtpExceptionTimes = 0;
             cancellationTokenSource = new CancellationTokenSource();
             Logger.LogInformation($"同步內嵌搜尋索引 服務開始啟動");
-            int SendingMailInterval = Convert.ToInt32(Configuration[AppSettingHelper.SendingMailInterval]);
+            int SyncSearchIndexInterval = Convert.ToInt32(Configuration[AppSettingHelper.SyncSearchIndexInterval]);
 
             var backgroundService = Task.Run(async () =>
             {
                 #region 進行 同步內嵌搜尋索引
                 try
                 {
-                    await Task.Delay(120000, cancellationTokenSource.Token);
+                    //await Task.Delay(120000, cancellationTokenSource.Token);
 
                     StartupTime = DateTime.Now;
                     Random random = new Random();
-                    var firstDelay = random.Next(60 * 1000, 3 * 60 * 1000);
+                    var firstDelay = random.Next(60 * 1000, 2 * 60 * 1000);
 
 #if DEBUG
                     await Task.Delay(5000);
 #else
                     await Task.Delay(firstDelay);
 #endif
+
+                    var scope = ServiceScopeFactory.CreateScope();
+                    SearchCollectionBuilderHelper searchCollectionBuilderHelper =
+                    scope.ServiceProvider.GetRequiredService<SearchCollectionBuilderHelper>();
+                    GptExpertDirectoryService gptExpertDirectoryService=
+                    scope.ServiceProvider.GetRequiredService<GptExpertDirectoryService>();
+                    SyncProcessingService syncProcessingService =
+                    scope.ServiceProvider.GetRequiredService<SyncProcessingService>();
+                    await searchCollectionBuilderHelper.BuildAsync();
 
                     while (cancellationTokenSource.Token.IsCancellationRequested == false)
                     {
@@ -76,18 +91,45 @@ namespace Backend.Services
                         }
                         #endregion
 
-                        var scope = ServiceScopeFactory.CreateScope();
-                        IMailQueueService mailQueueService = scope.ServiceProvider.GetRequiredService<IMailQueueService>();
-
                         var dateOffset = DateTime.UtcNow.AddHours(8);
                         TimeSpan timeSpan = DateTime.Now - StartupTime;
 
                         try
                         {
-                            var waitSendingMails = await mailQueueService.GetNotSentAsync();
                             cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                             #region 處理 內嵌搜尋索引 同步工作
+                            ExpertDirectory expertDirectory = null;
+
+                            #region 取得專家目錄
+                            var expertDirectoryResult = await gptExpertDirectoryService.GetAsync("本機測試用");
+                            if (expertDirectoryResult.Status)
+                            {
+                                expertDirectory = expertDirectoryResult.Payload;
+                            }
+                            else
+                            {
+                                expertDirectory = new ExpertDirectory()
+                                {
+                                    Name = "本機測試用",
+                                    SourcePath = @"C:\Home\Source",
+                                    ConvertPath = @"C:\Home\Convert",
+                                };
+                                var createResult = await gptExpertDirectoryService.CreateAsync(expertDirectory);
+                                if (createResult.Status)
+                                {
+                                    expertDirectory = createResult.Payload;
+                                }
+                                else
+                                {
+                                    throw new Exception(createResult.Message);
+                                }
+                            }
+                            #endregion
+
+                            #region 檢查專家目錄
+                            await syncProcessingService.BeginSyncDirectoryAsync(expertDirectory);
+                            #endregion
                             #endregion
                         }
                         catch (Exception ex)
@@ -96,29 +138,7 @@ namespace Backend.Services
                             Logger.LogWarning(ex, $"同步內嵌搜尋索引 發生例外異常 ({smtpExceptionTimes})");
                         }
 
-                        #region 超出最大嘗試送出 SMTP 郵件次數，要結束發信背景服務
-                        if (smtpExceptionTimes > MagicHelper.MaxSmtpRetryTimes)
-                        {
-                            string message = $"連續嘗試 {MagicHelper.MaxSmtpRetryTimes} 次，無法送出 SMTP 郵件";
-                            Logger.LogError(message);
-                            SystemLogHelper SystemLogHelper = scope.ServiceProvider
-                            .GetRequiredService<SystemLogHelper>();
-                            await SystemLogHelper.LogAsync(new SystemLogAdapterModel()
-                            {
-                                Message = message,
-                                Category = LogCategories.SMTP,
-                                Content = "",
-                                LogLevel = LogLevels.Error,
-                                Updatetime = DateTime.Now,
-                                IP = "",
-                            });
-                            //cancellationTokenSource.Cancel();
-                            smtpExceptionTimes = 0;
-                        }
-                        #endregion
-
-                        scope.Dispose();
-                        await Task.Delay(SendingMailInterval, cancellationTokenSource.Token);
+                        await Task.Delay(SyncSearchIndexInterval, cancellationTokenSource.Token);
                     }
                 }
                 catch (OperationCanceledException)

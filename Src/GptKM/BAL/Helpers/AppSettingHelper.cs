@@ -15,6 +15,7 @@ namespace BAL.Helpers
         public static readonly string GodrPasswordHash = "BackendSystemAssistant:GodrPasswordHash";
         public static readonly string CheckUserStateInterval = "BackendSystemAssistant:CheckUserStateInterval";
         public static readonly string SendingMailInterval = "BackendSystemAssistant:SendingMailInterval";
+        public static readonly string SyncSearchIndexInterval = "BackendSystemAssistant:SyncSearchIndexInterval";
         public static readonly string BackendSmtpClientInformation = "BackendSmtpClientInformation";
         public static readonly string BackendInitializer = "BackendInitializer";
         public static readonly string SyncfusionLicense = "BackendSyncfusion:License";
