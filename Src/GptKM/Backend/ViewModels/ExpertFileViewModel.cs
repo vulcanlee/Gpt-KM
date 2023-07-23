@@ -18,6 +18,7 @@ namespace Backend.ViewModels
     using Backend.Services.Interfaces;
     using GptLibrary.Services;
     using GptLibrary.Helpers;
+    using CommonDomain.Enums;
 
     public class ExpertFileViewModel
     {
@@ -184,7 +185,7 @@ namespace Backend.ViewModels
         }
         #endregion
 
-        #region 記錄列的按鈕事件 (修改與刪除)
+        #region 記錄列的按鈕事件 (修改與刪除) 
         public async Task OnCommandClicked(CommandClickEventArgs<ExpertFileAdapterModel> args)
         {
             ExpertFileAdapterModel item = args.RowData as ExpertFileAdapterModel;
@@ -195,6 +196,50 @@ namespace Backend.ViewModels
                 EditRecordDialogTitle = "修改紀錄";
                 IsShowEditRecord = true;
                 isNewRecordMode = false;
+                #endregion
+            }
+            else if (args.CommandColumn.ButtonOption.IconCss == ButtonIdHelper.ButtonIdReset)
+            {
+                #region 點選 重新設定 按鈕
+                CurrentNeedDeleteRecord = item;
+
+                #region 重新設定 這筆紀錄
+                await Task.Yield();
+                var checkTask = ConfirmMessageBox.ShowAsync("400px", "200px", "警告",
+                     "確認要重新設定這筆紀錄的索引資料嗎?", ConfirmMessageBox.HiddenAsync);
+                await thisView.NeedRefreshAsync();
+                var checkAgain = await checkTask;
+                if (checkAgain == true)
+                {
+                    var expertFileResult = await gptExpertFileService.GetAsync(CurrentNeedDeleteRecord.Id);
+                    if (expertFileResult.Status == true)
+                    {
+                        ExpertFile expertFile = expertFileResult.Payload;
+                        await embeddingSearchHelper.DeleteAllChunkRawFileAsync(expertFile);
+
+                        try
+                        {
+                            CleanTrackingHelper.Clean<ExpertDirectory>(context);
+                            CleanTrackingHelper.Clean<ExpertFile>(context);
+                            CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+                            context.ExpertFileChunk.RemoveRange(expertFile.ExpertFileChunk);
+                            await context.SaveChangesAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            await Console.Out.WriteLineAsync(ex.Message);
+                        }
+
+                        CurrentNeedDeleteRecord = await CurrentService.GetAsync(CurrentNeedDeleteRecord.Id);
+                        CleanTrackingHelper.Clean<ExpertDirectory>(context);
+                        CleanTrackingHelper.Clean<ExpertFile>(context);
+                        CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+                        CurrentNeedDeleteRecord.ProcessingStatus = ExpertFileStatusEnum.Begin;
+                        var verifyRecordResult = await CurrentService.UpdateAsync(CurrentNeedDeleteRecord);
+                        dataGrid.RefreshGrid();
+                    }
+                }
+                #endregion
                 #endregion
             }
             else if (args.CommandColumn.ButtonOption.IconCss == ButtonIdHelper.ButtonIdDelete)

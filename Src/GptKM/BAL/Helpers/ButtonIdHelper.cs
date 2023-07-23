@@ -18,7 +18,7 @@ namespace BAL.Helpers
         public static string ButtonNameDetail => "明細";
         public static string ButtonIdEdit => "mdi mdi-18px mdi-square-edit-outline command-icon-width";
         public static string ButtonNameEdit => "修改";
-        public static string ButtonIdReset => "mdi mdi-18px mdi-ray-start-arrow command-icon-width";
+        public static string ButtonIdReset => "mdi mdi-18px mdi-page-first command-icon-width";
         public static string ButtonNameReset => "重新設定";
         public static string ButtonIdDelete => "mdi mdi-18px mdi-delete-forever e-danger command-icon-width";
         public static string ButtonNameDelete => "刪除";
