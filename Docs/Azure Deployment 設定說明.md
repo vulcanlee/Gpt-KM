@@ -4,6 +4,8 @@
 mkdir Source
 mkdir Convert
 
+## 建立 C:\temp 資料夾
+
 ## Azure OpenAI Key
 OpenAIConfiguration:AzureOpenAIKey
 
@@ -16,6 +18,9 @@ BackendSystemAssistant:EnableKeepAliveEndpoint = true
 
 ## Force to use SQLite
 BackendSystemAssistant:UseSQLite = true
+
+## Initialization Seed Number
+BackendInitializer:SeedNumber : 987789
 
 
 
