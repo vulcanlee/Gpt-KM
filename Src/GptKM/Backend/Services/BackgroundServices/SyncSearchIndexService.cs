@@ -96,6 +96,8 @@ namespace Backend.Services
 
                         try
                         {
+                            Logger.LogInformation($"同步內嵌搜尋索引開始啟動掃描與同步工作");
+
                             cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                             #region 處理 內嵌搜尋索引 同步工作
