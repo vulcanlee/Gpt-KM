@@ -170,7 +170,7 @@ namespace Backend.Services
 #pragma warning restore CA2016 // 將 'CancellationToken' 參數傳遞給使用該參數的方法
             }
             TimeSpan timeSpan = DateTime.Now - StartupTime;
-            Logger.LogInformation($"同步內嵌搜尋索引 服務即將停止，共花費 {timeSpan}");
+            await Console.Out.WriteLineAsync($"同步內嵌搜尋索引 服務即將停止，共花費 {timeSpan}");
 
             return;
         }
