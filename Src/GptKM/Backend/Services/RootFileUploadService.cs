@@ -59,8 +59,8 @@ namespace Backend.Services
         {
             ExpertFile expertFile = null;
             expertFile = await context.ExpertFile
-                .Include(x=> x.ExpertDirectory)
-                .Include(x=>x.ExpertFileChunk)
+                .Include(x => x.ExpertDirectory)
+                .Include(x => x.ExpertFileChunk)
                 .FirstOrDefaultAsync(x => x.FullName == name);
             if (expertFile != null)
             {
@@ -71,6 +71,26 @@ namespace Backend.Services
 
                 #region Todo 將原有的 Chunk Embedding 資料清除
 
+                #endregion
+            }
+            else
+            {
+                #region 建立一筆新紀錄
+                FileInfo fileInfo = new FileInfo(name);
+                ExpertFile expertFileNew = new ExpertFile()
+                {
+                    ExpertDirectoryId = expertDirectory.Id,
+                    FullName = name,
+                    ProcessingStatus = ExpertFileStatusEnum.Begin,
+                    CreateAt = DateTime.Now,
+                    UpdateAt = DateTime.Now,
+                    DirectoryName = Path.GetFullPath(expertDirectory.SourcePath),
+                    Extension = Path.GetExtension(name),
+                    FileName = Path.GetFileName(name),
+                    Size = fileInfo.Length,
+                };
+                context.ExpertFile.Add(expertFileNew);
+                await context.SaveChangesAsync();
                 #endregion
             }
             return expertFile;

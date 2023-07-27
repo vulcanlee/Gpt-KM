@@ -74,9 +74,9 @@ namespace Backend.ViewModels
                 NavigationManager.NavigateTo("/Logout", true);
         }
 
-        public async Task GetUploadFileAsync(List<UploadFiles> uploadFiles)
+        public async Task GetUploadFileAsync(UploadFiles uploadFile)
         {
-            UploadFiles uploadFile = uploadFiles.FirstOrDefault();
+            //UploadFiles uploadFile = uploadFiles.FirstOrDefault();
             MemoryStream inputFileStream = uploadFile.Stream;
             Syncfusion.Blazor.Inputs.FileInfo fileInfo = uploadFile.FileInfo;
             if(fileInfo.StatusCode == "2")
@@ -107,6 +107,9 @@ namespace Backend.ViewModels
                         await gptExpertFileChunkService.DeleteAsync(item.Id);
                     }
                 }
+                #endregion
+
+                #region 若 ExpertFile 不存在，則建立起來
                 #endregion
 
                 #endregion

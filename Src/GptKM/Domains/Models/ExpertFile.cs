@@ -38,8 +38,8 @@ public class ExpertFile
     /// <summary>
     /// 檔案大小 - 單位: 位元組 (Byte) ，從檔案系統得到的數據
     /// </summary>
-    public string ConvertDirectoryName { get; set; } = string.Empty;
     public long Size { get; set; } = 0L;
+    public string ConvertDirectoryName { get; set; } = string.Empty;
     public int TokenSize { get; set; } = 0;
     public decimal EmbeddingCost { get; set; } = 0;
     public bool ProcessChunk { get; set; } =false;

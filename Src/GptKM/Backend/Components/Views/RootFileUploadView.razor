@@ -17,8 +17,7 @@
 <div class="form-row">
     <div class="form-group col">
         <label class="control-label">上傳檔案(限定一次僅能上傳一個檔案)</label> 
-        <SfUploader @ref="upload1" AutoUpload="false" AllowMultiple=false>
-            @*AllowedExtensions=".docx, .pdf, .pptx, .md, .txt">*@
+        <SfUploader @ref="upload1" AutoUpload=false AllowMultiple=true SequentialUpload=true>
             <UploaderEvents ValueChange="UploaderChange"
                 BeforeUpload="Reset"></UploaderEvents>
         </SfUploader>
@@ -47,25 +46,8 @@
     </div>
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="footer-button">
-    @*<SfButton CssClass="e-primary save-btn" @onclick="ViewModel.OnSaveAsync">儲存</SfButton>*@
-</div>
-
-<div>@ViewModel.PasswordStrengthName</div>
+<SfButton CssClass="e-primary save-btn"
+@onclick="CleanUploadListAsync">清除上傳清單</SfButton>
 
 <MessageBox Height="@ViewModel.MessageBox.Height" Width="@ViewModel.MessageBox.Width"
             IsVisible="@ViewModel.MessageBox.IsVisible"
@@ -93,21 +75,28 @@
         ViewModel.IsLoad = false;
         if (args.Files.Count > 0)
         {
-
-            ViewModel.UploadFileName = args.Files[0].FileInfo.Name;
-            if (ConvertFileExtensionMatchService.IsMatch(ViewModel.UploadFileName) == true)
+            foreach (var item in args.Files)
             {
-                await ViewModel.GetUploadFileAsync(args.Files);
-            }
-            else
-            {
-                ViewModel.PreCheckHasError = true;
-                ViewModel.Message = "上傳檔案格式不符合規定";
+                ViewModel.UploadFileName = item.FileInfo.Name;
+                if (ConvertFileExtensionMatchService.IsMatch(ViewModel.UploadFileName) == true)
+                {
+                    await ViewModel.GetUploadFileAsync(item);
+                }
+                else
+                {
+                    ViewModel.PreCheckHasError = true;
+                    ViewModel.Message = $"{ViewModel.UploadFileName} 上傳檔案格式不符合規定";
+                }
             }
         }
-        await upload1.ClearAll();
+        //await upload1.ClearAll();
         //if (ViewModel.PreCheckHasError == false)
         //UploadFileIsReady = true;
+    }
+
+    async Task CleanUploadListAsync()
+    {
+        await upload1.ClearAll();
     }
 
     void Reset()
