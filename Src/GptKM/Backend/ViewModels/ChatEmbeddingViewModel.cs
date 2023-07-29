@@ -58,11 +58,11 @@ namespace Backend.ViewModels
                 NavigationManager.NavigateTo("/Logout", true);
         }
 
-        public async Task<List<GptEmbeddingItem>> SendQuestionAsync()
+        public async Task<List<GptEmbeddingCosineResultItem>> SendQuestionAsync()
         {
             ChatEmbeddingModel.Answer = "";
             ChatEmbeddingModel.DoSearching = true;
-            List<GptEmbeddingItem> gptEmbeddings = 
+            List<GptEmbeddingCosineResultItem> gptEmbeddings = 
                 await embeddingSearchHelper.SearchAsync(ChatEmbeddingModel.Question);
             ChatEmbeddingModel.DoSearching = false;
             return gptEmbeddings;

@@ -57,7 +57,7 @@
         <div class="alert alert-secondary my-1" role="alert">
             <div class="row">
                 <div class="col-2">
-                    @item.GptEmbeddingItem.CosineSimilarity
+                    @item.CosineSimilarity
                 </div>
                 <div class="col-1">
                     @item.GptEmbeddingItem.ExpertFileChunk.ConvertIndex
@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="row my-1">
-                
+
                 <div class="col">
                     <SfButton CssClass="e-primary save-btn"
                     @onclick="()=>ViewModel.GetAnswerAsync(item)">解答</SfButton>
@@ -102,12 +102,13 @@
     async Task DoSearchAsync()
     {
         ViewModel.ChatEmbeddingModel.SearchResult.Clear();
-        List<GptEmbeddingItem> gptResult = await ViewModel.SendQuestionAsync();
+        List<GptEmbeddingCosineResultItem> gptResult = await ViewModel.SendQuestionAsync();
         foreach (var item in gptResult)
         {
             ViewModel.ChatEmbeddingModel.SearchResult.Add(new SearchResult()
                 {
-                    GptEmbeddingItem = item,
+                    GptEmbeddingItem = item.GptEmbeddingItem,
+                    CosineSimilarity = String.Format("{0:0.0000}", item.CosineSimilarity),
                     ShowEmbeddingText = false
                 });
         }

@@ -38,21 +38,25 @@ public class EmbeddingSearchHelper
         allDocumentsEmbedding.Clear();
     }
 
-    public async Task<List<GptEmbeddingItem>> SearchAsync(string question)
+    public async Task<List<GptEmbeddingCosineResultItem>> SearchAsync(string question)
     {
-        List<GptEmbeddingItem> allDocumentsCosineSimilarity = new();
+        List<GptEmbeddingCosineResultItem> allDocumentsCosineSimilarity = new();
         allDocumentsCosineSimilarity.Clear();
         await Task.Yield();
         float[] questionEmbedding = await adaEmbeddingVector.GetEmbeddingAsync(question);
 
         foreach (var item in allDocumentsEmbedding)
         {
+            GptEmbeddingCosineResultItem gptEmbeddingCosineResultItem = new()
+            {
+                  GptEmbeddingItem = item
+            };
             // calculate cosine similarity
             var v2 = item.Embedding;
             var v1 = MathNet.Numerics.LinearAlgebra.Vector<float>.Build.DenseOfArray(questionEmbedding); ;
             var cosineSimilarity = v1.DotProduct(v2) / (v1.L2Norm() * v2.L2Norm());
-            item.CosineSimilarity = cosineSimilarity;
-            allDocumentsCosineSimilarity.Add(item);
+            gptEmbeddingCosineResultItem.CosineSimilarity = cosineSimilarity;
+            allDocumentsCosineSimilarity.Add(gptEmbeddingCosineResultItem);
         }
         allDocumentsCosineSimilarity = allDocumentsCosineSimilarity
             .OrderByDescending(x => x.CosineSimilarity).Take(10).ToList();

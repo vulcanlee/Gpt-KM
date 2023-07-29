@@ -19,6 +19,7 @@ namespace Backend.Models
     public class SearchResult
     {
         public GptEmbeddingItem GptEmbeddingItem { get; set; } = new GptEmbeddingItem();
+        public string CosineSimilarity { get; set; }
         public bool ShowEmbeddingText { get; set; } = false;
     }
 }
