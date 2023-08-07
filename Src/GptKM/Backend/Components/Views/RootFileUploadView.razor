@@ -17,7 +17,8 @@
 <div class="form-row">
     <div class="form-group col">
         <label class="control-label">上傳檔案(限定一次僅能上傳一個檔案)</label> 
-        <SfUploader @ref="upload1" AutoUpload=false AllowMultiple=true SequentialUpload=true>
+        <SfUploader @ref="upload1" AutoUpload=false AllowMultiple=true
+                    SequentialUpload=true MaxFileSize=104857600>
             <UploaderEvents ValueChange="UploaderChange"
                 BeforeUpload="Reset"></UploaderEvents>
         </SfUploader>
