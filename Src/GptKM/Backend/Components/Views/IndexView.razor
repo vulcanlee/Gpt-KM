@@ -20,9 +20,52 @@
 @using Syncfusion.Blazor.Spinner
 @using Syncfusion.Blazor.Buttons
 
-<h1>Blazor Backend</h1>
+<div class="chat">
+    <div class="container">
+        <div class="chat-records">
+            <!-- 这里是聊天记录 -->
+            <p>Message 1</p>
+            <p>Message 2</p>
+            <!-- 加多一些消息來觀察滾動效果 -->
+            <p>Message 3</p>
+            <p>Message 4</p>
+            <!-- ... -->
+            <p>Message 1</p>
+            <p>Message 2</p>
+            <p>Message 3</p>
+            <p>Message 4</p>
+            <p>Message 1</p>
+            <p>Message 2</p>
+            <p>Message 3</p>
+            <p>Message 4</p>
+            <p>Message 1</p>
+            <p>Message 2</p>
+            <p>Message 3</p>
+            <p>Message 4</p>
+            <p>Message 1</p>
+            <p>Message 2</p>
+            <p>Message 3</p>
+            <p>Message 4</p>
+            <p>Message 1</p>
+            <p>Message 2</p>
+            <p>Message 3</p>
+            <p>Message 4</p>
+            <p>Message 1</p>
+            <p>Message 2</p>
+            <p>Message 3</p>
+            <p>Message 4</p>
+            <p>Message 1</p>
+            <p>Message 2</p>
+            <p>Message 3</p>
+            <p>Message 4</p>
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Type your message here..." style="width: 100%; padding: 5px;">
+        </div>
+    </div>
+</div>
 
-<div class="card mb-4">
+@*<div class="card mb-4">
     <div class="card-header bg-success text-white">
         <span class="h3">專案版本資訊</span>
     </div>
@@ -35,7 +78,7 @@
         </div>
     </article>
 </div>
-
+*@
 @code {
     string versionNumber = "";
     string IP;

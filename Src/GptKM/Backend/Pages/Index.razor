@@ -1,9 +1,11 @@
 ﻿@page "/"
+@layout EmptyLayout
+
 <PageTitle>@Title</PageTitle>
 
 <IndexView />
 
-<GptTesting/>
+@*<GptTesting/>*@
 
 @code{
     public string Title { get; set; } = $"智能知識庫";
