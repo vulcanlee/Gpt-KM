@@ -14,6 +14,13 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JS
 
+<div class="top-row px-4 header">
+    <div class="d-flex float-start h2 d-flex justify-content-center align-items-center mt-2">耀瑄科技 AI 知識庫</div>  <!-- 姓名放在這裡 -->
+    <div class="d-flex float-end h2 d-flex justify-content-center align-items-center">
+        <span class="mdi mdi-24px mdi-check-circle mx-2 mt-2" @onclick="ViewModel.OpenUploadFileAsync"></span>
+        <span class="mdi mdi-24px mdi-upload mt-2" @onclick="ViewModel.OpenUploadFileAsync"></span>
+    </div>
+</div>
 
 <div class="chat">
     <div class="container">
@@ -41,7 +48,7 @@
                 {
                     <div class="alert alert-secondary my-1" role="alert">
                         <div class="row">
-                            <div class="col-2">
+                            <div class="col-1">
                                 @item.CosineSimilarity
                             </div>
                             <div class="col-1">
@@ -50,18 +57,25 @@
                             <div class="col-9" @onclick="()=>ViewModel.ShowChunkContext(item)">
                                 @item.GptEmbeddingItem.FileName
                             </div>
+                            <div class="col-1">
+                                <span class="mdi mdi-24px mdi-comment-question"
+                                @onclick="async ()=>await ViewModel.GetAnswerAsync(item)"></span>
+                                <span class="mdi mdi-24px mdi-download-box"
+                                @onclick="async ()=>await DownloadFileAsync(item)"></span>
+                            </div>
                         </div>
-                        <div class="row my-1">
+                        @*                        <div class="row my-1">
 
-                            <div class="col">
-                                <SfButton CssClass="e-primary save-btn"
-                                @onclick="()=>ViewModel.GetAnswerAsync(item)">解答</SfButton>
-                            </div>
-                            <div class="col">
-                                <SfButton CssClass="e-primary save-btn"
-                                @onclick="()=>DownloadFileAsync(item)">下載</SfButton>
-                            </div>
-                        </div>
+                <div class="col">
+                <SfButton CssClass="e-primary save-btn"
+                @onclick="()=>ViewModel.GetAnswerAsync(item)">解答</SfButton>
+                </div>
+                <div class="col">
+                <SfButton CssClass="e-primary save-btn"
+                @onclick="()=>DownloadFileAsync(item)">下載</SfButton>
+                </div>
+                </div>
+                *@
                         @if (item.ShowEmbeddingText == true)
                         {
                             <div class="alert alert-warning m-1" role="alert">
@@ -78,7 +92,7 @@
 
         </div>
     </div>
-    <div class="info-container chat-input">
+    <div class="info-container chat-input ">
         <div class="form-row">
             <div class="form-group col">
                 <label for="Name" class="control-label">輸入你的問題</label>
@@ -88,9 +102,19 @@
                                    rows="3"
                         @bind-Value="ViewModel.ChatEmbeddingModel.Question"></SfTextBox>
                     </div>
-                    <div class="col-1">
-                        <SfButton CssClass="e-primary save-btn"
-                        @onclick="DoSearchAsync">送出</SfButton>
+                    <div class="col-1 d-flex justify-content-center align-items-center">
+                        @if (ViewModel.ChatEmbeddingModel.DoSearching == true)
+                        {
+                            <SfProgressBar Type="ProgressType.Circular" Value="20" Width="60px" Height="60px"
+                                           StartAngle="180" EndAngle="180" CornerRadius="CornerType.Round"
+                                           IsIndeterminate="true" Minimum="0" Maximum="100">
+                                <ProgressBarAnimation Enable="true" Duration="2000" Delay="0"></ProgressBarAnimation>
+                            </SfProgressBar>
+                        }
+                        else
+                        {
+                            <span class="mdi mdi-36px mdi-send" @onclick="DoSearchAsync"></span>
+                        }
                     </div>
                 </div>
             </div>
@@ -99,6 +123,21 @@
 
 </div>
 
+<SfDialog @bind-Visible="@ViewModel.ShowUploadDialog" IsModal="true"
+          Width="95%" Height="100%" CssClass="dialogSize">
+    <DialogTemplates>
+        <Header>上傳檔案</Header>
+        <Content>
+            <RootFileUploadView />
+        </Content>
+        <FooterTemplate>
+            <div>
+                <SfButton CssClass="e-secondary" @onclick="ViewModel.CloseUploadFileAsync">關閉</SfButton>
+            </div>
+        </FooterTemplate>
+    </DialogTemplates>
+    <DialogPositionData X="center" Y="center"></DialogPositionData>
+</SfDialog>
 
 <MessageBox Height="@ViewModel.MessageBox.Height" Width="@ViewModel.MessageBox.Width"
             IsVisible="@ViewModel.MessageBox.IsVisible"

@@ -25,3 +25,26 @@
     padding-right: 1rem;
     padding-left: 1rem;
 }
+
+.top-row {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #d6d5d5;
+    justify-content: flex-end;
+    height: 3.5rem;
+    align-items: center;
+    width: 100%; /* 宽度是100% */
+}
+
+.chat-header {
+    position: fixed; /* 使其固定 */
+    top: 0; /* 在頁面底部 */
+    width: 100%; /* 宽度是100% */
+    border-top: 1px solid #ccc;
+    background-color: #f5f5f5;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+.header {
+    align-items: center
+}
