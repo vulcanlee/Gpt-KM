@@ -1,0 +1,27 @@
+﻿.chat {
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    position: relative; /* 添加這行 */
+    height: 100%;
+    max-width: 100%;
+}
+
+.chat-records {
+    height: calc(100% - 50px); /* 50px 是給 chat-input 的高度，根據您的需要調整 */
+    overflow-y: auto;
+    padding: 10px;
+    padding-bottom: 160px; /* 這裡留有空間讓 chat-input 不會覆蓋 chat-records 的内容 */
+}
+
+.chat-input {
+    position: fixed; /* 使其固定 */
+    bottom: 0; /* 在頁面底部 */
+    width: 100%; /* 宽度是100% */
+    border-top: 1px solid #ccc;
+    background-color: #f5f5f5;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
