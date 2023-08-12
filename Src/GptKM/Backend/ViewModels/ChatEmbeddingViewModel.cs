@@ -31,6 +31,7 @@ namespace Backend.ViewModels
         public string UploadFileName { get; set; } = string.Empty;
         public bool PreCheckHasError { get; set; } = false;
         public bool ShowUploadDialog { get; set; } = false;
+        public bool ShowFileProcessingStatusDialog { get; set; } = false;
         public bool IsLoad { get; set; } = false;
         public Action<string> ShowStatusHandler;
         private readonly OpenAIConfiguration openAIConfiguration;
@@ -130,9 +131,22 @@ namespace Backend.ViewModels
             ShowUploadDialog = true;
             await Task.Yield();
         }
+
         public async Task CloseUploadFileAsync()
         {
             ShowUploadDialog = false;
+            await Task.Yield();
+        }
+
+        public async Task OpenFileProcessingStatusAsync()
+        {
+            ShowFileProcessingStatusDialog = true;
+            await Task.Yield();
+        }
+
+        public async Task CloseFileProcessingStatusAsync()
+        {
+            ShowFileProcessingStatusDialog = false;
             await Task.Yield();
         }
     }

@@ -24,8 +24,8 @@
     <div class="d-flex float-end h2 d-flex justify-content-center align-items-center">
         <span class="mdi mdi-24px mdi-logout mx-2 mt-2 text-danger"
             title="登出" @onclick="@(()=>{Navigate("/Logout");})"></span>
-        <span class="mdi mdi-24px mdi-check-circle mx-2 mt-2" 
-            title="系統狀態" @onclick="ViewModel.OpenUploadFileAsync"></span>
+        <span class="mdi mdi-24px mdi-check-circle mx-2 mt-2"
+              title="系統狀態" @onclick="ViewModel.OpenFileProcessingStatusAsync"></span>
         <span class="mdi mdi-24px mdi-upload mt-2" 
             title="文件上傳" @onclick="ViewModel.OpenUploadFileAsync"></span>
     </div>
@@ -156,6 +156,22 @@
         <FooterTemplate>
             <div>
                 <SfButton CssClass="e-secondary" @onclick="ViewModel.CloseUploadFileAsync">關閉</SfButton>
+            </div>
+        </FooterTemplate>
+    </DialogTemplates>
+    <DialogPositionData X="center" Y="center"></DialogPositionData>
+</SfDialog>
+
+<SfDialog @bind-Visible="@ViewModel.ShowFileProcessingStatusDialog" IsModal="true"
+          Width="95%" Height="100%" CssClass="dialogSize">
+    <DialogTemplates>
+        <Header>文件檔案處理統計資訊</Header>
+        <Content>
+            <FileProcessingStatusView />
+        </Content>
+        <FooterTemplate>
+            <div>
+                <SfButton CssClass="e-secondary" @onclick="ViewModel.CloseFileProcessingStatusAsync">關閉</SfButton>
             </div>
         </FooterTemplate>
     </DialogTemplates>

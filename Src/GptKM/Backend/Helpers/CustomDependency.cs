@@ -45,6 +45,7 @@ namespace Backend.Helpers
             #endregion
 
             #region 註冊 ViewModel
+            services.AddTransient<FileProcessingStatusViewModel>();
             services.AddTransient<ChatEmbeddingViewModel>();
             services.AddTransient<RootFileUploadViewModel>();
             services.AddTransient<ExpertFileViewModel>();
@@ -86,6 +87,7 @@ namespace Backend.Helpers
             #endregion
 
             #region 其他服務註冊
+            services.AddTransient<FileProcessingStatusService>();
             services.AddScoped<CurrentUser>();
             services.AddScoped<UserHelper>();
             services.AddSingleton<SystemBroadcast>();
@@ -94,6 +96,10 @@ namespace Backend.Helpers
             services.AddTransient<SystemLogHelper>();
             services.AddScoped<BlazorAppContext>();
             services.AddScoped<IEventAggregator, EventAggregator>();
+            #region 產品授權服務註冊
+            services.AddSingleton<ProductLicense>();
+            #endregion
+
             #endregion
 
             return services;

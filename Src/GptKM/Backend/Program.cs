@@ -238,10 +238,6 @@ try
     builder.Services.AddHttpContextAccessor();
     #endregion
 
-    #region 產品授權服務註冊
-    builder.Services.AddSingleton<ProductLicense>();
-    #endregion
-
     #endregion
 
     var app = builder.Build();

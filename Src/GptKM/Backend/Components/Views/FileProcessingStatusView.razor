@@ -1,0 +1,73 @@
+﻿@using Syncfusion.Blazor.ProgressBar
+
+@inject FileProcessingStatusViewModel ViewModel
+
+@if (FileProcessingInformation == null)
+{
+    <div class="d-flex align-items-center justify-content-center mt-auto">
+        <SfProgressBar Type="ProgressType.Circular" Value="20" Width="160px" Height="160px"
+                       StartAngle="180" EndAngle="180" CornerRadius="CornerType.Round"
+                       IsIndeterminate="true" Minimum="0" Maximum="100">
+            <ProgressBarAnimation Enable="true" Duration="2000" Delay="0"></ProgressBarAnimation>
+        </SfProgressBar>
+        <div class="text-primary h2">執行中，請稍後</div>
+    </div>
+}
+else
+{
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <span class="h2">明細資訊</span>
+        </div>
+        <article class="card-body bg-light">
+            <div class="alert alert-secondary my-1" role="alert">
+                <div class="">
+                    合計傳檔案數量 : <span class="text-primary">
+                        @FileProcessingInformation.合計傳檔案數量
+                    </span>
+                </div>
+            </div>
+            <div class="alert alert-secondary my-1" role="alert">
+                <div class="">
+                    合計尚未處理檔案數量 : <span class="text-primary">
+                        @FileProcessingInformation.合計尚未處理檔案數量
+                    </span>
+                </div>
+            </div>
+            <div class="alert alert-secondary my-1" role="alert">
+                <div class="">
+                    合計檔案大小 : <span class="text-primary">
+                        @FileProcessingInformation.合計檔案大小
+                    </span>
+                </div>
+            </div>
+            <div class="alert alert-secondary my-1" role="alert">
+                <div class="">
+                    合計檔案區塊數量 : <span class="text-primary">
+                        @FileProcessingInformation.合計檔案區塊數量
+                    </span>
+                </div>
+            </div>
+            <div class="alert alert-secondary my-1" role="alert">
+                <div class="">
+                    合計Token大小 : <span class="text-primary">
+                        @FileProcessingInformation.合計Token大小
+                    </span>
+                </div>
+            </div>
+        </article>
+    </div>
+}
+
+@code {
+    FileProcessingInformation FileProcessingInformation = null;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            FileProcessingInformation = await ViewModel.GetFileProcessingInformation();
+            await Task.Delay(100);
+            StateHasChanged();
+        }
+    }
+}
