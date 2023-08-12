@@ -62,6 +62,10 @@ namespace Backend.ViewModels
         public async Task<List<GptEmbeddingCosineResultItem>> SendQuestionAsync()
         {
             ChatEmbeddingModel.Answer = "";
+            foreach (var item in ChatEmbeddingModel.SearchResult)
+            {
+                item.Answer = "";
+            }
             ChatEmbeddingModel.DoSearching = true;
             List<GptEmbeddingCosineResultItem> gptEmbeddings = 
                 await embeddingSearchHelper.SearchAsync(ChatEmbeddingModel.Question);
@@ -88,11 +92,18 @@ namespace Backend.ViewModels
 
         public async Task GetAnswerAsync(SearchResult searchResult)
         {
-            ChatEmbeddingModel.DoSearching = true;
             ChatEmbeddingModel.Answer = "";
+            foreach (var item in ChatEmbeddingModel.SearchResult)
+            {
+                item.Answer = "";
+                item.DoAnswerSearching = false;
+            }
+
+            searchResult.DoAnswerSearching = true;
             ChatEmbeddingModel.Answer = await embeddingSearchHelper
                 .GetAnswerAsync(searchResult.GptEmbeddingItem.ExpertFileChunk, ChatEmbeddingModel.Question);
-            ChatEmbeddingModel.DoSearching = false;
+            searchResult.Answer = ChatEmbeddingModel.Answer;
+            searchResult.DoAnswerSearching = false;
         }
 
         //public async Task DownloadFileAsync(SearchResult searchResult)

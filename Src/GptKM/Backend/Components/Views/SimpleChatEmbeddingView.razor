@@ -30,12 +30,6 @@
 <div class="chat">
     <div class="container">
         <div class="chat-records">
-            @if (string.IsNullOrEmpty(ViewModel.ChatEmbeddingModel.Answer) == false)
-            {
-                <div class="alert alert-primary my-2" role="alert">
-                    @ViewModel.ChatEmbeddingModel.Answer
-                </div>
-            }
 
             @if (ViewModel.ChatEmbeddingModel.DoSearching == true)
             {
@@ -63,7 +57,9 @@
                                 @item.GptEmbeddingItem.ExpertFileChunk.ConvertIndex
                             </div>
                             <div class="col-9" @onclick="()=>ViewModel.ShowChunkContext(item)">
+                                <span class="mdi mdi-24px mdi-link-variant" ></span>
                                 @item.GptEmbeddingItem.FileName
+     
                             </div>
                             <div class="col-1">
                                 <span class="mdi mdi-24px mdi-comment-question"
@@ -72,24 +68,37 @@
                                 @onclick="async ()=>await DownloadFileAsync(item)"></span>
                             </div>
                         </div>
-                        @*                        <div class="row my-1">
 
-                <div class="col">
-                <SfButton CssClass="e-primary save-btn"
-                @onclick="()=>ViewModel.GetAnswerAsync(item)">解答</SfButton>
-                </div>
-                <div class="col">
-                <SfButton CssClass="e-primary save-btn"
-                @onclick="()=>DownloadFileAsync(item)">下載</SfButton>
-                </div>
-                </div>
-                *@
+
+                        @if (item.DoAnswerSearching == true)
+                        {
+                            <div class="d-flex align-items-center justify-content-center mt-auto">
+                            <SfProgressBar Type="ProgressType.Circular" Value="20" Width="60px" Height="60px"
+                                           StartAngle="180" EndAngle="180" CornerRadius="CornerType.Round"
+                                           IsIndeterminate="true" Minimum="0" Maximum="100" ProgressColor="Green">
+                                <ProgressBarAnimation Enable="true" Duration="2000" Delay="0"></ProgressBarAnimation>
+                            </SfProgressBar>
+                            <div class="text-primary h2">將此文件區塊交由 GPT 來回答問題中</div>
+                            </div>
+                        }
+
                         @if (item.ShowEmbeddingText == true)
                         {
                             <div class="alert alert-warning m-1" role="alert">
                                 <div class="row mt-2">
                                     <div class="col">
                                         @item.GptEmbeddingItem.ChunkContent
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (string.IsNullOrEmpty(item.Answer) == false)
+                        {
+                            <div class="alert alert-success m-1" role="alert">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        @item.Answer
                                     </div>
                                 </div>
                             </div>

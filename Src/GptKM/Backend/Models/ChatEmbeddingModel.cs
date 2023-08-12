@@ -21,5 +21,7 @@ namespace Backend.Models
         public GptEmbeddingItem GptEmbeddingItem { get; set; } = new GptEmbeddingItem();
         public string CosineSimilarity { get; set; }
         public bool ShowEmbeddingText { get; set; } = false;
+        public string Answer { get; set; } = string.Empty;
+        public bool DoAnswerSearching { get; set; } = false;
     }
 }
