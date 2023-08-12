@@ -43,7 +43,8 @@ namespace GptLibrary.Gpts
             return result;
         }
 
-        public async Task<string> GptSummaryAsync(string content, string prefix = "做出底下摘要內容,控制摘要在300字內")
+        public async Task<string> GptSummaryAsync(string content, 
+            string prefix = "依據底下內容，回答這個問題")
         {
             #region 使用 Azure.AI.OpenAI 套件來 OpenAIClient 物件
             var apiKey = openAIConfiguration.AzureOpenAIKey;
@@ -53,7 +54,7 @@ namespace GptLibrary.Gpts
 
             #region 準備使用 OpenAI GPT 的 Prompt / Completion 模式呼叫 API
 
-            string prompt = $"{prefix}\n\n{content}:";
+            string prompt = $"{prefix}\n\n{content}";
             string completion = string.Empty;
             //await Console.Out.WriteLineAsync(prompt);
 
@@ -62,9 +63,10 @@ namespace GptLibrary.Gpts
             {
                 Messages =
                 {
-                    new ChatMessage(ChatRole.System, prefix),
+                    new ChatMessage(ChatRole.System, "若無法找出合適答案，請回覆，此問題找不到答案"),
                     new ChatMessage(ChatRole.User, prompt),
-                }
+                },
+                Temperature = 0.5f,
             };
 
             Response<StreamingChatCompletions> response = await client
