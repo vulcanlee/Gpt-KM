@@ -14,10 +14,11 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
+@inject ProductLicense ProductLicense
 
 <div class="top-row px-4 header">
     <div class="d-flex float-start d-flex justify-content-center align-items-center mt-2">
-        <span class="h2">耀瑄科技 智慧知識庫</span>
+        <span class="h2">@ProductLicense.CompanyName @ProductLicense.ProductName</span>
         <span class="mb-0 mx-2">版本:@versionNumber</span>
     </div>
     <div class="d-flex float-end h2 d-flex justify-content-center align-items-center">
@@ -171,11 +172,9 @@
 @code {
     string versionNumber = "";
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Task.Yield();
-        Version version = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
-        versionNumber = version.ToString();
+        versionNumber = ProductLicense.Version;
     }
 
     async Task DoSearchAsync()

@@ -88,6 +88,12 @@ try
         .GetSection(AppSettingHelper.BackendSmtpClientInformation));
     builder.Services.Configure<BackendInitializer>(builder.Configuration
         .GetSection(AppSettingHelper.BackendInitializer));
+    builder.Services.Configure<BackendCustomNLog>(builder.Configuration
+        .GetSection(nameof(BackendCustomNLog)));
+    builder.Services.Configure<ProductLicense>(builder.Configuration
+        .GetSection(nameof(ProductLicense)));
+    builder.Services.Configure<OpenAIConfiguration>(builder.Configuration
+        .GetSection(nameof(OpenAIConfiguration)));
     #endregion
 
     #region Syncfusion 元件與多國語言服務
@@ -232,11 +238,8 @@ try
     builder.Services.AddHttpContextAccessor();
     #endregion
 
-    #region 相關選項模式
-    builder.Services.Configure<BackendCustomNLog>(builder.Configuration
-        .GetSection(nameof(BackendCustomNLog)));
-    builder.Services.Configure<OpenAIConfiguration>(builder.Configuration
-        .GetSection(nameof(OpenAIConfiguration)));
+    #region 產品授權服務註冊
+    builder.Services.AddSingleton<ProductLicense>();
     #endregion
 
     #endregion
@@ -244,7 +247,18 @@ try
     var app = builder.Build();
 
     #region .NET 5 的 Configure
-   
+
+    #region 產品授權初始化
+    ProductLicense productLicense = app.Services.GetRequiredService<ProductLicense>();
+    IOptions<ProductLicense> ProductLicenseOption = 
+        app.Services.GetRequiredService<IOptions<ProductLicense>>();
+    productLicense.CompanyName = ProductLicenseOption.Value.CompanyName;
+    productLicense.CompanyName = ProductLicenseOption.Value.CompanyName;
+    Version version = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
+    productLicense.Version = version.ToString();
+    productLicense.LicenseKey = ProductLicenseOption.Value.LicenseKey;
+    #endregion
+
     #region 進行 OpenAIConfiguration 初始化
     IOptions<OpenAIConfiguration> openAIConfigurationOption = app.Services.GetRequiredService<IOptions<OpenAIConfiguration>>();
     OpenAIConfiguration openAIConfigurationValue = openAIConfigurationOption.Value;

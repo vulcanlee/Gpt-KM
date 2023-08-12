@@ -1,6 +1,7 @@
 ﻿@page
 @model Backend.Pages.LoginModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 @{
     ViewData["Title"] = "身分驗證";
 }
@@ -33,7 +34,7 @@
         <div class="">
             <div class="card cardcenter">
                 <div class="card-header">
-                    <span class="h2">耀瑄科技 智慧知識庫</span>
+                    <span class="h2">@Model.ProductLicense.CompanyName @Model.ProductLicense.ProductName</span>
                 </div>
                 <article class="card-body">
                     <h4 class="card-title text-center mb-4 mt-1">請輸入帳號與密碼</h4>

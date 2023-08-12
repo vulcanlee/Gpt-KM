@@ -32,7 +32,7 @@ namespace Backend.Pages
 
         public LoginModel(IMyUserService myUserService, ILogger<LoginModel> logger,
             SystemLogHelper systemLogHelper, IHttpContextAccessor httpContextAccessor,
-            IAccountPolicyService AccountPolicyService)
+            IAccountPolicyService AccountPolicyService, ProductLicense productLicense)
         {
 #if DEBUG
             Username = "god";
@@ -44,6 +44,7 @@ namespace Backend.Pages
             SystemLogHelper = systemLogHelper;
             HttpContextAccessor = httpContextAccessor;
             this.AccountPolicyService = AccountPolicyService;
+            ProductLicense = productLicense;
         }
         [BindProperty]
         public string Username { get; set; } = "";
@@ -62,6 +63,7 @@ namespace Backend.Pages
         public string ReturnUrl { get; set; }
         public SystemLogHelper SystemLogHelper { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
+        public ProductLicense ProductLicense { get; }
 
         public async Task OnGetAsync()
         {
