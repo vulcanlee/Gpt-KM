@@ -57,30 +57,60 @@ namespace GptLibrary.Gpts
             string completion = string.Empty;
             //await Console.Out.WriteLineAsync(prompt);
 
-            var completionsOptions = new CompletionsOptions()
+            #region GPT 3.5 / 4 使用
+            ChatCompletionsOptions chatCompletionsOptions = new ChatCompletionsOptions()
             {
-                Prompts = { prompt },
-                MaxTokens = 500,
-                Temperature = 0.3f,
+                Messages =
+                {
+                    new ChatMessage(ChatRole.System, prefix),
+                    new ChatMessage(ChatRole.User, prompt),
+                }
             };
 
-            string deploymentName = openAIConfiguration.TextDavinciModelName;
+            Response<StreamingChatCompletions> response = await client
+                .GetChatCompletionsStreamingAsync(
+                deploymentOrModelName: openAIConfiguration.ChatPromptCompletionModelName,
+                chatCompletionsOptions);
+            using StreamingChatCompletions streamingChatCompletions = response.Value;
 
-            Response<Completions> completionsResponse = await client
-                .GetCompletionsAsync(deploymentName, completionsOptions);
-            if (completionsResponse != null)
+            StringBuilder sb = new StringBuilder();
+            await foreach (StreamingChatChoice choice in streamingChatCompletions.GetChoicesStreaming())
             {
-                StringBuilder sb = new StringBuilder();
-                foreach (var item in completionsResponse.Value.Choices)
+                await foreach (ChatMessage message in choice.GetMessageStreaming())
                 {
-                    sb.Append(item.Text);
+                    sb.Append(message.Content);
                 }
-                completion = sb.ToString();
-                //await Console.Out.WriteLineAsync($"底下是 OpenAI 回覆的內容:");
-                //Console.WriteLine($"{completion}");
             }
-            #endregion
+            completion = sb.ToString();
             return completion;
+
+            #endregion
+            #endregion
+
+            //var completionsOptions = new CompletionsOptions()
+            //{
+            //    Prompts = { prompt },
+            //    MaxTokens = 500,
+            //    Temperature = 0.3f,
+            //};
+
+            //string deploymentName = openAIConfiguration.TextPromptCompletionModelName;
+
+            //Response<Completions> completionsResponse = await client
+            //    .GetCompletionsAsync(deploymentName, completionsOptions);
+            //if (completionsResponse != null)
+            //{
+            //    StringBuilder sb = new StringBuilder();
+            //    foreach (var item in completionsResponse.Value.Choices)
+            //    {
+            //        sb.Append(item.Text);
+            //    }
+            //    completion = sb.ToString();
+            //    //await Console.Out.WriteLineAsync($"底下是 OpenAI 回覆的內容:");
+            //    //Console.WriteLine($"{completion}");
+            //}
+            //#endregion
+            //return completion;
         }
     }
 }
