@@ -13,10 +13,15 @@
 @inject ChatEmbeddingViewModel ViewModel
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JS
+@inject NavigationManager NavigationManager
 
 <div class="top-row px-4 header">
-    <div class="d-flex float-start h2 d-flex justify-content-center align-items-center mt-2">耀瑄科技 AI 知識庫</div>  <!-- 姓名放在這裡 -->
+    <div class="d-flex float-start d-flex justify-content-center align-items-center mt-2">
+        <span class="h2">耀瑄科技 AI 知識庫</span>
+        <span class="mb-0 mx-2">版本:@versionNumber</span>
+    </div>
     <div class="d-flex float-end h2 d-flex justify-content-center align-items-center">
+        <span class="mdi mdi-24px mdi-logout mx-2 mt-2 text-danger" @onclick="@(()=>{Navigate("/login");})"></span>
         <span class="mdi mdi-24px mdi-check-circle mx-2 mt-2" @onclick="ViewModel.OpenUploadFileAsync"></span>
         <span class="mdi mdi-24px mdi-upload mt-2" @onclick="ViewModel.OpenUploadFileAsync"></span>
     </div>
@@ -147,6 +152,15 @@
 <DialogBackground />
 
 @code {
+    string versionNumber = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Yield();
+        Version version = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
+        versionNumber = version.ToString();
+    }
+
     async Task DoSearchAsync()
     {
         ViewModel.ChatEmbeddingModel.SearchResult.Clear();
@@ -173,6 +187,10 @@
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
         await JS.InvokeVoidAsync("downloadFileFromStream", filename, streamRef);
+    }
+    void Navigate(string path)
+    {
+        NavigationManager.NavigateTo(path, true);
     }
 }
 
