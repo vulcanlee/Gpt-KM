@@ -16,9 +16,10 @@
 
 <div class="form-row">
     <div class="form-group col">
-        <label class="control-label">上傳檔案(限定一次僅能上傳一個檔案)</label> 
+        <label class="control-label">上傳檔案(限定 .pdf, .docx, .pptx, .txt, .md 檔案，每個檔案最大不可超過100MB)</label>
         <SfUploader @ref="upload1" AutoUpload=false AllowMultiple=true
-                    SequentialUpload=true MaxFileSize=104857600>
+            AllowedExtensions=".pdf, .docx, .pptx, .txt, .md"
+            SequentialUpload=true MaxFileSize=104857600>
             <UploaderEvents ValueChange="UploaderChange"
                 BeforeUpload="Reset"></UploaderEvents>
         </SfUploader>
