@@ -9,7 +9,7 @@ using Backend.Services.Interfaces;
 
 namespace Backend.ViewModels
 {
-    public class ChatEmbeddingViewModel
+    public class ChatDocumentViewModel
     {
         #region 訊息說明之對話窗使用的變數
         /// <summary>
@@ -38,7 +38,7 @@ namespace Backend.ViewModels
         private readonly OpenAIConfiguration openAIConfiguration;
         private readonly EmbeddingSearchHelper embeddingSearchHelper;
 
-        public ChatEmbeddingViewModel( NavigationManager navigationManager, IHttpContextAccessor httpContextAccessor,
+        public ChatDocumentViewModel(NavigationManager navigationManager, IHttpContextAccessor httpContextAccessor,
             OpenAIConfiguration openAIConfiguration,
             EmbeddingSearchHelper embeddingSearchHelper)
         {
@@ -69,7 +69,7 @@ namespace Backend.ViewModels
                 item.Answer = "";
             }
             ChatEmbeddingModel.DoSearching = true;
-            List<GptEmbeddingCosineResultItem> gptEmbeddings = 
+            List<GptEmbeddingCosineResultItem> gptEmbeddings =
                 await embeddingSearchHelper.SearchAsync(ChatEmbeddingModel.Question);
             ChatEmbeddingModel.DoSearching = false;
             return gptEmbeddings;

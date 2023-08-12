@@ -45,6 +45,7 @@ namespace Backend.Helpers
             #endregion
 
             #region 註冊 ViewModel
+            services.AddTransient<ChatDocumentViewModel>();
             services.AddTransient<FileProcessingStatusViewModel>();
             services.AddTransient<ChatEmbeddingViewModel>();
             services.AddTransient<RootFileUploadViewModel>();

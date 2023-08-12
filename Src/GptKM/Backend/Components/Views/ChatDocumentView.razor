@@ -10,26 +10,11 @@
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.ProgressBar
 
-@inject ChatEmbeddingViewModel ViewModel
+@inject ChatDocumentViewModel ViewModel
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
 @inject ProductLicense ProductLicense
-
-<div class="top-row px-4 header">
-    <div class="d-flex float-start d-flex justify-content-center align-items-center mt-2">
-        <span class="h2">@ProductLicense.CompanyName @ProductLicense.ProductName</span>
-        <span class="mb-0 mx-2">版本:@versionNumber</span>
-    </div>
-    <div class="d-flex float-end h2 d-flex justify-content-center align-items-center">
-        <span class="mdi mdi-24px mdi-check-circle mx-2 mt-2"
-              title="系統狀態" @onclick="ViewModel.OpenFileProcessingStatusAsync"></span>
-        <span class="mdi mdi-24px mdi-upload mt-2" 
-            title="文件上傳" @onclick="ViewModel.OpenUploadFileAsync"></span>
-        <span class="mdi mdi-24px mdi-logout mx-2 mt-2 text-danger"
-            title="登出" @onclick="@(()=>{Navigate("/Logout");})"></span>
-    </div>
-</div>
 
 <div class="chat">
     <div class="container">
@@ -38,15 +23,28 @@
             @if (ViewModel.ChatEmbeddingModel.DoSearching == true)
             {
                 <div class="d-flex align-items-center justify-content-center mt-auto">
-                <SfProgressBar Type="ProgressType.Circular" Value="20" Width="160px" Height="160px"
-                               StartAngle="180" EndAngle="180" CornerRadius="CornerType.Round"
-                               IsIndeterminate="true" Minimum="0" Maximum="100">
-                    <ProgressBarAnimation Enable="true" Duration="2000" Delay="0"></ProgressBarAnimation>
-                </SfProgressBar>
-                <div class="text-primary h2">處理中，請稍後</div>
+                    <SfProgressBar Type="ProgressType.Circular" Value="20" Width="160px" Height="160px"
+                                   StartAngle="180" EndAngle="180" CornerRadius="CornerType.Round"
+                                   IsIndeterminate="true" Minimum="0" Maximum="100">
+                        <ProgressBarAnimation Enable="true" Duration="2000" Delay="0"></ProgressBarAnimation>
+                    </SfProgressBar>
+                    <div class="text-primary h2">處理中，請稍後</div>
                 </div>
 
             }
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
+            <div class="h1">ssssssssssssss</div>
 
             @if (ViewModel.ChatEmbeddingModel.SearchResult.Count > 0)
             {
@@ -60,18 +58,18 @@
                             <div class="col-1">
                                 @item.GptEmbeddingItem.ExpertFileChunk.ConvertIndex
                             </div>
-                            <div class="col-9" >
+                            <div class="col-9">
                                 <span class="mdi mdi-24px mdi-link-variant" title="顯示該文件區塊內的文字"
                                 @onclick="()=>ViewModel.ShowChunkContext(item)"></span>
                                 <span class="mdi mdi-24px mdi-chat-processing mx-2" title="對該文件整個內容進行聊天"
                                 @onclick="()=>ViewModel.OpenShowChatDocumentAsync(item)"></span>
-                               <span @onclick="()=>ViewModel.ShowChunkContext(item)">@item.GptEmbeddingItem.FileName</span> 
-     
+                                <span @onclick="()=>ViewModel.ShowChunkContext(item)">@item.GptEmbeddingItem.FileName</span>
+
                             </div>
                             <div class="col-1">
                                 <span class="mdi mdi-24px mdi-comment-question"
-                                    title="交由 GPT 回答問題"
-                                    @onclick="async ()=>await ViewModel.GetAnswerAsync(item)"></span>
+                                      title="交由 GPT 回答問題"
+                                @onclick="async ()=>await ViewModel.GetAnswerAsync(item)"></span>
                                 <span class="mdi mdi-24px mdi-clipboard-list"
                                       title="摘要此文件區塊" @onclick="async ()=>await ViewModel.GetSummaryAsync(item)"></span>
                                 <span class="mdi mdi-24px mdi-download-box"
@@ -83,12 +81,12 @@
                         @if (item.DoAnswerSearching == true)
                         {
                             <div class="d-flex align-items-center justify-content-center mt-auto">
-                            <SfProgressBar Type="ProgressType.Circular" Value="20" Width="60px" Height="60px"
-                                           StartAngle="180" EndAngle="180" CornerRadius="CornerType.Round"
-                                           IsIndeterminate="true" Minimum="0" Maximum="100" ProgressColor="Green">
-                                <ProgressBarAnimation Enable="true" Duration="2000" Delay="0"></ProgressBarAnimation>
-                            </SfProgressBar>
-                            <div class="text-primary h2">將此文件區塊交由 GPT 來回答問題中</div>
+                                <SfProgressBar Type="ProgressType.Circular" Value="20" Width="60px" Height="60px"
+                                               StartAngle="180" EndAngle="180" CornerRadius="CornerType.Round"
+                                               IsIndeterminate="true" Minimum="0" Maximum="100" ProgressColor="Green">
+                                    <ProgressBarAnimation Enable="true" Duration="2000" Delay="0"></ProgressBarAnimation>
+                                </SfProgressBar>
+                                <div class="text-primary h2">將此文件區塊交由 GPT 來回答問題中</div>
                             </div>
                         }
 
@@ -141,7 +139,7 @@
                         else
                         {
                             <span class="mdi mdi-36px mdi-send"
-                                title="搜尋文件" @onclick="DoSearchAsync"></span>
+                                  title="搜尋文件" @onclick="DoSearchAsync"></span>
                         }
                     </div>
                 </div>
@@ -184,7 +182,7 @@
 </SfDialog>
 
 <SfDialog @bind-Visible="@ViewModel.ShowChatDocumentDialog" IsModal="true"
-          Width="95%" Height="93%" CssClass="dialogSize">
+          Width="95%" Height="100%" CssClass="dialogSize">
     <DialogTemplates>
         <Header>與文件檔案聊天</Header>
         <Content>
