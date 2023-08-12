@@ -22,6 +22,13 @@ else
         <article class="card-body bg-light">
             <div class="alert alert-secondary my-1" role="alert">
                 <div class="">
+                    已經讀入內嵌數量 : <span class="text-primary">
+                        @FileProcessingInformation.已經讀入內嵌數量
+                    </span>
+                </div>
+            </div>
+            <div class="alert alert-secondary my-1" role="alert">
+                <div class="">
                     合計傳檔案數量 : <span class="text-primary">
                         @FileProcessingInformation.合計傳檔案數量
                     </span>
@@ -37,7 +44,7 @@ else
             <div class="alert alert-secondary my-1" role="alert">
                 <div class="">
                     合計檔案大小 : <span class="text-primary">
-                        @FileProcessingInformation.合計檔案大小
+                        @(FileProcessingInformation.合計檔案大小/1024/1024) MB
                     </span>
                 </div>
             </div>

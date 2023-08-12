@@ -38,6 +38,11 @@ public class EmbeddingSearchHelper
         allDocumentsEmbedding.Clear();
     }
 
+    public int GetTotalCount()
+    {
+        return allDocumentsEmbedding.Count;
+    }
+
     public async Task<List<GptEmbeddingCosineResultItem>> SearchAsync(string question)
     {
         List<GptEmbeddingCosineResultItem> allDocumentsCosineSimilarity = new();
@@ -68,7 +73,16 @@ public class EmbeddingSearchHelper
         string result = string.Empty;
         string fileName = expertFileChunk.EmbeddingTextFileName;
         string chunkMessage = await File.ReadAllTextAsync(fileName);
-        result = await davinciPromptCompletion.GptSummaryAsync(chunkMessage, $"請使用底下提示文字，回答這個問題:\"{question}\"");
+        result = await davinciPromptCompletion.GptAnswerQuestionAsync(chunkMessage, $"請使用底下提示文字，回答這個問題:\"{question}\"");
+        return result;
+    }
+
+    public async Task<string> GetSummaryAsync(ExpertFileChunk expertFileChunk)
+    {
+        string result = string.Empty;
+        string fileName = expertFileChunk.EmbeddingTextFileName;
+        string chunkMessage = await File.ReadAllTextAsync(fileName);
+        result = await davinciPromptCompletion.GptSummaryAsync(chunkMessage);
         return result;
     }
 

@@ -7,6 +7,7 @@ namespace Backend.Models
 {
     public class FileProcessingInformation
     {
+        public int 已經讀入內嵌數量 { get; set; }
         public int 合計傳檔案數量 { get; set; }
         public long 合計尚未處理檔案數量 { get; set; }
         public long 合計檔案大小 { get; set; }

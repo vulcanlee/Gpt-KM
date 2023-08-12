@@ -107,6 +107,22 @@ namespace Backend.ViewModels
             searchResult.DoAnswerSearching = false;
         }
 
+        public async Task GetSummaryAsync(SearchResult searchResult)
+        {
+            ChatEmbeddingModel.Answer = "";
+            foreach (var item in ChatEmbeddingModel.SearchResult)
+            {
+                item.Answer = "";
+                item.DoAnswerSearching = false;
+            }
+
+            searchResult.DoAnswerSearching = true;
+            ChatEmbeddingModel.Answer = await embeddingSearchHelper
+                .GetSummaryAsync(searchResult.GptEmbeddingItem.ExpertFileChunk);
+            searchResult.Answer = ChatEmbeddingModel.Answer;
+            searchResult.DoAnswerSearching = false;
+        }
+
         //public async Task DownloadFileAsync(SearchResult searchResult)
         //{
         //    // https://learn.microsoft.com/en-us/aspnet/core/blazor/file-downloads?view=aspnetcore-7.0

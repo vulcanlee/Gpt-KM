@@ -261,9 +261,11 @@ try
     OpenAIConfiguration openAIConfiguration = app.Services.GetRequiredService<OpenAIConfiguration>();
 
     #region 設定 Singleton 物件內的屬性
+    // GPT35TW 
     openAIConfiguration.AzureOpenAIKey = openAIConfigurationValue.AzureOpenAIKey;
     openAIConfiguration.AzureOpenAIEndpoint = openAIConfigurationValue.AzureOpenAIEndpoint;
     openAIConfiguration.ChatPromptCompletionModelName = openAIConfigurationValue.ChatPromptCompletionModelName;
+    openAIConfiguration.ChatPromptCompletionTemperature = openAIConfigurationValue.ChatPromptCompletionTemperature;
     openAIConfiguration.TextEmbeddingAdaModelName = openAIConfigurationValue.TextEmbeddingAdaModelName;
     openAIConfiguration.DefaultSourcePath = openAIConfigurationValue.DefaultSourcePath;
     openAIConfiguration.DefaultConvertPath = openAIConfigurationValue.DefaultConvertPath;

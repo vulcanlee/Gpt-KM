@@ -33,12 +33,15 @@ namespace Backend.ViewModels
         public bool IsLoad { get; set; } = false;
         public Action<string> ShowStatusHandler;
         private readonly FileProcessingStatusService fileProcessingStatusService;
+        private readonly EmbeddingSearchHelper embeddingSearchHelper;
 
         public FileProcessingStatusViewModel(NavigationManager navigationManager,
-            FileProcessingStatusService fileProcessingStatusService)
+            FileProcessingStatusService fileProcessingStatusService,
+            EmbeddingSearchHelper embeddingSearchHelper)
         {
             NavigationManager = navigationManager;
             this.fileProcessingStatusService = fileProcessingStatusService;
+            this.embeddingSearchHelper = embeddingSearchHelper;
         }
         public void OnEditContestChanged(EditContext context)
         {
@@ -57,6 +60,7 @@ namespace Backend.ViewModels
         public async Task<FileProcessingInformation> GetFileProcessingInformation()
         {
             var result = await fileProcessingStatusService.Get();
+            result.已經讀入內嵌數量 = embeddingSearchHelper.GetTotalCount();
             return result;
         }
     }
