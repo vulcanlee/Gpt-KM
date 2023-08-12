@@ -21,9 +21,12 @@
         <span class="mb-0 mx-2">版本:@versionNumber</span>
     </div>
     <div class="d-flex float-end h2 d-flex justify-content-center align-items-center">
-        <span class="mdi mdi-24px mdi-logout mx-2 mt-2 text-danger" @onclick="@(()=>{Navigate("/Logout");})"></span>
-        <span class="mdi mdi-24px mdi-check-circle mx-2 mt-2" @onclick="ViewModel.OpenUploadFileAsync"></span>
-        <span class="mdi mdi-24px mdi-upload mt-2" @onclick="ViewModel.OpenUploadFileAsync"></span>
+        <span class="mdi mdi-24px mdi-logout mx-2 mt-2 text-danger"
+            title="登出" @onclick="@(()=>{Navigate("/Logout");})"></span>
+        <span class="mdi mdi-24px mdi-check-circle mx-2 mt-2" 
+            title="系統狀態" @onclick="ViewModel.OpenUploadFileAsync"></span>
+        <span class="mdi mdi-24px mdi-upload mt-2" 
+            title="文件上傳" @onclick="ViewModel.OpenUploadFileAsync"></span>
     </div>
 </div>
 
@@ -57,15 +60,16 @@
                                 @item.GptEmbeddingItem.ExpertFileChunk.ConvertIndex
                             </div>
                             <div class="col-9" @onclick="()=>ViewModel.ShowChunkContext(item)">
-                                <span class="mdi mdi-24px mdi-link-variant" ></span>
+                                <span class="mdi mdi-24px mdi-link-variant" title="顯示該文件區塊內的文字"></span>
                                 @item.GptEmbeddingItem.FileName
      
                             </div>
                             <div class="col-1">
                                 <span class="mdi mdi-24px mdi-comment-question"
-                                @onclick="async ()=>await ViewModel.GetAnswerAsync(item)"></span>
+                                    title="交由 GPT 回答問題"
+                                    @onclick="async ()=>await ViewModel.GetAnswerAsync(item)"></span>
                                 <span class="mdi mdi-24px mdi-download-box"
-                                @onclick="async ()=>await DownloadFileAsync(item)"></span>
+                                    title="下載此文件" @onclick="async ()=>await DownloadFileAsync(item)"></span>
                             </div>
                         </div>
 
@@ -115,7 +119,7 @@
                 <label for="Name" class="control-label">輸入你的問題</label>
                 <div class="row">
                     <div class="col-11">
-                        <SfTextBox Type="InputType.Password" Multiline="true" Placeholder="請使用自然語言來描述你的問題，越詳盡越好"
+                        <SfTextBox Type="InputType.Password" Multiline="true" Placeholder="請使用自然語言來描述你的問題，越詳盡越好，更能夠精準找到更符合需求的文件"
                                    rows="3"
                         @bind-Value="ViewModel.ChatEmbeddingModel.Question"></SfTextBox>
                     </div>
@@ -130,7 +134,8 @@
                         }
                         else
                         {
-                            <span class="mdi mdi-36px mdi-send" @onclick="DoSearchAsync"></span>
+                            <span class="mdi mdi-36px mdi-send"
+                                title="搜尋文件" @onclick="DoSearchAsync"></span>
                         }
                     </div>
                 </div>
