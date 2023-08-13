@@ -54,7 +54,7 @@ public class EmbeddingSearchHelper
         {
             GptEmbeddingCosineResultItem gptEmbeddingCosineResultItem = new()
             {
-                  GptEmbeddingItem = item
+                GptEmbeddingItem = item
             };
             // calculate cosine similarity
             var v2 = item.Embedding;
@@ -62,6 +62,35 @@ public class EmbeddingSearchHelper
             var cosineSimilarity = v1.DotProduct(v2) / (v1.L2Norm() * v2.L2Norm());
             gptEmbeddingCosineResultItem.CosineSimilarity = cosineSimilarity;
             allDocumentsCosineSimilarity.Add(gptEmbeddingCosineResultItem);
+        }
+        allDocumentsCosineSimilarity = allDocumentsCosineSimilarity
+            .OrderByDescending(x => x.CosineSimilarity).Take(10).ToList();
+        return allDocumentsCosineSimilarity;
+    }
+
+    public async Task<List<GptEmbeddingCosineResultItem>> SearchChatDocumentAsync(string question,
+        ExpertFile expertFile)
+    {
+        List<GptEmbeddingCosineResultItem> allDocumentsCosineSimilarity = new();
+        allDocumentsCosineSimilarity.Clear();
+        await Task.Yield();
+        float[] questionEmbedding = await adaEmbeddingVector.GetEmbeddingAsync(question);
+
+        foreach (var item in allDocumentsEmbedding)
+        {
+            if (item.FileName == expertFile.FullName)
+            {
+                GptEmbeddingCosineResultItem gptEmbeddingCosineResultItem = new()
+                {
+                    GptEmbeddingItem = item
+                };
+                // calculate cosine similarity
+                var v2 = item.Embedding;
+                var v1 = MathNet.Numerics.LinearAlgebra.Vector<float>.Build.DenseOfArray(questionEmbedding); ;
+                var cosineSimilarity = v1.DotProduct(v2) / (v1.L2Norm() * v2.L2Norm());
+                gptEmbeddingCosineResultItem.CosineSimilarity = cosineSimilarity;
+                allDocumentsCosineSimilarity.Add(gptEmbeddingCosineResultItem);
+            }
         }
         allDocumentsCosineSimilarity = allDocumentsCosineSimilarity
             .OrderByDescending(x => x.CosineSimilarity).Take(10).ToList();

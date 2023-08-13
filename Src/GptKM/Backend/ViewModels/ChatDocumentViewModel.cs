@@ -6,11 +6,21 @@ using GptLibrary.Helpers;
 using GptLibrary.Models;
 using Microsoft.JSInterop;
 using Backend.Services.Interfaces;
+using Backend.Services;
+using Backend.Interfaces;
 
 namespace Backend.ViewModels
 {
     public class ChatDocumentViewModel
     {
+
+        public ChatDocumentSpecificItem ChatDocumentSpecificItem { get; set; } = new ChatDocumentSpecificItem();
+        public ChatDocumentModel ChatDocumentModel { get; set; } = new ChatDocumentModel();
+        /// <summary>
+        /// 這個元件整體的通用介面方法
+        /// </summary>
+        IRazorPage thisView;
+
         #region 訊息說明之對話窗使用的變數
         /// <summary>
         /// 確認對話窗設定
@@ -35,18 +45,31 @@ namespace Backend.ViewModels
         public bool ShowChatDocumentDialog { get; set; } = false;
         public bool IsLoad { get; set; } = false;
         public Action<string> ShowStatusHandler;
-        private readonly OpenAIConfiguration openAIConfiguration;
         private readonly EmbeddingSearchHelper embeddingSearchHelper;
+        private readonly ChatDocumentService chatDocumentService;
 
         public ChatDocumentViewModel(NavigationManager navigationManager, IHttpContextAccessor httpContextAccessor,
-            OpenAIConfiguration openAIConfiguration,
-            EmbeddingSearchHelper embeddingSearchHelper)
+            EmbeddingSearchHelper embeddingSearchHelper, ChatDocumentService chatDocumentService)
         {
             NavigationManager = navigationManager;
             HttpContextAccessor = httpContextAccessor;
-            this.openAIConfiguration = openAIConfiguration;
             this.embeddingSearchHelper = embeddingSearchHelper;
+            this.chatDocumentService = chatDocumentService;
         }
+
+        #region 初始化
+        /// <summary>
+        /// 將會於 生命週期事件 OnInitialized / OnAfterRenderAsync 觸發此方法
+        /// </summary>
+        /// <param name="razorPage">當前元件的物件</param>
+        /// <param name="dataGrid">當前 Grid 的元件</param>
+        public void Setup(IRazorPage razorPage)
+        {
+            thisView = razorPage;
+        }
+        #endregion
+
+
         public void OnEditContestChanged(EditContext context)
         {
             LocalEditContext = context;
@@ -63,14 +86,28 @@ namespace Backend.ViewModels
 
         public async Task<List<GptEmbeddingCosineResultItem>> SendQuestionAsync()
         {
-            ChatEmbeddingModel.Answer = "";
-            foreach (var item in ChatEmbeddingModel.SearchResult)
-            {
-                item.Answer = "";
-            }
             ChatEmbeddingModel.DoSearching = true;
+            ChatDocumentModel.AddUserContent(ChatEmbeddingModel.Question);
+
             List<GptEmbeddingCosineResultItem> gptEmbeddings =
-                await embeddingSearchHelper.SearchAsync(ChatEmbeddingModel.Question);
+                await embeddingSearchHelper
+                .SearchChatDocumentAsync(ChatEmbeddingModel.Question, ChatDocumentSpecificItem.ExpertFile);
+            GptEmbeddingCosineResultItem gptEmbeddingCosineResultItem = gptEmbeddings.FirstOrDefault();
+            if (gptEmbeddingCosineResultItem != null)
+            {
+                #region 將內嵌的原文與問題，送給 GPT 回答
+                ChatEmbeddingModel.Answer = await embeddingSearchHelper
+                    .GetAnswerAsync(gptEmbeddingCosineResultItem.GptEmbeddingItem.ExpertFileChunk,
+                    ChatEmbeddingModel.Question);
+                ChatDocumentModel
+                    .AddGPTContent(ChatEmbeddingModel.Answer);
+                #endregion
+            }
+            else
+            {
+                ChatDocumentModel
+                    .AddGPTContent($"在系統資料庫內，找不到相關內嵌檔案 {ChatDocumentSpecificItem.ExpertFile.FullName}");
+            }
             ChatEmbeddingModel.DoSearching = false;
             return gptEmbeddings;
         }

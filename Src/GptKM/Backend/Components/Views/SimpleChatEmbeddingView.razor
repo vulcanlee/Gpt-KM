@@ -10,6 +10,8 @@
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.ProgressBar
 
+@implements IRazorPage
+
 @inject ChatEmbeddingViewModel ViewModel
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JS
@@ -188,7 +190,7 @@
     <DialogTemplates>
         <Header>與文件檔案聊天</Header>
         <Content>
-            <ChatDocumentView />
+            <ChatDocumentView ChatDocumentSpecificItem="ViewModel.ChatDocumentSpecificItem" />
         </Content>
         <FooterTemplate>
             <div>
@@ -212,6 +214,14 @@
     protected override void OnInitialized()
     {
         versionNumber = ProductLicense.Version;
+        ViewModel.Setup(this);
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender == true)
+        {
+            ViewModel.Setup(this);
+        }
     }
 
     async Task DoSearchAsync()
@@ -245,5 +255,21 @@
     {
         NavigationManager.NavigateTo(path, true);
     }
+
+    #region 頁面需要介面實作
+    public async Task NeedRefreshAsync()
+    {
+        await InvokeAsync(async () =>
+        {
+            await RenderDelayHelper.Delay();
+            StateHasChanged();
+        });
+    }
+
+    public async Task NeedInvokeAsync(System.Action action)
+    {
+        await InvokeAsync(action);
+    }
+    #endregion
 }
 

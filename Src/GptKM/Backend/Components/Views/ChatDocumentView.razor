@@ -10,6 +10,8 @@
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.ProgressBar
 
+@implements IRazorPage
+
 @inject ChatDocumentViewModel ViewModel
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JS
@@ -20,97 +22,16 @@
     <div class="container">
         <div class="chat-records">
 
-            @if (ViewModel.ChatEmbeddingModel.DoSearching == true)
+            @if (ViewModel.ChatDocumentModel.ChatDocumentItem.Count > 0)
             {
-                <div class="d-flex align-items-center justify-content-center mt-auto">
-                    <SfProgressBar Type="ProgressType.Circular" Value="20" Width="160px" Height="160px"
-                                   StartAngle="180" EndAngle="180" CornerRadius="CornerType.Round"
-                                   IsIndeterminate="true" Minimum="0" Maximum="100">
-                        <ProgressBarAnimation Enable="true" Duration="2000" Delay="0"></ProgressBarAnimation>
-                    </SfProgressBar>
-                    <div class="text-primary h2">處理中，請稍後</div>
-                </div>
-
-            }
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-            <div class="h1">ssssssssssssss</div>
-
-            @if (ViewModel.ChatEmbeddingModel.SearchResult.Count > 0)
-            {
-                foreach (var item in ViewModel.ChatEmbeddingModel.SearchResult)
+                foreach (var item in ViewModel.ChatDocumentModel.ChatDocumentItem)
                 {
-                    <div class="alert alert-secondary my-1" role="alert">
-                        <div class="row">
-                            <div class="col-1">
-                                @item.CosineSimilarity
+                    <div class="alert @item.SourceModifyClass" role="alert">
+                        <disv class="row">
+                            <div class="col">
+                                @item.Content
                             </div>
-                            <div class="col-1">
-                                @item.GptEmbeddingItem.ExpertFileChunk.ConvertIndex
-                            </div>
-                            <div class="col-9">
-                                <span class="mdi mdi-24px mdi-link-variant" title="顯示該文件區塊內的文字"
-                                @onclick="()=>ViewModel.ShowChunkContext(item)"></span>
-                                <span class="mdi mdi-24px mdi-chat-processing mx-2" title="對該文件整個內容進行聊天"
-                                @onclick="()=>ViewModel.OpenShowChatDocumentAsync(item)"></span>
-                                <span @onclick="()=>ViewModel.ShowChunkContext(item)">@item.GptEmbeddingItem.FileName</span>
-
-                            </div>
-                            <div class="col-1">
-                                <span class="mdi mdi-24px mdi-comment-question"
-                                      title="交由 GPT 回答問題"
-                                @onclick="async ()=>await ViewModel.GetAnswerAsync(item)"></span>
-                                <span class="mdi mdi-24px mdi-clipboard-list"
-                                      title="摘要此文件區塊" @onclick="async ()=>await ViewModel.GetSummaryAsync(item)"></span>
-                                <span class="mdi mdi-24px mdi-download-box"
-                                      title="下載此文件" @onclick="async ()=>await DownloadFileAsync(item)"></span>
-                            </div>
-                        </div>
-
-
-                        @if (item.DoAnswerSearching == true)
-                        {
-                            <div class="d-flex align-items-center justify-content-center mt-auto">
-                                <SfProgressBar Type="ProgressType.Circular" Value="20" Width="60px" Height="60px"
-                                               StartAngle="180" EndAngle="180" CornerRadius="CornerType.Round"
-                                               IsIndeterminate="true" Minimum="0" Maximum="100" ProgressColor="Green">
-                                    <ProgressBarAnimation Enable="true" Duration="2000" Delay="0"></ProgressBarAnimation>
-                                </SfProgressBar>
-                                <div class="text-primary h2">將此文件區塊交由 GPT 來回答問題中</div>
-                            </div>
-                        }
-
-                        @if (item.ShowEmbeddingText == true)
-                        {
-                            <div class="alert alert-warning m-1" role="alert">
-                                <div class="row mt-2">
-                                    <div class="col">
-                                        @item.GptEmbeddingItem.ChunkContent
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
-                        @if (string.IsNullOrEmpty(item.Answer) == false)
-                        {
-                            <div class="alert alert-success m-1" role="alert">
-                                <div class="row mt-2">
-                                    <div class="col">
-                                        @item.Answer
-                                    </div>
-                                </div>
-                            </div>
-                        }
+                        </disv>
                     </div>
                 }
             }
@@ -149,54 +70,6 @@
 
 </div>
 
-<SfDialog @bind-Visible="@ViewModel.ShowUploadDialog" IsModal="true"
-          Width="95%" Height="100%" CssClass="dialogSize">
-    <DialogTemplates>
-        <Header>上傳檔案</Header>
-        <Content>
-            <RootFileUploadView />
-        </Content>
-        <FooterTemplate>
-            <div>
-                <SfButton CssClass="e-secondary" @onclick="ViewModel.CloseUploadFileAsync">關閉</SfButton>
-            </div>
-        </FooterTemplate>
-    </DialogTemplates>
-    <DialogPositionData X="center" Y="center"></DialogPositionData>
-</SfDialog>
-
-<SfDialog @bind-Visible="@ViewModel.ShowFileProcessingStatusDialog" IsModal="true"
-          Width="95%" Height="100%" CssClass="dialogSize">
-    <DialogTemplates>
-        <Header>文件檔案處理統計資訊</Header>
-        <Content>
-            <FileProcessingStatusView />
-        </Content>
-        <FooterTemplate>
-            <div>
-                <SfButton CssClass="e-secondary" @onclick="ViewModel.CloseFileProcessingStatusAsync">關閉</SfButton>
-            </div>
-        </FooterTemplate>
-    </DialogTemplates>
-    <DialogPositionData X="center" Y="center"></DialogPositionData>
-</SfDialog>
-
-<SfDialog @bind-Visible="@ViewModel.ShowChatDocumentDialog" IsModal="true"
-          Width="95%" Height="100%" CssClass="dialogSize">
-    <DialogTemplates>
-        <Header>與文件檔案聊天</Header>
-        <Content>
-            <ChatDocumentView />
-        </Content>
-        <FooterTemplate>
-            <div>
-                <SfButton CssClass="e-secondary" @onclick="ViewModel.CloseShowChatDocumentAsync">關閉</SfButton>
-            </div>
-        </FooterTemplate>
-    </DialogTemplates>
-    <DialogPositionData X="center" Y="center"></DialogPositionData>
-</SfDialog>
-
 <MessageBox Height="@ViewModel.MessageBox.Height" Width="@ViewModel.MessageBox.Width"
             IsVisible="@ViewModel.MessageBox.IsVisible"
             Title="@ViewModel.MessageBox.Title" Message="@ViewModel.MessageBox.Body"
@@ -205,11 +78,31 @@
 <DialogBackground />
 
 @code {
+    private ChatDocumentSpecificItem chatDocumentSpecificItem = new GptLibrary.Models.ChatDocumentSpecificItem();
+    [Parameter]
+    public ChatDocumentSpecificItem ChatDocumentSpecificItem
+    {
+        get { return chatDocumentSpecificItem; }
+        set
+        {
+            chatDocumentSpecificItem = value;
+            ViewModel.ChatDocumentSpecificItem = value;
+        }
+    }
+
     string versionNumber = "";
 
     protected override void OnInitialized()
     {
         versionNumber = ProductLicense.Version;
+        ViewModel.Setup(this);
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender == true)
+        {
+            ViewModel.Setup(this);
+        }
     }
 
     async Task DoSearchAsync()
@@ -243,5 +136,21 @@
     {
         NavigationManager.NavigateTo(path, true);
     }
+
+    #region 頁面需要介面實作
+    public async Task NeedRefreshAsync()
+    {
+        await InvokeAsync(async () =>
+        {
+            await RenderDelayHelper.Delay();
+            StateHasChanged();
+        });
+    }
+
+    public async Task NeedInvokeAsync(System.Action action)
+    {
+        await InvokeAsync(action);
+    }
+    #endregion
 }
 

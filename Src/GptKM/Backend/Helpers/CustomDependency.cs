@@ -88,6 +88,7 @@ namespace Backend.Helpers
             #endregion
 
             #region 其他服務註冊
+            services.AddTransient<ChatDocumentService>();
             services.AddTransient<FileProcessingStatusService>();
             services.AddScoped<CurrentUser>();
             services.AddScoped<UserHelper>();

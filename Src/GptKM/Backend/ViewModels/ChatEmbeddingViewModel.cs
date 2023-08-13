@@ -6,11 +6,18 @@ using GptLibrary.Helpers;
 using GptLibrary.Models;
 using Microsoft.JSInterop;
 using Backend.Services.Interfaces;
+using Backend.Interfaces;
 
 namespace Backend.ViewModels
 {
     public class ChatEmbeddingViewModel
     {
+        public ChatDocumentSpecificItem ChatDocumentSpecificItem { get; set; } = new ChatDocumentSpecificItem();
+        /// <summary>
+        /// 這個元件整體的通用介面方法
+        /// </summary>
+        IRazorPage thisView;
+
         #region 訊息說明之對話窗使用的變數
         /// <summary>
         /// 確認對話窗設定
@@ -47,6 +54,19 @@ namespace Backend.ViewModels
             this.openAIConfiguration = openAIConfiguration;
             this.embeddingSearchHelper = embeddingSearchHelper;
         }
+
+        #region 初始化
+        /// <summary>
+        /// 將會於 生命週期事件 OnInitialized / OnAfterRenderAsync 觸發此方法
+        /// </summary>
+        /// <param name="razorPage">當前元件的物件</param>
+        /// <param name="dataGrid">當前 Grid 的元件</param>
+        public void Setup(IRazorPage razorPage)
+        {
+            thisView = razorPage;
+        }
+        #endregion
+
         public void OnEditContestChanged(EditContext context)
         {
             LocalEditContext = context;
@@ -169,12 +189,14 @@ namespace Backend.ViewModels
 
         public async Task OpenShowChatDocumentAsync(SearchResult searchResult)
         {
+            ChatDocumentSpecificItem.ExpertFile = searchResult.GptEmbeddingItem.ExpertFileChunk.ExpertFile;
             ShowChatDocumentDialog = true;
             await Task.Yield();
         }
 
         public async Task CloseShowChatDocumentAsync()
         {
+            ChatDocumentSpecificItem.ExpertFile = null;
             ShowChatDocumentDialog = false;
             await Task.Yield();
         }
