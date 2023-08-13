@@ -39,15 +39,6 @@ namespace Backend.ViewModels
             #region 工具列按鈕初始化
             Toolbaritems.Add(new ItemModel()
             {
-                Id = ButtonIdHelper.ButtonIdAdd,
-                Text = "新增",
-                TooltipText = "新增",
-                Type = ItemType.Button,
-                PrefixIcon = "mdi mdi-plus-thick",
-                Align = ItemAlign.Left,
-            });
-            Toolbaritems.Add(new ItemModel()
-            {
                 Id = ButtonIdHelper.ButtonIdRefresh,
                 Text = "重新整理",
                 TooltipText = "重新整理",
@@ -205,39 +196,33 @@ namespace Backend.ViewModels
 
                 #region 重新設定 這筆紀錄
                 await Task.Yield();
-                var checkTask = ConfirmMessageBox.ShowAsync("400px", "200px", "警告",
-                     "確認要重新設定這筆紀錄的索引資料嗎?", ConfirmMessageBox.HiddenAsync);
-                await thisView.NeedRefreshAsync();
-                var checkAgain = await checkTask;
-                if (checkAgain == true)
+
+                var expertFileResult = await gptExpertFileService.GetAsync(CurrentNeedDeleteRecord.Id);
+                if (expertFileResult.Status == true)
                 {
-                    var expertFileResult = await gptExpertFileService.GetAsync(CurrentNeedDeleteRecord.Id);
-                    if (expertFileResult.Status == true)
+                    ExpertFile expertFile = expertFileResult.Payload;
+                    await embeddingSearchHelper.DeleteAllChunkRawFileAsync(expertFile);
+
+                    try
                     {
-                        ExpertFile expertFile = expertFileResult.Payload;
-                        await embeddingSearchHelper.DeleteAllChunkRawFileAsync(expertFile);
-
-                        try
-                        {
-                            CleanTrackingHelper.Clean<ExpertDirectory>(context);
-                            CleanTrackingHelper.Clean<ExpertFile>(context);
-                            CleanTrackingHelper.Clean<ExpertFileChunk>(context);
-                            context.ExpertFileChunk.RemoveRange(expertFile.ExpertFileChunk);
-                            await context.SaveChangesAsync();
-                        }
-                        catch (Exception ex)
-                        {
-                            await Console.Out.WriteLineAsync(ex.Message);
-                        }
-
-                        CurrentNeedDeleteRecord = await CurrentService.GetAsync(CurrentNeedDeleteRecord.Id);
                         CleanTrackingHelper.Clean<ExpertDirectory>(context);
                         CleanTrackingHelper.Clean<ExpertFile>(context);
                         CleanTrackingHelper.Clean<ExpertFileChunk>(context);
-                        CurrentNeedDeleteRecord.ProcessingStatus = ExpertFileStatusEnum.Begin;
-                        var verifyRecordResult = await CurrentService.UpdateAsync(CurrentNeedDeleteRecord);
-                        dataGrid.RefreshGrid();
+                        context.ExpertFileChunk.RemoveRange(expertFile.ExpertFileChunk);
+                        await context.SaveChangesAsync();
                     }
+                    catch (Exception ex)
+                    {
+                        await Console.Out.WriteLineAsync(ex.Message);
+                    }
+
+                    CurrentNeedDeleteRecord = await CurrentService.GetAsync(CurrentNeedDeleteRecord.Id);
+                    CleanTrackingHelper.Clean<ExpertDirectory>(context);
+                    CleanTrackingHelper.Clean<ExpertFile>(context);
+                    CleanTrackingHelper.Clean<ExpertFileChunk>(context);
+                    CurrentNeedDeleteRecord.ProcessingStatus = ExpertFileStatusEnum.Begin;
+                    var verifyRecordResult = await CurrentService.UpdateAsync(CurrentNeedDeleteRecord);
+                    dataGrid.RefreshGrid();
                 }
                 #endregion
                 #endregion
