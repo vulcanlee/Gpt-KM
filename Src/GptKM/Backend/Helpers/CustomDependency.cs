@@ -68,6 +68,7 @@ namespace Backend.Helpers
             #endregion
 
             #region GPT Service
+            services.AddTransient<GPT35PromptCompletion>();
             services.AddTransient<SearchCollectionBuilderHelper>();
             services.AddSingleton<EmbeddingSearchHelper>();
             services.AddSingleton<OpenAIConfiguration>();

@@ -67,6 +67,7 @@ public class ConvertToTextService
         expertFile.TokenSize = convertFile.TokenSize;
         expertFile.EmbeddingCost = convertFile.EmbeddingCost;
         expertFile.ProcessingStatus = CommonDomain.Enums.ExpertFileStatusEnum.ToText;
+        expertFile.ChunkSize = convertFile.ConvertFileSplitItems.Count;
         await gptExpertFileService.UpdateAsync(expertFile);
         #endregion
 

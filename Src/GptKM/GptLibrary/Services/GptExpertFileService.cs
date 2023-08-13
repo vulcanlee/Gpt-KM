@@ -132,7 +132,9 @@ public class GptExpertFileService
 
     public async Task<ServiceResult<ExpertFile>> UpdateAsync(ExpertFile ExpertFile)
     {
+        CleanTrackingHelper.Clean<ExpertFileChunk>(context);
         CleanTrackingHelper.Clean<ExpertFile>(context);
+        CleanTrackingHelper.Clean<ExpertDirectory>(context);
         var ExpertFileExist = await context.ExpertFile
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == ExpertFile.Id);
@@ -141,9 +143,11 @@ public class GptExpertFileService
             return new ServiceResult<ExpertFile>($"ExpertFile id : [{ExpertFile.Id}] not found.");
         }
 
-        context.Entry(ExpertFileExist).CurrentValues.SetValues(ExpertFile);
+        context.ExpertFile.Update(ExpertFile);
         await context.SaveChangesAsync();
+        CleanTrackingHelper.Clean<ExpertFileChunk>(context);
         CleanTrackingHelper.Clean<ExpertFile>(context);
+        CleanTrackingHelper.Clean<ExpertDirectory>(context);
         return new ServiceResult<ExpertFile>(ExpertFile);
     }
 

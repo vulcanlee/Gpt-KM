@@ -19,17 +19,17 @@ public class EmbeddingSearchHelper
 {
     private readonly OpenAIConfiguration openAIConfiguration;
     private readonly AdaEmbeddingVector adaEmbeddingVector;
-    private readonly DavinciPromptCompletion davinciPromptCompletion;
+    private readonly GPT35PromptCompletion gpt35PromptCompletion;
     private readonly ILogger<EmbeddingSearchHelper> logger;
     List<GptEmbeddingItem> allDocumentsEmbedding = new();
 
     public EmbeddingSearchHelper(OpenAIConfiguration openAIConfiguration,
-        AdaEmbeddingVector adaEmbeddingVector, DavinciPromptCompletion davinciPromptCompletion,
+        AdaEmbeddingVector adaEmbeddingVector, GPT35PromptCompletion  gpt35PromptCompletion,
         ILogger<EmbeddingSearchHelper> logger)
     {
         this.openAIConfiguration = openAIConfiguration;
         this.adaEmbeddingVector = adaEmbeddingVector;
-        this.davinciPromptCompletion = davinciPromptCompletion;
+        this.gpt35PromptCompletion = gpt35PromptCompletion;
         this.logger = logger;
     }
 
@@ -102,7 +102,7 @@ public class EmbeddingSearchHelper
         string result = string.Empty;
         string fileName = expertFileChunk.EmbeddingTextFileName;
         string chunkMessage = await File.ReadAllTextAsync(fileName);
-        result = await davinciPromptCompletion.GptAnswerQuestionAsync(chunkMessage, $"請使用底下提示文字，回答這個問題:\"{question}\"");
+        result = await gpt35PromptCompletion.GptAnswerQuestionAsync(chunkMessage, $"請使用底下提示文字，回答這個問題:\"{question}\"");
         return result;
     }
 
@@ -111,7 +111,7 @@ public class EmbeddingSearchHelper
         string result = string.Empty;
         string fileName = expertFileChunk.EmbeddingTextFileName;
         string chunkMessage = await File.ReadAllTextAsync(fileName);
-        result = await davinciPromptCompletion.GptSummaryAsync(chunkMessage);
+        result = await gpt35PromptCompletion.GptSummaryAsync(chunkMessage);
         return result;
     }
 

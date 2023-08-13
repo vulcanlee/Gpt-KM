@@ -270,7 +270,34 @@ try
     openAIConfiguration.DefaultSourcePath = openAIConfigurationValue.DefaultSourcePath;
     openAIConfiguration.DefaultConvertPath = openAIConfigurationValue.DefaultConvertPath;
     openAIConfiguration.DefaultExpertDirectoryName = openAIConfigurationValue.DefaultExpertDirectoryName;
+    openAIConfiguration.EmbeddingModelTextEmbeddingAda002MaxRequestTokens = 
+        openAIConfigurationValue.EmbeddingModelTextEmbeddingAda002MaxRequestTokens;
+    openAIConfiguration.EmbeddingModelTextEmbeddingAda002ResponseTokens = 
+        openAIConfigurationValue.EmbeddingModelTextEmbeddingAda002ResponseTokens;
+    openAIConfiguration.EmbeddingModelTextEmbeddingAda002RealRequestTokens = 
+        openAIConfigurationValue.EmbeddingModelTextEmbeddingAda002RealRequestTokens;
+    openAIConfiguration.EmbeddingModelTextEmbeddingAda002RealRequestPatchTokens = 
+        openAIConfigurationValue.EmbeddingModelTextEmbeddingAda002RealRequestPatchTokens;
+    openAIConfiguration.IncrementStringAmount = 
+        openAIConfigurationValue.IncrementStringAmount;
+    openAIConfiguration.LanguageModelTextDavinci003MaxRequestTokens = 
+        openAIConfigurationValue.LanguageModelTextDavinci003MaxRequestTokens;
 
+    #region 設定給靜態物件
+    AzureOpenAIServicePricing.EmbeddingModelTextEmbeddingAda002MaxRequestTokens =
+        openAIConfiguration.EmbeddingModelTextEmbeddingAda002MaxRequestTokens;
+    AzureOpenAIServicePricing.EmbeddingModelTextEmbeddingAda002ResponseTokens =
+        openAIConfiguration.EmbeddingModelTextEmbeddingAda002ResponseTokens;
+    AzureOpenAIServicePricing.EmbeddingModelTextEmbeddingAda002RealRequestTokens =
+        openAIConfiguration.EmbeddingModelTextEmbeddingAda002RealRequestTokens;
+    AzureOpenAIServicePricing.EmbeddingModelTextEmbeddingAda002RealRequestPatchTokens =
+        openAIConfiguration.EmbeddingModelTextEmbeddingAda002RealRequestPatchTokens;
+    AzureOpenAIServicePricing.IncrementStringAmount =
+        openAIConfiguration.IncrementStringAmount;
+    AzureOpenAIServicePricing.LanguageModelTextDavinci003MaxRequestTokens =
+        openAIConfiguration.LanguageModelTextDavinci003MaxRequestTokens;
+    #endregion
+ 
     #endregion
     openAIConfiguration = openAIConfigurationValue;
 
