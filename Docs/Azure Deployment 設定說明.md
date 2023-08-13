@@ -8,6 +8,8 @@ mkdir Convert
 
 ## Azure OpenAI Key
 OpenAIConfiguration:AzureOpenAIKey
+OpenAIConfiguration:AzureOpenAIEndpoint     https://gpt35tw.openai.azure.com/
+OpenAIConfiguration:ChatPromptCompletionModelName     gpt-35-turbo-16k
 
 ## Syncfusion License Key
 BackendSyncfusion:License

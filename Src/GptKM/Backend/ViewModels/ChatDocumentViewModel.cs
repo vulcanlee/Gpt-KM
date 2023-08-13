@@ -109,6 +109,7 @@ namespace Backend.ViewModels
                     .AddGPTContent($"在系統資料庫內，找不到相關內嵌檔案 {ChatDocumentSpecificItem.ExpertFile.FullName}");
             }
             ChatEmbeddingModel.DoSearching = false;
+            ChatEmbeddingModel.Question = "";
             return gptEmbeddings;
         }
 
