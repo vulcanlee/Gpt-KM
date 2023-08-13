@@ -40,8 +40,7 @@ namespace GptLibrary.Converts
             }
             else if (contentType == ContentTypeEnum.PDF)
             {
-
-                result = new PdfToText(logger);
+                result = new PdfPigToText(logger);
             }
             else if (contentType == ContentTypeEnum.HTML)
             {

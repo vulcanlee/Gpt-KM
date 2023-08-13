@@ -17,6 +17,7 @@
 		<PackageReference Include="AI.Dev.OpenAI.GPT" Version="1.0.2" />
 		<PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.5" />
 		<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+		<PackageReference Include="PdfPig" Version="0.1.8" />
 	</ItemGroup>
 
 	<ItemGroup>
