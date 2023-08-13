@@ -32,9 +32,9 @@ namespace GptLibrary.Models
         public async void SplitContext(ExpertFile expertFile, BuildFilenameService buildFilenameService)
         {
             #region 計算 Embedding 與 Summary 的成本
-            if (TokenSize > AzureOpenAIServicePricing.LanguageModelTextDavinci003MaxRequestTokens)
+            if (TokenSize > AzureOpenAIServicePricing.Ada002MaxRequestTokens)
                 SummaryCost = AzureOpenAIServicePricing
-                    .CalculateSummaryCost(AzureOpenAIServicePricing.LanguageModelTextDavinci003MaxRequestTokens);
+                    .CalculateSummaryCost(AzureOpenAIServicePricing.Ada002MaxRequestTokens);
             else
                 SummaryCost = AzureOpenAIServicePricing.CalculateSummaryCost(TokenSize);
             EmbeddingCost = AzureOpenAIServicePricing.CalculateEmbeddingCost(TokenSize);
@@ -46,7 +46,7 @@ namespace GptLibrary.Models
             int embeddingIndex = 1;
 
             int evaluateSize = AzureOpenAIServicePricing
-                .EmbeddingModelTextEmbeddingAda002RealRequestTokens;
+                .Ada002MaxRequestTokens;
             int tokens = 0;
             string content = SourceText;
             while (true)
@@ -62,7 +62,7 @@ namespace GptLibrary.Models
                     while (true)
                     {
                         tokens = tokenizer.CountToken(processingContentString);
-                        if (tokens < (AzureOpenAIServicePricing.EmbeddingModelTextEmbeddingAda002MaxRequestTokens))
+                        if (tokens < (AzureOpenAIServicePricing.Ada002MaxRequestTokens))
                         {
                             if (processingContentString.Length >= content.Length)
                             {
@@ -89,7 +89,7 @@ namespace GptLibrary.Models
                 while (true)
                 {
                     tokens = tokenizer.CountToken(processingContentString);
-                    if (tokens > (AzureOpenAIServicePricing.LanguageModelTextDavinci003MaxRequestTokens))
+                    if (tokens > (AzureOpenAIServicePricing.Ada002MaxRequestTokens))
                     {
                         processingContentString = processingContentString.Substring(0, processingContentString.Length - 100);
                     }

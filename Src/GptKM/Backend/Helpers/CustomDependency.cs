@@ -81,7 +81,6 @@ namespace Backend.Helpers
             services.AddTransient<ConvertFileModelService>();
             services.AddTransient<ConvertToEmbeddingService>();
             services.AddTransient<AdaEmbeddingVector>();
-            services.AddTransient<DavinciPromptCompletion>();
             services.AddTransient<GptExpertDirectoryService>();
             services.AddTransient<GptExpertFileService>();
             services.AddTransient<GptExpertFileChunkService>();
