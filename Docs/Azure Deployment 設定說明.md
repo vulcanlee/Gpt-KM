@@ -24,6 +24,11 @@ BackendSystemAssistant:UseSQLite = true
 ## Initialization Seed Number
 BackendInitializer:SeedNumber : 987789
 
+## 授權資訊
+ProductLicense:CompanyName : 耀瑄科技
+ProductLicense:ProductName : 智慧知識庫
+
+
 ## 使用 達文西 模型所用的參數
 
 ```json
