@@ -22,7 +22,7 @@ namespace Backend.Services
 {
     public class SyncSearchIndexService : IHostedService
     {
-        public SyncSearchIndexService(ILogger<SendingMailHostedService> logger,
+        public SyncSearchIndexService(ILogger<SyncSearchIndexService> logger,
             IServer server, IConfiguration configuration, IServiceScopeFactory serviceScopeFactory,
             SystemBroadcast systemBroadcast,
             BackgroundExecuteMode backgroundExecuteMode,
@@ -37,7 +37,7 @@ namespace Backend.Services
             this.embeddingSearchHelper = embeddingSearchHelper;
         }
 
-        public ILogger<SendingMailHostedService> Logger { get; }
+        public ILogger<SyncSearchIndexService> Logger { get; }
         public IServer Server { get; }
         public IConfiguration Configuration { get; }
         public IServiceScopeFactory ServiceScopeFactory { get; }
