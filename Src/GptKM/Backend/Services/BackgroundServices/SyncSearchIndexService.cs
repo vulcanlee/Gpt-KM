@@ -96,7 +96,7 @@ namespace Backend.Services
 
                         try
                         {
-                            Logger.LogInformation($"同步內嵌搜尋索引開始啟動掃描與同步工作");
+                            Logger.LogDebug($"同步內嵌搜尋索引開始啟動掃描與同步工作");
 
                             cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
@@ -145,11 +145,11 @@ namespace Backend.Services
                 }
                 catch (OperationCanceledException)
                 {
-                    Logger.LogInformation($"寄送郵件 服務準備正常離開中");
+                    Logger.LogInformation($"同步內嵌搜尋索引 服務準備正常離開中");
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogWarning(ex, $"寄送郵件 服務產生例外異常");
+                    Logger.LogWarning(ex, $"同步內嵌搜尋索引 服務產生例外異常");
                 }
                 #endregion
             });
