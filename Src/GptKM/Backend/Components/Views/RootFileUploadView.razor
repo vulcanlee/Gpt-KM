@@ -16,12 +16,19 @@
 
 <div class="form-row">
     <div class="form-group col">
+        <label for="Name" class="control-label">啟用目錄上傳</label>
+        <SfCheckBox @bind-Checked="UploadFileIsReady" />
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group col">
         <label class="control-label">上傳檔案(限定 .pdf, .docx, .pptx, .txt, .md 檔案，每個檔案最大不可超過100MB)</label>
         <SfUploader @ref="upload1" AutoUpload=false AllowMultiple=true
-            AllowedExtensions=".pdf, .docx, .pptx, .txt, .md"
-            SequentialUpload=true MaxFileSize=104857600>
+                    DirectoryUpload=UploadFileIsReady
+                    AllowedExtensions=".pdf, .docx, .pptx, .txt, .md"
+                    SequentialUpload=true MaxFileSize=104857600>
             <UploaderEvents ValueChange="UploaderChange"
-                BeforeUpload="Reset"></UploaderEvents>
+                            BeforeUpload="Reset"></UploaderEvents>
         </SfUploader>
     </div>
 </div>
@@ -60,6 +67,7 @@
 
 @code {
     SfUploader upload1;
+    bool UploadFileIsReady = false;
 
     public async Task UploaderChange(UploadChangeEventArgs args)
     {
