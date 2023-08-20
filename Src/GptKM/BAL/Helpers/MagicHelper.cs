@@ -9,7 +9,7 @@ namespace BAL.Helpers
         #region 定義神奇字串或者神奇數值
         #region 系統預設參數
         public static readonly string AppName = "Blazor 商業用專案範本";
-        public static readonly string MenuMainTitle = "AI GPT 知識庫";
+        public static readonly string MenuMainTitle = "智慧文件庫";
         public static readonly string DefaultConnectionString = "BackendDefaultConnection";
         public static readonly string DefaultSQLiteConnectionString = "BackendSQLiteDefaultConnection";
         public const string CookieAuthenticationScheme = "BackendCookieAuthenticationScheme"; // CookieAuthenticationDefaults.AuthenticationScheme
@@ -41,7 +41,7 @@ namespace BAL.Helpers
         public static readonly string 目錄對應管理功能名稱 = "目錄對應";
         public static readonly string 上傳檔案清單功能名稱 = "上傳檔案清單";
         public static readonly string 檔案上傳功能名稱 = "檔案上傳";
-        public static readonly string 探索知識庫功能名稱 = "探索知識庫";
+        public static readonly string 探索文件庫功能名稱 = "探索文件庫";
         public static readonly string 訂單管理功能名稱 = "訂單管理";
         public static readonly string 訂單明細管理功能名稱 = "訂單明細管理";
         public static readonly string 商品管理功能名稱 = "商品管理";

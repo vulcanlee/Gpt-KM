@@ -703,11 +703,11 @@ namespace Backend.Services
             context.Add(menuData);
             #endregion
 
-            #region 探索知識庫功能名稱
+            #region 探索文件庫功能名稱
             cc += 10;
             menuData = new MenuData()
             {
-                Name = BAL.Helpers.MagicHelper.探索知識庫功能名稱,
+                Name = BAL.Helpers.MagicHelper.探索文件庫功能名稱,
                 CodeName = "ChatEmbedding",
                 Enable = true,
                 Icon = "mdi-lightbulb-group",
