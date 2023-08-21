@@ -1,5 +1,6 @@
 ﻿using Domains.Models;
 using GptLibrary.Models;
+using Microsoft.Extensions.Logging;
 
 namespace GptLibrary.Services;
 
@@ -10,12 +11,15 @@ public class SyncFilesToDatabaseService
 {
     private readonly GptExpertFileService gptExpertFileService;
     private readonly GptExpertDirectoryService gptExpertDirectoryService;
+    private readonly ILogger<SyncFilesToDatabaseService> logger;
 
     public SyncFilesToDatabaseService(GptExpertFileService gptExpertFileService,
-        GptExpertDirectoryService gptExpertDirectoryService)
+        GptExpertDirectoryService gptExpertDirectoryService,
+        ILogger<SyncFilesToDatabaseService> logger)
     {
         this.gptExpertFileService = gptExpertFileService;
         this.gptExpertDirectoryService = gptExpertDirectoryService;
+        this.logger = logger;
     }
 
     /// <summary>
