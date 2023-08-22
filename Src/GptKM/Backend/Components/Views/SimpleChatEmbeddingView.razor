@@ -99,7 +99,14 @@
                             <div class="alert alert-warning m-1" role="alert">
                                 <div class="row mt-2">
                                     <div class="col">
-                                        @item.GptEmbeddingItem.ChunkContent
+                                        @if (!string.IsNullOrEmpty(item.GptEmbeddingItem.ChunkContent))
+                                        {
+                                            var lines = item.GptEmbeddingItem.ChunkContent.Split("\n");
+                                            foreach(string line in lines)
+                                            {
+                                                <div>@line</div><br/>
+                                            }
+                                        })
                                     </div>
                                 </div>
                             </div>
@@ -110,7 +117,16 @@
                             <div class="alert alert-success m-1" role="alert">
                                 <div class="row mt-2">
                                     <div class="col">
-                                        @item.Answer
+                                        @if (!string.IsNullOrEmpty(item.Answer))
+                                        {
+                                            var lines = item.Answer.Split("\n");
+                                            foreach (string line in lines)
+                                            {
+                                                <div>@line</div>
+
+                                                <br />
+                                            }
+                                        })
                                     </div>
                                 </div>
                             </div>
