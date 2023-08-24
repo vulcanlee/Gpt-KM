@@ -142,11 +142,11 @@
 
     async Task DoSearchAsync()
     {
-        StateHasChanged();
-        await Task.Delay(100);
-        StateHasChanged();
-        await Task.Delay(100);
         ViewModel.ChatEmbeddingModel.DoSearching = true;
+        //StateHasChanged();
+        //await Task.Delay(100);
+        //StateHasChanged();
+        //await Task.Delay(100);
         ViewModel.ChatEmbeddingModel.Question = CurrentValue.Trim();
         ViewModel.ChatEmbeddingModel.SearchResult.Clear();
         List<GptEmbeddingCosineResultItem> gptResult = await ViewModel.SendQuestionAsync();
