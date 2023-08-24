@@ -124,7 +124,7 @@
     }
     private void OnTyping(Microsoft.AspNetCore.Components.ChangeEventArgs args)
     {
-        this.CurrentValue = args.Value.ToString();
+        ViewModel.ChatEmbeddingModel.Question = args.Value.ToString();
     }
 
     async Task OnKeyPress(KeyboardEventArgs e)
@@ -142,12 +142,8 @@
 
     async Task DoSearchAsync()
     {
+        ViewModel.ChatEmbeddingModel.Question = ViewModel.ChatEmbeddingModel.Question.Trim();
         ViewModel.ChatEmbeddingModel.DoSearching = true;
-        //StateHasChanged();
-        //await Task.Delay(100);
-        //StateHasChanged();
-        //await Task.Delay(100);
-        ViewModel.ChatEmbeddingModel.Question = CurrentValue.Trim();
         ViewModel.ChatEmbeddingModel.SearchResult.Clear();
         List<GptEmbeddingCosineResultItem> gptResult = await ViewModel.SendQuestionAsync();
         foreach (var item in gptResult)
