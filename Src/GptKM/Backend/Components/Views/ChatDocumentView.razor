@@ -29,7 +29,20 @@
                     <div class="alert @item.SourceModifyClass" role="alert">
                         <disv class="row">
                             <div class="col">
-                                @item.Content
+                                @if (string.IsNullOrEmpty(item.Content) == false)
+                                {
+                                    bool isFirst = false;
+                                    var messageItems = item.Content.Split("\n");
+                                    foreach (var messageItem in messageItems)
+                                    {
+                                        <p>@messageItem</p>
+                                        if (isFirst == true)
+                                        {
+                                            <br />
+                                        }
+                                        isFirst = true;
+                                    }
+                                }
                             </div>
                         </disv>
                     </div>
