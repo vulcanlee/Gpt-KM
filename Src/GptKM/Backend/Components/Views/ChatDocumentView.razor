@@ -57,10 +57,11 @@
                 <label for="Name" class="control-label">輸入你的問題</label>
                 <div class="row">
                     <div class="col-11">
-                        <SfTextBox Type="InputType.Password" Multiline="true"
-                                   Placeholder="請使用自然語言來描述你的問題，越詳盡越好，更能夠精準找到更符合需求的文件內容  (換行，請使用 Shift + Enter)"
+                        <SfTextBox Type="InputType.Text" Multiline="true" 
+                        Placeholder="請使用自然語言來描述你的問題，越詳盡越好，更能夠精準找到更符合需求的文件內容 (換行，請使用 Shift + Enter)"
                                    rows="3"
-                        @bind-Value="ViewModel.ChatEmbeddingModel.Question"
+                        @bind-Value="@CurrentValue"
+                        @oninput="@OnTyping"
                         @onkeypress="OnKeyPress"></SfTextBox>
                     </div>
                     <div class="col-1 d-flex justify-content-center align-items-center">
@@ -74,7 +75,7 @@
                         }
                         else
                         {
-                            <span class="mdi mdi-36px mdi-send"
+                            <span @ref="searchSpan" class="mdi mdi-36px mdi-send"
                                   title="搜尋文件" @onclick="DoSearchAsync"></span>
                         }
                     </div>
@@ -93,6 +94,7 @@
 <DialogBackground />
 
 @code {
+    ElementReference searchSpan;
     private ChatDocumentSpecificItem chatDocumentSpecificItem = new GptLibrary.Models.ChatDocumentSpecificItem();
     [Parameter]
     public ChatDocumentSpecificItem ChatDocumentSpecificItem
@@ -106,6 +108,7 @@
     }
 
     string versionNumber = "";
+    string CurrentValue = "";
 
     protected override void OnInitialized()
     {
@@ -119,18 +122,39 @@
             ViewModel.Setup(this);
         }
     }
+     private void OnTyping(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+    {
+
+        ViewModel.ChatEmbeddingModel.Question = args.Value.ToString();
+        this.CurrentValue = args.Value.ToString();
+        if(CurrentValue.LastOrDefault() == '\n')
+        {
+            int foo = 1;
+        }
+    }
 
     async Task OnKeyPress(KeyboardEventArgs e)
     {
         if ((e.Code == "Enter" || e.Code == "NumpadEnter") &&
         e.AltKey == false && e.ShiftKey == false && e.CtrlKey == false)
         {
+            ViewModel.ChatEmbeddingModel.DoSearching = true;
+           var question = ViewModel.ChatEmbeddingModel.Question.Trim();
+            ViewModel.ChatEmbeddingModel.Question = question;
+            StateHasChanged();
+            await Task.Delay(100);
+            StateHasChanged();
             await DoSearchAsync();
         }
     }
 
     async Task DoSearchAsync()
     {
+        StateHasChanged();
+        await Task.Delay(1000);
+        StateHasChanged();
+        await Task.Delay(100);
+        ViewModel.ChatEmbeddingModel.Question = ViewModel.ChatEmbeddingModel.Question.Trim();
         ViewModel.ChatEmbeddingModel.SearchResult.Clear();
         List<GptEmbeddingCosineResultItem> gptResult = await ViewModel.SendQuestionAsync();
         foreach (var item in gptResult)

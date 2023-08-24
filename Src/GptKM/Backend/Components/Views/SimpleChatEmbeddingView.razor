@@ -143,10 +143,11 @@
                 <label for="Name" class="control-label">輸入你的問題</label>
                 <div class="row">
                     <div class="col-11">
-                        <SfTextBox Type="InputType.Password" Multiline="true" 
+                        <SfTextBox Type="InputType.Text" Multiline="true" 
                         Placeholder="請使用自然語言來描述你的問題，越詳盡越好，更能夠精準找到更符合需求的文件 (換行，請使用 Shift + Enter)"
                                    rows="3"
-                        @bind-Value="ViewModel.ChatEmbeddingModel.Question"
+                        @bind-Value="@CurrentValue"
+                        @oninput="@OnTyping"
                         @onkeypress="OnKeyPress"></SfTextBox>
                     </div>
                     <div class="col-1 d-flex justify-content-center align-items-center">
@@ -228,6 +229,7 @@
 
 @code {
     string versionNumber = "";
+    string CurrentValue = "";
 
     protected override void OnInitialized()
     {
@@ -242,11 +244,28 @@
         }
     }
 
+    private void OnTyping(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+    {
+
+        ViewModel.ChatEmbeddingModel.Question = args.Value.ToString();
+        this.CurrentValue = args.Value.ToString();
+        if(CurrentValue.LastOrDefault() == '\n')
+        {
+            int foo = 1;
+        }
+    }
+
     async Task OnKeyPress(KeyboardEventArgs e)
     {
         if ((e.Code == "Enter" || e.Code == "NumpadEnter") &&
         e.AltKey == false && e.ShiftKey == false && e.CtrlKey == false)
         {
+            ViewModel.ChatEmbeddingModel.DoSearching = true;
+           var question = ViewModel.ChatEmbeddingModel.Question.Trim();
+            ViewModel.ChatEmbeddingModel.Question = question;
+            StateHasChanged();
+            await Task.Delay(100);
+            StateHasChanged();
             await DoSearchAsync();
         }
     }
