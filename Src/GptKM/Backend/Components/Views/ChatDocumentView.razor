@@ -57,9 +57,11 @@
                 <label for="Name" class="control-label">輸入你的問題</label>
                 <div class="row">
                     <div class="col-11">
-                        <SfTextBox Type="InputType.Password" Multiline="true" Placeholder="請使用自然語言來描述你的問題，越詳盡越好，更能夠精準找到更符合需求的文件"
+                        <SfTextBox Type="InputType.Password" Multiline="true"
+                                   Placeholder="請使用自然語言來描述你的問題，越詳盡越好，更能夠精準找到更符合需求的文件內容  (換行，請使用 Shift + Enter)"
                                    rows="3"
-                        @bind-Value="ViewModel.ChatEmbeddingModel.Question"></SfTextBox>
+                        @bind-Value="ViewModel.ChatEmbeddingModel.Question"
+                        @onkeypress="OnKeyPress"></SfTextBox>
                     </div>
                     <div class="col-1 d-flex justify-content-center align-items-center">
                         @if (ViewModel.ChatEmbeddingModel.DoSearching == true)
@@ -115,6 +117,15 @@
         if (firstRender == true)
         {
             ViewModel.Setup(this);
+        }
+    }
+
+    async Task OnKeyPress(KeyboardEventArgs e)
+    {
+        if ((e.Code == "Enter" || e.Code == "NumpadEnter") &&
+        e.AltKey == false && e.ShiftKey == false && e.CtrlKey == false)
+        {
+            await DoSearchAsync();
         }
     }
 
