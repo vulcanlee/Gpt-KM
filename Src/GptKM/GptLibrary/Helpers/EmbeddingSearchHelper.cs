@@ -18,13 +18,13 @@ namespace GptLibrary.Helpers;
 public class EmbeddingSearchHelper
 {
     private readonly OpenAIConfiguration openAIConfiguration;
-    private readonly AdaEmbeddingVector adaEmbeddingVector;
+    private readonly IAdaEmbeddingVector adaEmbeddingVector;
     private readonly IGPTPromptCompletion gpt35PromptCompletion;
     private readonly ILogger<EmbeddingSearchHelper> logger;
     List<GptEmbeddingItem> allDocumentsEmbedding = new();
 
     public EmbeddingSearchHelper(OpenAIConfiguration openAIConfiguration,
-        AdaEmbeddingVector adaEmbeddingVector, IGPTPromptCompletion gpt35PromptCompletion,
+        IAdaEmbeddingVector adaEmbeddingVector, IGPTPromptCompletion gpt35PromptCompletion,
         ILogger<EmbeddingSearchHelper> logger)
     {
         this.openAIConfiguration = openAIConfiguration;
