@@ -36,14 +36,14 @@ public class TwcsGPTPromptCompletion : IGPTPromptCompletion
         try
         {
             logger.LogInformation("台智雲 GPT 測試用服務啟動");
+            string prompt = $"{prefix}\n\n{content}";
 
             HttpResponseMessage response = null;
             var client = httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Add("X-API-KEY", API_KEY);
             client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
             GptTwccRequest embeddingRequest = new GptTwccRequest();
-            //embeddingRequest.input.Add("我想要買一台筆電");
-            embeddingRequest.inputs = "我想要買一台筆電";
+            embeddingRequest.inputs = prompt;
             var JsonContent = JsonConvert.SerializeObject(embeddingRequest);
             using (var fooContent = new StringContent(JsonContent, Encoding.UTF8, "application/json"))
             {
@@ -57,7 +57,7 @@ public class TwcsGPTPromptCompletion : IGPTPromptCompletion
                     // 取得呼叫完成 API 後的回報內容
                     String strResult = await response.Content.ReadAsStringAsync();
                     GptTwccResponse embeddingResponse = JsonConvert.DeserializeObject<GptTwccResponse>(strResult);
-                    result = $"呼叫結果: {strResult}";
+                    result = $"{embeddingResponse.generated_text}";
                     logger.LogInformation(result);
                 }
                 else
@@ -86,51 +86,6 @@ public class TwcsGPTPromptCompletion : IGPTPromptCompletion
         string result = string.Empty;
         await GptAnswerQuestionAsync(content, prefix);
         return result;
-    }
-
-    public async Task Run()
-    {
-        try
-        {
-            logger.LogInformation("台智雲 GPT 測試用服務啟動");
-
-            HttpResponseMessage response = null;
-            var client = httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("X-API-KEY", API_KEY);
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
-            GptTwccRequest embeddingRequest = new GptTwccRequest();
-            //embeddingRequest.input.Add("我想要買一台筆電");
-            embeddingRequest.inputs = "我想要買一台筆電";
-            var JsonContent = JsonConvert.SerializeObject(embeddingRequest);
-            using (var fooContent = new StringContent(JsonContent, Encoding.UTF8, "application/json"))
-            {
-                response = await client.PostAsync(API_SERVER, fooContent);
-            }
-
-            if (response != null)
-            {
-                if (response.IsSuccessStatusCode == true)
-                {
-                    // 取得呼叫完成 API 後的回報內容
-                    String strResult = await response.Content.ReadAsStringAsync();
-                    GptTwccResponse embeddingResponse = JsonConvert.DeserializeObject<GptTwccResponse>(strResult);
-                    logger.LogInformation($"呼叫結果: {strResult}");
-                }
-                else
-                {
-                    logger.LogInformation($"API 異常狀態: " +
-                        string.Format("Error Code:{0}, Error Message:{1}", response.StatusCode, response.RequestMessage));
-                }
-            }
-            else
-            {
-                logger.LogInformation($"應用程式呼叫 API 發生異常");
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.LogInformation($"發生例外異常 : {ex.Message}");
-        }
     }
 
 }

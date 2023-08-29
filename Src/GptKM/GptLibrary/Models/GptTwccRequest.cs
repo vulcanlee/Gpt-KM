@@ -9,10 +9,7 @@ public class GptTwccRequest
 
 public class GptTwccResponse
 {
-    public List<GptTwccResponseNode> Data { get; set; } = new();
-}
-public class GptTwccResponseNode
-{
-    public List<float> Embedding { get; set; } = new();
-    public int index { get; set; }
+    public string generated_text { get; set; }=string.Empty;
+    public string total_time_taken { get; set; }=string.Empty;
+    public int generated_tokens { get; set; }
 }

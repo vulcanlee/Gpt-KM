@@ -236,6 +236,8 @@ try
 
     #region ¨Ï¥Î HttpContext
     builder.Services.AddHttpContextAccessor();
+    builder.Services.AddHttpClient();
+
     #endregion
 
     #endregion
