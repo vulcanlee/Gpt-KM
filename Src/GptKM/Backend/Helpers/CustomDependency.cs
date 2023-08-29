@@ -68,7 +68,7 @@ namespace Backend.Helpers
             #endregion
 
             #region GPT Service
-            services.AddTransient<GPT35PromptCompletion>();
+            services.AddTransient<IGPTPromptCompletion, GPT35PromptCompletion>();
             services.AddTransient<SearchCollectionBuilderHelper>();
             services.AddSingleton<EmbeddingSearchHelper>();
             services.AddSingleton<OpenAIConfiguration>();
@@ -80,7 +80,7 @@ namespace Backend.Helpers
             services.AddTransient<BuildFilenameService>();
             services.AddTransient<ConvertFileModelService>();
             services.AddTransient<ConvertToEmbeddingService>();
-            services.AddTransient<AdaEmbeddingVector>();
+            services.AddTransient<IAdaEmbeddingVector, AdaEmbeddingVector>();
             services.AddTransient<GptExpertDirectoryService>();
             services.AddTransient<GptExpertFileService>();
             services.AddTransient<GptExpertFileChunkService>();

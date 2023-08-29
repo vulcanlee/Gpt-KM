@@ -11,7 +11,7 @@ using CommonDomain.DataModels;
 
 namespace GptLibrary.Gpts
 {
-    public class GPT35PromptCompletion
+    public class GPT35PromptCompletion : IGPTPromptCompletion
     {
         private readonly OpenAIConfiguration openAIConfiguration;
 
@@ -20,7 +20,7 @@ namespace GptLibrary.Gpts
             this.openAIConfiguration = openAIConfiguration;
         }
 
-        public async Task<string> GptAnswerQuestionAsync(string content, 
+        public async Task<string> GptAnswerQuestionAsync(string content,
             string prefix = "依據底下內容，回答這個問題")
         {
             #region 使用 Azure.AI.OpenAI 套件來 OpenAIClient 物件

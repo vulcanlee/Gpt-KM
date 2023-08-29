@@ -14,7 +14,7 @@ namespace GptLibrary.Gpts
     /// <summary>
     /// 使用 OpenAI Ada Embedding 服務
     /// </summary>
-    public class AdaEmbeddingVector
+    public class AdaEmbeddingVector : IAdaEmbeddingVector
     {
         private readonly OpenAIConfiguration openAIConfiguration;
 

@@ -12,13 +12,13 @@ namespace GptLibrary.Services;
 /// </summary>
 public class ConvertToEmbeddingService
 {
-    private readonly AdaEmbeddingVector adaEmbeddingVector;
+    private readonly IAdaEmbeddingVector adaEmbeddingVector;
     private readonly GptExpertFileService gptExpertFileService;
     private readonly GptExpertFileChunkService gptExpertFileChunkService;
     private readonly ConvertFileModelService convertFileModelService;
     private readonly EmbeddingSearchHelper embeddingSearchHelper;
 
-    public ConvertToEmbeddingService(AdaEmbeddingVector adaEmbeddingVector,
+    public ConvertToEmbeddingService(IAdaEmbeddingVector adaEmbeddingVector,
         GptExpertFileService gptExpertFileService,
         GptExpertFileChunkService gptExpertFileChunkService,
         ConvertFileModelService convertFileModelService,

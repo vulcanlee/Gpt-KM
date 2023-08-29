@@ -19,12 +19,12 @@ public class EmbeddingSearchHelper
 {
     private readonly OpenAIConfiguration openAIConfiguration;
     private readonly AdaEmbeddingVector adaEmbeddingVector;
-    private readonly GPT35PromptCompletion gpt35PromptCompletion;
+    private readonly IGPTPromptCompletion gpt35PromptCompletion;
     private readonly ILogger<EmbeddingSearchHelper> logger;
     List<GptEmbeddingItem> allDocumentsEmbedding = new();
 
     public EmbeddingSearchHelper(OpenAIConfiguration openAIConfiguration,
-        AdaEmbeddingVector adaEmbeddingVector, GPT35PromptCompletion  gpt35PromptCompletion,
+        AdaEmbeddingVector adaEmbeddingVector, IGPTPromptCompletion gpt35PromptCompletion,
         ILogger<EmbeddingSearchHelper> logger)
     {
         this.openAIConfiguration = openAIConfiguration;
