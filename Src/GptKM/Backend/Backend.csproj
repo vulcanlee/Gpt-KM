@@ -5,7 +5,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>26b0a3e6-39cb-48fa-88e4-8a4c3455015c</UserSecretsId>
-		<Version>0.8.75.2146</Version>
+		<Version>0.8.76.2156</Version>
 		<!--<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>-->
 	</PropertyGroup>
 
@@ -28,6 +28,7 @@
 		<PackageReference Include="Syncfusion.Blazor" Version="22.2.5" />
 		<PackageReference Include="Syncfusion.XlsIO.Net.Core" Version="22.2.5" />
 		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -55,18 +56,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="InitData\" />
-	  <Folder Include="Properties\PublishProfiles\" />
+		<Folder Include="InitData\" />
+		<Folder Include="Properties\PublishProfiles\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="nlog.config">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-	  <Content Update="wwwroot\JavaScript\downloadFileFromStream.js">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	  </Content>
+		<Content Update="nlog.config">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\JavaScript\downloadFileFromStream.js">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
 	</ItemGroup>
 
 </Project>
