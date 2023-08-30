@@ -251,7 +251,7 @@ try
     IOptions<ProductLicense> ProductLicenseOption =
         app.Services.GetRequiredService<IOptions<ProductLicense>>();
     productLicense.CompanyName = ProductLicenseOption.Value.CompanyName;
-    productLicense.CompanyName = ProductLicenseOption.Value.CompanyName;
+    productLicense.ProductName = ProductLicenseOption.Value.ProductName;
     Version version = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
     productLicense.Version = version.ToString();
     productLicense.LicenseKey = ProductLicenseOption.Value.LicenseKey;

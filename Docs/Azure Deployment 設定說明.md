@@ -7,9 +7,16 @@ mkdir Convert
 ## 建立 C:\temp 資料夾
 
 ## Azure OpenAI Key
+OpenAIConfiguration:AIEngine                Twcs   AzureOpenAI
 OpenAIConfiguration:AzureOpenAIKey
 OpenAIConfiguration:AzureOpenAIEndpoint     https://gpt35tw.openai.azure.com/
 OpenAIConfiguration:ChatPromptCompletionModelName     gpt-35-turbo-16k
+OpenAIConfiguration:Ada002MaxRequestTokens     2500   8191
+OpenAIConfiguration:IncrementStringAmount      100    500
+OpenAIConfiguration:TwcsAPI_KEY              9114aa97-8ede-4f8b-8c65-d713223fe090
+OpenAIConfiguration:TwcsGPTEndpoint          https://ffm-trial05.twcc.ai/text-generation/api/models/generate
+OpenAIConfiguration:TwcsEmbeddingEndpoint    https://ffm-trial05.twcc.ai/embeddings/api/embeddings
+OpenAIConfiguration:AzureOpenAIKey
 
 ## Syncfusion License Key
 BackendSyncfusion:License
