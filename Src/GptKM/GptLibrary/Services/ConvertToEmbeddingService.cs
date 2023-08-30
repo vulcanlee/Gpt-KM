@@ -1,4 +1,5 @@
-﻿using Domains.Models;
+﻿using CommonDomain.DataModels;
+using Domains.Models;
 using GptLibrary.Gpt;
 using GptLibrary.Gpts;
 using GptLibrary.Helpers;
@@ -12,19 +13,25 @@ namespace GptLibrary.Services;
 /// </summary>
 public class ConvertToEmbeddingService
 {
+    private readonly AIEngineFactory aiEngineFactory;
+    private readonly OpenAIConfiguration openAIConfiguration;
     private readonly IAdaEmbeddingVector adaEmbeddingVector;
     private readonly GptExpertFileService gptExpertFileService;
     private readonly GptExpertFileChunkService gptExpertFileChunkService;
     private readonly ConvertFileModelService convertFileModelService;
     private readonly EmbeddingSearchHelper embeddingSearchHelper;
 
-    public ConvertToEmbeddingService(IAdaEmbeddingVector adaEmbeddingVector,
+    public ConvertToEmbeddingService(AIEngineFactory aiEngineFactory,
+        OpenAIConfiguration openAIConfiguration,
+        IAdaEmbeddingVector adaEmbeddingVector,
         GptExpertFileService gptExpertFileService,
         GptExpertFileChunkService gptExpertFileChunkService,
         ConvertFileModelService convertFileModelService,
         EmbeddingSearchHelper embeddingSearchHelper)
     {
-        this.adaEmbeddingVector = adaEmbeddingVector;
+        this.aiEngineFactory = aiEngineFactory;
+        this.openAIConfiguration = openAIConfiguration;
+        this.adaEmbeddingVector = aiEngineFactory.CreateEmbeddingModel(openAIConfiguration.AIEngine);
         this.gptExpertFileService = gptExpertFileService;
         this.gptExpertFileChunkService = gptExpertFileChunkService;
         this.convertFileModelService = convertFileModelService;

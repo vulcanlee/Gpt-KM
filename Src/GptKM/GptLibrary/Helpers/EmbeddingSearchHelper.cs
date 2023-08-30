@@ -18,18 +18,20 @@ namespace GptLibrary.Helpers;
 public class EmbeddingSearchHelper
 {
     private readonly OpenAIConfiguration openAIConfiguration;
+    private readonly AIEngineFactory aiEngineFactory;
     private readonly IAdaEmbeddingVector adaEmbeddingVector;
     private readonly IGPTPromptCompletion gpt35PromptCompletion;
     private readonly ILogger<EmbeddingSearchHelper> logger;
     List<GptEmbeddingItem> allDocumentsEmbedding = new();
 
     public EmbeddingSearchHelper(OpenAIConfiguration openAIConfiguration,
-        IAdaEmbeddingVector adaEmbeddingVector, IGPTPromptCompletion gpt35PromptCompletion,
+        AIEngineFactory aiEngineFactory,
         ILogger<EmbeddingSearchHelper> logger)
     {
         this.openAIConfiguration = openAIConfiguration;
-        this.adaEmbeddingVector = adaEmbeddingVector;
-        this.gpt35PromptCompletion = gpt35PromptCompletion;
+        this.aiEngineFactory = aiEngineFactory;
+        this.adaEmbeddingVector = aiEngineFactory.CreateEmbeddingModel(openAIConfiguration.AIEngine);
+        this.gpt35PromptCompletion = aiEngineFactory.CreateGptModel(openAIConfiguration.AIEngine);
         this.logger = logger;
     }
 
