@@ -69,14 +69,12 @@ namespace Backend.Helpers
 
             #region GPT Service
 
-            #region Azure Open AI GPT & Embedding 服務
-            //services.AddTransient<IAdaEmbeddingVector, AdaEmbeddingVector>();
-            //services.AddTransient<IGPTPromptCompletion, GPT35PromptCompletion>();
-            #endregion
-
-            #region Azure Open AI GPT & Embedding 服務
-            services.AddTransient<IAdaEmbeddingVector, TwcsAdaEmbeddingVector>();
-            services.AddTransient<IGPTPromptCompletion, TwcsGPTPromptCompletion>();
+            #region AI GPT & Embedding 服務
+            services.AddTransient<AdaEmbeddingVector>();
+            services.AddTransient<GPT35PromptCompletion>();
+            services.AddTransient<TwcsAdaEmbeddingVector>();
+            services.AddTransient<TwcsGPTPromptCompletion>();
+            services.AddTransient<AIEngineFactory>();
             #endregion
 
             services.AddTransient<SearchCollectionBuilderHelper>();

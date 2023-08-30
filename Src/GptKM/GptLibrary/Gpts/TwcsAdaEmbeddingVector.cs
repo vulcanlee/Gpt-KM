@@ -20,14 +20,19 @@ namespace GptLibrary.Gpts
     {
         private readonly ILogger<TwcsAdaEmbeddingVector> logger;
         private readonly IHttpClientFactory httpClientFactory;
+        private readonly OpenAIConfiguration openAIConfiguration;
         string API_KEY = "9114aa97-8ede-4f8b-8c65-d713223fe090";
         string API_SERVER = "https://ffm-trial05.twcc.ai/embeddings/api/embeddings";
 
         public TwcsAdaEmbeddingVector(ILogger<TwcsAdaEmbeddingVector> logger,
-            IHttpClientFactory httpClientFactory)
+            IHttpClientFactory httpClientFactory, OpenAIConfiguration openAIConfiguration)
         {
             this.logger = logger;
             this.httpClientFactory = httpClientFactory;
+            this.openAIConfiguration = openAIConfiguration;
+
+            API_KEY = openAIConfiguration.TwcsAPI_KEY;
+            API_SERVER = openAIConfiguration.TwcsEmbeddingEndpoint;
         }
 
         public async Task<float[]> GetEmbeddingAsync(string doc)

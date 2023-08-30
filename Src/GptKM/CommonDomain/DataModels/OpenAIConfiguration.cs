@@ -1,12 +1,22 @@
 ﻿namespace CommonDomain.DataModels
 {
+    public enum AIEngineEnum
+    {
+        AzureOpenAI,
+        Twcs,
+    }
+
     public class OpenAIConfiguration
     {
+        public AIEngineEnum AIEngine { get; set; } = AIEngineEnum.AzureOpenAI;
         public string AzureOpenAIKey { get; set; } = string.Empty;
         public string TextEmbeddingAdaModelName { get; set; } = "text-embedding-ada-002";
         public string ChatPromptCompletionModelName { get; set; } = "text-davinci-003";
         public string AzureOpenAIEndpoint { get; set; } = "https://openailabtw.openai.azure.com/";
         public float ChatPromptCompletionTemperature { get; set; } = 0.5f;
+        public string TwcsAPI_KEY { get; set; } = "";
+        public string TwcsGPTEndpoint { get; set; } = "";
+        public string TwcsEmbeddingEndpoint { get; set; } = "";
         public string DefaultExpertDirectoryName { get; set; } = "本機測試用";
         public string DefaultSourcePath { get; set; } = @"C:\Home\Source";
         public string DefaultConvertPath { get; set; } = @"C:\Home\Convert";

@@ -248,7 +248,7 @@ try
 
     #region 產品授權初始化
     ProductLicense productLicense = app.Services.GetRequiredService<ProductLicense>();
-    IOptions<ProductLicense> ProductLicenseOption = 
+    IOptions<ProductLicense> ProductLicenseOption =
         app.Services.GetRequiredService<IOptions<ProductLicense>>();
     productLicense.CompanyName = ProductLicenseOption.Value.CompanyName;
     productLicense.CompanyName = ProductLicenseOption.Value.CompanyName;
@@ -269,12 +269,15 @@ try
     openAIConfiguration.ChatPromptCompletionModelName = openAIConfigurationValue.ChatPromptCompletionModelName;
     openAIConfiguration.ChatPromptCompletionTemperature = openAIConfigurationValue.ChatPromptCompletionTemperature;
     openAIConfiguration.TextEmbeddingAdaModelName = openAIConfigurationValue.TextEmbeddingAdaModelName;
+    openAIConfiguration.TwcsAPI_KEY = openAIConfigurationValue.TwcsAPI_KEY;
+    openAIConfiguration.TwcsGPTEndpoint = openAIConfigurationValue.TwcsGPTEndpoint;
+    openAIConfiguration.TwcsEmbeddingEndpoint = openAIConfigurationValue.TwcsEmbeddingEndpoint;
     openAIConfiguration.DefaultSourcePath = openAIConfigurationValue.DefaultSourcePath;
     openAIConfiguration.DefaultConvertPath = openAIConfigurationValue.DefaultConvertPath;
     openAIConfiguration.DefaultExpertDirectoryName = openAIConfigurationValue.DefaultExpertDirectoryName;
-    openAIConfiguration.Ada002MaxRequestTokens = 
+    openAIConfiguration.Ada002MaxRequestTokens =
         openAIConfigurationValue.Ada002MaxRequestTokens;
-    openAIConfiguration.IncrementStringAmount = 
+    openAIConfiguration.IncrementStringAmount =
         openAIConfigurationValue.IncrementStringAmount;
 
     #region 設定給靜態物件
@@ -285,7 +288,8 @@ try
     #endregion
 
     #endregion
-        openAIConfiguration = openAIConfigurationValue;
+
+    openAIConfiguration = openAIConfigurationValue;
 
     #endregion
 
@@ -293,7 +297,7 @@ try
     app.UseApiNotFoundPageToAPIResult();
     #endregion
     IOptions<BackendCustomNLog> optionsCustomNLog = app.Services.GetRequiredService<IOptions<BackendCustomNLog>>();
-   
+
     #region 宣告 NLog 要使用到的變數內容
     LogManager.Configuration.Variables["LogRootPath"] =
         optionsCustomNLog.Value.LogRootPath;
