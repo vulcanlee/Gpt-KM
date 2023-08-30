@@ -40,14 +40,12 @@ namespace GptLibrary.Gpts
             List<float> result = new();
             try
             {
-                logger.LogInformation("台智雲 Embedding 測試用服務啟動");
-
                 HttpResponseMessage response = null;
                 var client = httpClientFactory.CreateClient();
                 client.DefaultRequestHeaders.Add("X-API-KEY", API_KEY);
                 client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
                 EmbeddingTwccRequest embeddingRequest = new EmbeddingTwccRequest();
-                embeddingRequest.input.Add("我想要買一台筆電");
+                embeddingRequest.input.Add(doc);
                 var JsonContent = JsonConvert.SerializeObject(embeddingRequest);
                 using (var fooContent = new StringContent(JsonContent, Encoding.UTF8, "application/json"))
                 {
@@ -62,22 +60,21 @@ namespace GptLibrary.Gpts
                         String strResult = await response.Content.ReadAsStringAsync();
                         EmbeddingTwccResponse embeddingResponse = JsonConvert.DeserializeObject<EmbeddingTwccResponse>(strResult);
                         result = embeddingResponse.Data[0].Embedding;
-                        logger.LogInformation($"呼叫結果: {strResult}");
                     }
                     else
                     {
-                        logger.LogInformation($"API 異常狀態: " +
+                        logger.LogWarning($"API 異常狀態: " +
                             string.Format("Error Code:{0}, Error Message:{1}", response.StatusCode, response.RequestMessage));
                     }
                 }
                 else
                 {
-                    logger.LogInformation($"應用程式呼叫 API 發生異常");
+                    logger.LogError($"應用程式呼叫 API 發生異常");
                 }
             }
             catch (Exception ex)
             {
-                logger.LogInformation($"發生例外異常 : {ex.Message}");
+                logger.LogError($"發生例外異常 : {ex.Message}");
             }
             return result.ToArray();
         }

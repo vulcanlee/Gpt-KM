@@ -65,25 +65,24 @@ public class TwcsGPTPromptCompletion : IGPTPromptCompletion
                     String strResult = await response.Content.ReadAsStringAsync();
                     GptTwccResponse embeddingResponse = JsonConvert.DeserializeObject<GptTwccResponse>(strResult);
                     result = $"{embeddingResponse.generated_text}";
-                    logger.LogInformation(result);
                 }
                 else
                 {
                     result = $"API 異常狀態: " +
                         string.Format("Error Code:{0}, Error Message:{1}", response.StatusCode, response.RequestMessage);
-                    logger.LogInformation(result);
+                    logger.LogWarning(result);
                 }
             }
             else
             {
                 result = $"應用程式呼叫 API 發生異常";
-                logger.LogInformation(result);
+                logger.LogError(result);
             }
         }
         catch (Exception ex)
         {
             result = $"發生例外異常 : {ex.Message}";
-            logger.LogInformation(result);
+            logger.LogError(result);
         }
         return result;
     }

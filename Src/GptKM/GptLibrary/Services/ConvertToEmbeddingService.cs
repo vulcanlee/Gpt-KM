@@ -23,7 +23,6 @@ public class ConvertToEmbeddingService
 
     public ConvertToEmbeddingService(AIEngineFactory aiEngineFactory,
         OpenAIConfiguration openAIConfiguration,
-        IAdaEmbeddingVector adaEmbeddingVector,
         GptExpertFileService gptExpertFileService,
         GptExpertFileChunkService gptExpertFileChunkService,
         ConvertFileModelService convertFileModelService,

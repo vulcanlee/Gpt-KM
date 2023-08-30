@@ -264,6 +264,7 @@ try
 
     #region 設定 Singleton 物件內的屬性
     // GPT35TW 
+    openAIConfiguration.AIEngine = openAIConfigurationValue.AIEngine;
     openAIConfiguration.AzureOpenAIKey = openAIConfigurationValue.AzureOpenAIKey;
     openAIConfiguration.AzureOpenAIEndpoint = openAIConfigurationValue.AzureOpenAIEndpoint;
     openAIConfiguration.ChatPromptCompletionModelName = openAIConfigurationValue.ChatPromptCompletionModelName;

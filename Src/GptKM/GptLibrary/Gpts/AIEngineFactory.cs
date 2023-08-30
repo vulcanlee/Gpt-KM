@@ -14,10 +14,10 @@ namespace GptLibrary.Gpts;
 public class AIEngineFactory
 {
     private readonly ILogger<AIEngineFactory> logger;
-    private readonly ServiceProvider serviceProvider;
+    private readonly IServiceProvider serviceProvider;
 
     public AIEngineFactory(ILogger<AIEngineFactory> logger,
-        ServiceProvider serviceProvider)
+        IServiceProvider serviceProvider)
     {
         this.logger = logger;
         this.serviceProvider = serviceProvider;
