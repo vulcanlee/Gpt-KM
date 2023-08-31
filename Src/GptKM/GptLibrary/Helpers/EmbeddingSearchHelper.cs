@@ -60,8 +60,16 @@ public class EmbeddingSearchHelper
             };
             // calculate cosine similarity
             var v2 = item.Embedding;
-            var v1 = MathNet.Numerics.LinearAlgebra.Vector<float>.Build.DenseOfArray(questionEmbedding); ;
-            var cosineSimilarity = v1.DotProduct(v2) / (v1.L2Norm() * v2.L2Norm());
+            var v1 = MathNet.Numerics.LinearAlgebra.Vector<float>.Build.DenseOfArray(questionEmbedding);
+            double cosineSimilarity = 0.0;
+            try
+            {
+                cosineSimilarity = v1.DotProduct(v2) / (v1.L2Norm() * v2.L2Norm());
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in SearchAsync");
+            }
             gptEmbeddingCosineResultItem.CosineSimilarity = cosineSimilarity;
             allDocumentsCosineSimilarity.Add(gptEmbeddingCosineResultItem);
         }

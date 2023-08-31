@@ -84,7 +84,10 @@ namespace GptLibrary.Models
                     }
                 }
                 #endregion
-
+                if (embeddingIndex == 39)
+                {
+                    int foo = 0;
+                }
                 #region 若第一次取得的 Token 過大，則逐步縮小字串數量
                 while (true)
                 {
@@ -96,6 +99,7 @@ namespace GptLibrary.Models
                     else
                         break;
                 }
+                var tokens22 = tokenizer.CountToken(processingContentString);
                 #endregion
 
                 int startIndex = content.Length - processingContentString.Length;

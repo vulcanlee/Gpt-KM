@@ -1,4 +1,5 @@
-﻿using AI.Dev.OpenAI.GPT;
+﻿
+using SharpToken;
 
 namespace GptLibrary.Gpt;
 
@@ -14,7 +15,8 @@ public class Tokenizer
     /// <returns></returns>
     public int CountToken(string content)
     {
-        List<int> tokens = GPT3Tokenizer.Encode(content);
+        var encoding = GptEncoding.GetEncoding("cl100k_base");
+        List<int> tokens = encoding.Encode(content);
         return tokens.Count;
     }
 }

@@ -52,6 +52,7 @@ public class ConvertToEmbeddingService
         string content = convertFileItemModel.SourceText;
 
         #region 產生 Embedding 向量
+        await Console.Out.WriteLineAsync($"{convertFile.FileName} ==> {index}");
         float[] embeddings = await adaEmbeddingVector.GetEmbeddingAsync(content);
         convertFileItemModel.Embedding = embeddings.ToList();
         #endregion
