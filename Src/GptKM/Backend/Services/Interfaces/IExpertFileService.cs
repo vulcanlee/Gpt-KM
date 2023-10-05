@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Backend.AdapterModels;
 using CommonDomain.DataModels;
+using Domains.Models;
 
 namespace Backend.Services.Interfaces
 {
@@ -17,6 +18,7 @@ namespace Backend.Services.Interfaces
         Task<DataRequestResult<ExpertFileAdapterModel>> GetAsync(DataRequest dataRequest);
         Task<ExpertFileAdapterModel> GetAsync(int id);
         Task<ExpertFileAdapterModel> GetAsync(string filename);
+        Task<List<ExpertFile>> GetAllAsync();
         Task<DataRequestResult<ExpertFileAdapterModel>> GetByHeaderIDAsync(int id, DataRequest dataRequest);
         Task<VerifyRecordResult> UpdateAsync(ExpertFileAdapterModel paraObject);
     }

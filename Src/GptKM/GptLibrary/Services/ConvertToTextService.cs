@@ -37,15 +37,15 @@ public class ConvertToTextService
         var expertFileResult = await gptExpertFileService.GetAsync(expertFile.FullName);
         if (expertFileResult.Status == false)
         {
-            return null;
+            return null; 
         }
         expertFile = expertFileResult.Payload;
 
-        var extinsion = System.IO.Path.GetExtension(expertFile.FullName);
+        var extinsion = System.IO.Path.GetExtension(expertFile.FullName); 
         var contentTypeEnum = ContentType.GetContentTypeEnum(extinsion);
 
         IFileToText fileToText = converterToTextFactory.Create(contentTypeEnum);
-        Tokenizer tokenizer = new Tokenizer();
+        //Tokenizer tokenizer = new Tokenizer();
 
         #region 將檔案內容，轉換成為文字
         string sourceText = await fileToText.ToTextAsync(expertFile.FullName);
@@ -56,7 +56,7 @@ public class ConvertToTextService
             FileSize = expertFile.Size,
             SourceText = sourceText,
             SourceTextSize = sourceText.Length,
-            TokenSize = tokenizer.CountToken(sourceText),
+            //TokenSize = tokenizer.CountToken(sourceText),
         };
 
         await convertFileModelService.ExportConvertTextAsync(expertFile, convertFile);

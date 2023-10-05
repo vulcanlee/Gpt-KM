@@ -185,6 +185,17 @@ namespace Backend.Services
             return result;
         }
 
+        public async Task<List<ExpertFile>> GetAllAsync()
+        {
+            List<ExpertFile> items = await context.ExpertFile
+                .AsNoTracking()
+                .Include(x => x.ExpertFileChunk)
+                .Include(x => x.ExpertDirectory)
+                .ToListAsync();
+            return items;
+        }
+
+
         public async Task<VerifyRecordResult> AddAsync(ExpertFileAdapterModel paraObject)
         {
             try

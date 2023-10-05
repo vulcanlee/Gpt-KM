@@ -84,11 +84,12 @@
         /// <returns></returns>
         public static ContentTypeEnum GetContentTypeEnum(string extension)
         {
+            string lowerExtension = extension.ToLower();
             var allContentTypeEnum = Enum.GetValues(typeof(ContentTypeEnum)).Cast<ContentTypeEnum>();
             foreach (var value in allContentTypeEnum)
             {
-                var extensions = GetContentType(value);
-                if (extensions.Contains(extension))
+                var extensions = GetContentType(value); 
+                if (extensions.Contains(lowerExtension))
                 {
                     return value;
                 }

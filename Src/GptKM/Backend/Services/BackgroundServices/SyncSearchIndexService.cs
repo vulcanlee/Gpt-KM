@@ -76,7 +76,7 @@ namespace Backend.Services
                     var scope = ServiceScopeFactory.CreateScope();
                     SearchCollectionBuilderHelper searchCollectionBuilderHelper =
                     scope.ServiceProvider.GetRequiredService<SearchCollectionBuilderHelper>();
-                    GptExpertDirectoryService gptExpertDirectoryService=
+                    GptExpertDirectoryService gptExpertDirectoryService =
                     scope.ServiceProvider.GetRequiredService<GptExpertDirectoryService>();
                     SyncProcessingService syncProcessingService =
                     scope.ServiceProvider.GetRequiredService<SyncProcessingService>();
@@ -130,7 +130,7 @@ namespace Backend.Services
                             #endregion
 
                             #region 檢查專家目錄
-                            await syncProcessingService.BeginSyncDirectoryAsync(expertDirectory);
+                                await syncProcessingService.BeginSyncDirectoryAsync(expertDirectory);
                             #endregion
                             #endregion
                         }
